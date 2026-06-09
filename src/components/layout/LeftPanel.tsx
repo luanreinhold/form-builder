@@ -1,0 +1,37 @@
+﻿import { useState } from 'react';
+import { listByCategory } from '@/components/inputs/registry';
+import { DraggableInput } from '@/components/dnd/DraggableInput';
+
+export function LeftPanel() {
+  const groups = listByCategory();
+  const [open, setOpen] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(groups.map((g) => [g.category, true])),
+  );
+
+  return (
+    <aside className="w-64 shrink-0 overflow-y-auto border-r border-slate-200 bg-slate-50 p-3">
+      <h2 className="mb-2 text-xs font-semibold uppercase text-slate-500">Paleta</h2>
+      <div className="space-y-3">
+        {groups.map((g) => (
+          <section key={g.category}>
+            <button
+              type="button"
+              className="mb-1 flex w-full items-center justify-between text-left text-xs font-semibold text-slate-700"
+              onClick={() => setOpen((o) => ({ ...o, [g.category]: !o[g.category] }))}
+            >
+              <span>{g.category}</span>
+              <span className="text-slate-400">{open[g.category] ? '−' : '+'}</span>
+            </button>
+            {open[g.category] && (
+              <div className="space-y-1">
+                {g.items.map((it) => (
+                  <DraggableInput key={it.type} entry={it} />
+                ))}
+              </div>
+            )}
+          </section>
+        ))}
+      </div>
+    </aside>
+  );
+}
