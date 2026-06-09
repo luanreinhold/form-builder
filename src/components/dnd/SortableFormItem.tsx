@@ -1,9 +1,10 @@
-﻿import { memo } from 'react';
+import { memo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
 import type { Field } from '@/schemas/inputs.schema';
 import { InputPreview } from '@/components/inputs/InputPreview';
+import { colSpanClass } from '@/utils/gridClass';
 
 interface Props {
   field: Field;
@@ -27,11 +28,14 @@ export const SortableFormItem = memo(function SortableFormItem({ field, selected
     <div
       ref={setNodeRef}
       style={style}
+      data-field-id={field.id}
       onClick={() => onSelect(field.id)}
       className={clsx(
+        colSpanClass(field.colSpan),
         'group relative rounded border bg-white p-3 shadow-sm cursor-pointer',
         selected ? 'border-blue-500 ring-2 ring-blue-200' : 'border-slate-200',
         isDragging && 'opacity-50',
+        field.class,
       )}
     >
       <div className="flex items-start gap-2">
@@ -45,7 +49,7 @@ export const SortableFormItem = memo(function SortableFormItem({ field, selected
         >
           ⋮⋮
         </button>
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <InputPreview field={field} />
         </div>
         <button

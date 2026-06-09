@@ -6,7 +6,7 @@ import { JsonEditor } from './editors/JsonEditor';
 interface Props {
   field: Field;
   onChangeProp: (key: string, value: unknown) => void;
-  onChangeMeta: (meta: { class?: string; hide?: boolean }) => void;
+  onChangeMeta: (meta: { class?: string; hide?: boolean; colSpan?: number }) => void;
   onDelete: () => void;
 }
 
@@ -123,6 +123,18 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
 
       <section className="space-y-2">
         <h4 className="text-xs font-semibold uppercase text-slate-500">Wrapper (BaseControl)</h4>
+        <label className="block">
+          <span className="block text-xs font-medium text-slate-600 mb-1">colSpan (1-12)</span>
+          <select
+            value={field.colSpan ?? 12}
+            onChange={(e) => onChangeMeta({ colSpan: Number(e.target.value) })}
+            className="w-full rounded border border-slate-300 px-2 py-1 text-sm"
+          >
+            {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
+              <option key={n} value={n}>{n}</option>
+            ))}
+          </select>
+        </label>
         <StringEditor label="class" value={field.class ?? ''} onChange={(v) => onChangeMeta({ class: v })} />
         <BooleanEditor label="hide" value={Boolean(field.hide)} onChange={(v) => onChangeMeta({ hide: v })} />
       </section>

@@ -19,7 +19,7 @@ interface FormActions {
   addField: (type: FieldType, index?: number) => string;
   removeField: (id: string) => void;
   updateField: (id: string, patch: Partial<Record<string, unknown>>) => void;
-  updateFieldMeta: (id: string, meta: { class?: string; hide?: boolean }) => void;
+  updateFieldMeta: (id: string, meta: { class?: string; hide?: boolean; colSpan?: number }) => void;
   reorderFields: (fromId: string, toId: string) => void;
   reorderByIndex: (oldIndex: number, newIndex: number) => void;
   selectField: (id: string | null) => void;
@@ -59,6 +59,7 @@ export const useFormStore = create<FormStore>()(
           type,
           class: '',
           hide: false,
+          colSpan: 12,
           props: { ...entry.defaultProps },
         } as Field;
         set((s) => {
@@ -158,7 +159,21 @@ export const useFormStore = create<FormStore>()(
     {
       name: STORAGE_KEY,
       storage: createJSONStorage(() => localStorage),
-      version: 1,
+      version: 2,
+      migrate: (persisted, fromVersion) => {
+        if (!persisted || typeof persisted !== 'object') return persisted;
+        if (fromVersion < 2) {
+          const p = persisted as { fields?: unknown[] };
+          if (Array.isArray(p.fields)) {
+            p.fields = p.fields.map((f) =>
+              f && typeof f === 'object' && (f as Record<string, unknown>).colSpan === undefined
+                ? { ...(f as Record<string, unknown>), colSpan: 12 }
+                : f,
+            );
+          }
+        }
+        return persisted;
+      },
       partialize: (state) => ({
         formId: state.formId,
         createdAt: state.createdAt,

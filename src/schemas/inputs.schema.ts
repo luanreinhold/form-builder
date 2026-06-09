@@ -7,6 +7,7 @@ const wrap = <T extends z.ZodTypeAny>(typeLiteral: string, propsSchema: T) =>
     type: z.literal(typeLiteral),
     class: z.string().optional().default(''),
     hide: z.boolean().optional().default(false),
+    colSpan: z.number().int().min(1).max(12).optional().default(12),
     props: propsSchema,
   });
 
