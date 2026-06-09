@@ -1,78 +1,114 @@
-﻿import { z } from 'zod';
-import { BaseInputPropsSchema } from './base.schema';
+﻿import { z } from "zod";
+import { BaseInputPropsSchema } from "./base.schema";
 
 const wrap = <T extends z.ZodTypeAny>(typeLiteral: string, propsSchema: T) =>
   z.object({
     id: z.string().min(1),
     type: z.literal(typeLiteral),
-    class: z.string().optional().default(''),
+    class: z.string().optional().default(""),
     hide: z.boolean().optional().default(false),
     colSpan: z.number().int().min(1).max(12).optional().default(12),
     props: propsSchema,
   });
 
-const Text = wrap('input-text', BaseInputPropsSchema.extend({
-  doNotAllowSpecialCharacters: z.boolean().optional(),
-}));
-const Textarea = wrap('input-textarea', BaseInputPropsSchema);
-const Email = wrap('input-email', BaseInputPropsSchema);
-const Password = wrap('input-password', BaseInputPropsSchema);
-const Search = wrap('input-search', BaseInputPropsSchema);
-const NumberInput = wrap('input-number', BaseInputPropsSchema);
-const Decimal = wrap('input-decimal', BaseInputPropsSchema);
-const Money = wrap('input-money', BaseInputPropsSchema.extend({
-  minValue: z.number().optional(),
-  maxValue: z.number().optional(),
-}));
-const DateInput = wrap('input-date', BaseInputPropsSchema.extend({
-  format: z.string().optional(),
-  minDate: z.string().optional(),
-  maxDate: z.string().optional(),
-}));
-const DateCalendar = wrap('input-date-calendar', BaseInputPropsSchema.extend({
-  format: z.string().optional(),
-  minDate: z.string().optional(),
-  maxDate: z.string().optional(),
-}));
-const TimeInput = wrap('input-time', BaseInputPropsSchema);
-const Cpf = wrap('input-cpf', BaseInputPropsSchema);
-const Cnpj = wrap('input-cnpj', BaseInputPropsSchema);
-const Rg = wrap('input-rg', BaseInputPropsSchema);
-const Pis = wrap('input-pis', BaseInputPropsSchema);
-const Cep = wrap('input-cep', BaseInputPropsSchema);
-const Phone = wrap('input-phone', BaseInputPropsSchema);
-const Mask = wrap('input-mask', BaseInputPropsSchema.extend({
-  mask: z.string().optional(),
-  clearSpecialCharacter: z.boolean().optional(),
-  toastrMessage: z.string().optional(),
-}));
-const Color = wrap('input-color', BaseInputPropsSchema);
-const FileInput = wrap('input-file', BaseInputPropsSchema.extend({
-  accept: z.string().optional(),
-  multiple: z.boolean().optional(),
-}));
-const Attach = wrap('input-attach', BaseInputPropsSchema.extend({
-  accept: z.string().optional(),
-  multiple: z.boolean().optional(),
-}));
-const AttachBase64 = wrap('input-attach-base64', BaseInputPropsSchema.extend({
-  accept: z.string().optional(),
-  multiple: z.boolean().optional(),
-}));
-const Photography = wrap('input-photography', BaseInputPropsSchema);
-const ModalInput = wrap('input-modal', BaseInputPropsSchema.extend({
-  modalProps: z.record(z.unknown()).optional(),
-}));
-const CepModal = wrap('input-cep-modal', BaseInputPropsSchema.extend({
-  modalProps: z.record(z.unknown()).optional(),
-}));
-const Json = wrap('input-json', BaseInputPropsSchema);
-const Ocr = wrap('input-ocr', BaseInputPropsSchema.extend({
-  ocrConfig: z.record(z.unknown()).optional(),
-}));
-const Report = wrap('input-report', BaseInputPropsSchema.extend({
-  reportConfig: z.record(z.unknown()).optional(),
-}));
+const Text = wrap(
+  "input-text",
+  BaseInputPropsSchema.extend({
+    doNotAllowSpecialCharacters: z.boolean().optional(),
+  }),
+);
+const Textarea = wrap("input-textarea", BaseInputPropsSchema);
+const Email = wrap("input-email", BaseInputPropsSchema);
+const Password = wrap("input-password", BaseInputPropsSchema);
+const Search = wrap("input-search", BaseInputPropsSchema);
+const NumberInput = wrap("input-number", BaseInputPropsSchema);
+const Decimal = wrap("input-decimal", BaseInputPropsSchema);
+const Money = wrap(
+  "input-money",
+  BaseInputPropsSchema.extend({
+    minValue: z.number().optional(),
+    maxValue: z.number().optional(),
+  }),
+);
+const DateInput = wrap(
+  "input-date",
+  BaseInputPropsSchema.extend({
+    format: z.string().optional(),
+    minDate: z.string().optional(),
+    maxDate: z.string().optional(),
+  }),
+);
+const DateCalendar = wrap(
+  "input-date-calendar",
+  BaseInputPropsSchema.extend({
+    format: z.string().optional(),
+    minDate: z.string().optional(),
+    maxDate: z.string().optional(),
+  }),
+);
+const TimeInput = wrap("input-time", BaseInputPropsSchema);
+const Cpf = wrap("input-cpf", BaseInputPropsSchema);
+const Cnpj = wrap("input-cnpj", BaseInputPropsSchema);
+const Rg = wrap("input-rg", BaseInputPropsSchema);
+const Pis = wrap("input-pis", BaseInputPropsSchema);
+const Cep = wrap("input-cep", BaseInputPropsSchema);
+const Phone = wrap("input-phone", BaseInputPropsSchema);
+const Mask = wrap(
+  "input-mask",
+  BaseInputPropsSchema.extend({
+    mask: z.string().optional(),
+    clearSpecialCharacter: z.boolean().optional(),
+    toastrMessage: z.string().optional(),
+  }),
+);
+const Color = wrap("input-color", BaseInputPropsSchema);
+const FileInput = wrap(
+  "input-file",
+  BaseInputPropsSchema.extend({
+    accept: z.string().optional(),
+    multiple: z.boolean().optional(),
+  }),
+);
+const Attach = wrap(
+  "input-attach",
+  BaseInputPropsSchema.extend({
+    accept: z.string().optional(),
+    multiple: z.boolean().optional(),
+  }),
+);
+const AttachBase64 = wrap(
+  "input-attach-base64",
+  BaseInputPropsSchema.extend({
+    accept: z.string().optional(),
+    multiple: z.boolean().optional(),
+  }),
+);
+const Photography = wrap("input-photography", BaseInputPropsSchema);
+const ModalInput = wrap(
+  "input-modal",
+  BaseInputPropsSchema.extend({
+    modalProps: z.record(z.unknown()).optional(),
+  }),
+);
+const CepModal = wrap(
+  "input-cep-modal",
+  BaseInputPropsSchema.extend({
+    modalProps: z.record(z.unknown()).optional(),
+  }),
+);
+const Json = wrap("input-json", BaseInputPropsSchema);
+const Ocr = wrap(
+  "input-ocr",
+  BaseInputPropsSchema.extend({
+    ocrConfig: z.record(z.unknown()).optional(),
+  }),
+);
+const Report = wrap(
+  "input-report",
+  BaseInputPropsSchema.extend({
+    reportConfig: z.record(z.unknown()).optional(),
+  }),
+);
 
 const SelectSourceItem = z.object({
   key: z.union([z.string(), z.number()]),
@@ -84,34 +120,80 @@ const SelectBase = BaseInputPropsSchema.extend({
   optionLabel: z.string().optional(),
   optionValue: z.string().optional(),
 });
-const SelectComponent = wrap('select-component', SelectBase);
-const SelectMultiple = wrap('select-multiple', SelectBase);
-const SelectSearch = wrap('select-search', SelectBase);
-const DynamicSelect = wrap('dynamic-select', SelectBase);
+const SelectComponent = wrap("select-component", SelectBase);
+const SelectMultiple = wrap("select-multiple", SelectBase);
+const SelectSearch = wrap("select-search", SelectBase);
+const DynamicSelect = wrap("dynamic-select", SelectBase);
 
-export const FieldSchema = z.discriminatedUnion('type', [
-  Text, Textarea, Email, Password, Search,
-  NumberInput, Decimal, Money,
-  DateInput, DateCalendar, TimeInput,
-  Cpf, Cnpj, Rg, Pis,
-  Cep, Phone, Mask, Color,
-  FileInput, Attach, AttachBase64, Photography,
-  ModalInput, CepModal,
-  Json, Ocr, Report,
-  SelectComponent, SelectMultiple, SelectSearch, DynamicSelect,
+export const FieldSchema = z.discriminatedUnion("type", [
+  Text,
+  Textarea,
+  Email,
+  Password,
+  Search,
+  NumberInput,
+  Decimal,
+  Money,
+  DateInput,
+  DateCalendar,
+  TimeInput,
+  Cpf,
+  Cnpj,
+  Rg,
+  Pis,
+  Cep,
+  Phone,
+  Mask,
+  Color,
+  FileInput,
+  Attach,
+  AttachBase64,
+  Photography,
+  ModalInput,
+  CepModal,
+  Json,
+  Ocr,
+  Report,
+  SelectComponent,
+  SelectMultiple,
+  SelectSearch,
+  DynamicSelect,
 ]);
 
 export type Field = z.infer<typeof FieldSchema>;
-export type FieldType = Field['type'];
+export type FieldType = Field["type"];
 
 export const FIELD_TYPES = [
-  'input-text', 'input-textarea', 'input-email', 'input-password', 'input-search',
-  'input-number', 'input-decimal', 'input-money',
-  'input-date', 'input-date-calendar', 'input-time',
-  'input-cpf', 'input-cnpj', 'input-rg', 'input-pis',
-  'input-cep', 'input-phone', 'input-mask', 'input-color',
-  'input-file', 'input-attach', 'input-attach-base64', 'input-photography',
-  'input-modal', 'input-cep-modal',
-  'input-json', 'input-ocr', 'input-report',
-  'select-component', 'select-multiple', 'select-search', 'dynamic-select',
+  "input-text",
+  "input-textarea",
+  "input-email",
+  "input-password",
+  "input-search",
+  "input-number",
+  "input-decimal",
+  "input-money",
+  "input-date",
+  "input-date-calendar",
+  "input-time",
+  "input-cpf",
+  "input-cnpj",
+  "input-rg",
+  "input-pis",
+  "input-cep",
+  "input-phone",
+  "input-mask",
+  "input-color",
+  "input-file",
+  "input-attach",
+  "input-attach-base64",
+  "input-photography",
+  "input-modal",
+  "input-cep-modal",
+  "input-json",
+  "input-ocr",
+  "input-report",
+  "select-component",
+  "select-multiple",
+  "select-search",
+  "dynamic-select",
 ] as const satisfies readonly FieldType[];

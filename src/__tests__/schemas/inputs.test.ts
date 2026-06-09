@@ -1,130 +1,150 @@
-﻿import { describe, it, expect } from 'vitest';
-import { BaseInputPropsSchema } from '@/schemas/base.schema';
-import { FieldSchema } from '@/schemas/inputs.schema';
-import { FormSchema } from '@/schemas/form.schema';
+﻿import { describe, it, expect } from "vitest";
+import { BaseInputPropsSchema } from "@/schemas/base.schema";
+import { FieldSchema } from "@/schemas/inputs.schema";
+import { FormSchema } from "@/schemas/form.schema";
 
-describe('BaseInputPropsSchema', () => {
-  it('exige name', () => {
+describe("BaseInputPropsSchema", () => {
+  it("exige name", () => {
     const r = BaseInputPropsSchema.safeParse({});
     expect(r.success).toBe(false);
   });
 
-  it('aceita props minimas', () => {
-    const r = BaseInputPropsSchema.safeParse({ name: 'campo' });
+  it("aceita props minimas", () => {
+    const r = BaseInputPropsSchema.safeParse({ name: "campo" });
     expect(r.success).toBe(true);
   });
 
-  it('aceita todas props opcionais', () => {
+  it("aceita todas props opcionais", () => {
     const r = BaseInputPropsSchema.safeParse({
-      name: 'campo',
-      label: 'Label',
-      placeholder: 'Digite',
+      name: "campo",
+      label: "Label",
+      placeholder: "Digite",
       required: true,
       readonly: false,
-      hint: 'dica',
-      min: '0',
-      max: '100',
+      hint: "dica",
+      min: "0",
+      max: "100",
       showCaracterCounter: true,
       highlight: false,
       doNotTranslate: false,
-      customRequiredWarning: 'Obrigatorio',
-      value: 'inicial',
-      labelClass: 'cls',
+      customRequiredWarning: "Obrigatorio",
+      value: "inicial",
+      labelClass: "cls",
       requestFocus: false,
-      keyboardOptions: { layout: 'br' },
+      keyboardOptions: { layout: "br" },
     });
     expect(r.success).toBe(true);
   });
 });
 
-describe('FieldSchema', () => {
-  it('aceita input-text valido', () => {
+describe("FieldSchema", () => {
+  it("aceita input-text valido", () => {
     const r = FieldSchema.safeParse({
-      id: 'abc',
-      type: 'input-text',
-      class: '',
+      id: "abc",
+      type: "input-text",
+      class: "",
       hide: false,
-      props: { name: 'nome', doNotAllowSpecialCharacters: true },
+      props: { name: "nome", doNotAllowSpecialCharacters: true },
     });
     expect(r.success).toBe(true);
   });
 
-  it('rejeita tipo desconhecido', () => {
-    const r = FieldSchema.safeParse({ id: 'a', type: 'input-xyz', props: { name: 'a' } });
+  it("rejeita tipo desconhecido", () => {
+    const r = FieldSchema.safeParse({ id: "a", type: "input-xyz", props: { name: "a" } });
     expect(r.success).toBe(false);
   });
 
-  it('aceita input-money com minValue/maxValue', () => {
+  it("aceita input-money com minValue/maxValue", () => {
     const r = FieldSchema.safeParse({
-      id: 'm',
-      type: 'input-money',
-      props: { name: 'valor', minValue: 0, maxValue: 1000 },
+      id: "m",
+      type: "input-money",
+      props: { name: "valor", minValue: 0, maxValue: 1000 },
     });
     expect(r.success).toBe(true);
   });
 
-  it('aceita select com source', () => {
+  it("aceita select com source", () => {
     const r = FieldSchema.safeParse({
-      id: 's',
-      type: 'select-component',
-      props: { name: 'sel', source: [{ key: 1, value: 'A' }, { key: 2, value: 'B' }] },
+      id: "s",
+      type: "select-component",
+      props: {
+        name: "sel",
+        source: [
+          { key: 1, value: "A" },
+          { key: 2, value: "B" },
+        ],
+      },
     });
     expect(r.success).toBe(true);
   });
 
-  it('rejeita id vazio', () => {
-    const r = FieldSchema.safeParse({ id: '', type: 'input-text', props: { name: 'a' } });
+  it("rejeita id vazio", () => {
+    const r = FieldSchema.safeParse({ id: "", type: "input-text", props: { name: "a" } });
     expect(r.success).toBe(false);
   });
 
-  it('aplica defaults de class e hide', () => {
-    const r = FieldSchema.safeParse({ id: 'x', type: 'input-text', props: { name: 'a' } });
+  it("aplica defaults de class e hide", () => {
+    const r = FieldSchema.safeParse({ id: "x", type: "input-text", props: { name: "a" } });
     expect(r.success).toBe(true);
     if (r.success) {
-      expect(r.data.class).toBe('');
+      expect(r.data.class).toBe("");
       expect(r.data.hide).toBe(false);
     }
   });
 
-  it('aplica default colSpan = 12 quando ausente', () => {
-    const r = FieldSchema.safeParse({ id: 'x', type: 'input-text', props: { name: 'a' } });
+  it("aplica default colSpan = 12 quando ausente", () => {
+    const r = FieldSchema.safeParse({ id: "x", type: "input-text", props: { name: "a" } });
     expect(r.success).toBe(true);
     if (r.success) {
       expect(r.data.colSpan).toBe(12);
     }
   });
 
-  it('aceita colSpan customizado entre 1 e 12', () => {
-    const r = FieldSchema.safeParse({ id: 'x', type: 'input-text', colSpan: 6, props: { name: 'a' } });
+  it("aceita colSpan customizado entre 1 e 12", () => {
+    const r = FieldSchema.safeParse({
+      id: "x",
+      type: "input-text",
+      colSpan: 6,
+      props: { name: "a" },
+    });
     expect(r.success).toBe(true);
     if (r.success) expect(r.data.colSpan).toBe(6);
   });
 
-  it('rejeita colSpan fora de 1..12', () => {
-    expect(FieldSchema.safeParse({ id: 'x', type: 'input-text', colSpan: 0, props: { name: 'a' } }).success).toBe(false);
-    expect(FieldSchema.safeParse({ id: 'x', type: 'input-text', colSpan: 13, props: { name: 'a' } }).success).toBe(false);
-    expect(FieldSchema.safeParse({ id: 'x', type: 'input-text', colSpan: 1.5, props: { name: 'a' } }).success).toBe(false);
+  it("rejeita colSpan fora de 1..12", () => {
+    expect(
+      FieldSchema.safeParse({ id: "x", type: "input-text", colSpan: 0, props: { name: "a" } })
+        .success,
+    ).toBe(false);
+    expect(
+      FieldSchema.safeParse({ id: "x", type: "input-text", colSpan: 13, props: { name: "a" } })
+        .success,
+    ).toBe(false);
+    expect(
+      FieldSchema.safeParse({ id: "x", type: "input-text", colSpan: 1.5, props: { name: "a" } })
+        .success,
+    ).toBe(false);
   });
 });
 
-describe('FormSchema', () => {
-  it('aceita formulario valido', () => {
+describe("FormSchema", () => {
+  it("aceita formulario valido", () => {
     const r = FormSchema.safeParse({
       schemaVersion: 1,
-      formId: 'f1',
-      createdAt: '2026-06-08T10:00:00Z',
-      updatedAt: '2026-06-08T10:00:00Z',
-      fields: [{ id: 'a', type: 'input-text', props: { name: 'a' } }],
+      formId: "f1",
+      createdAt: "2026-06-08T10:00:00Z",
+      updatedAt: "2026-06-08T10:00:00Z",
+      fields: [{ id: "a", type: "input-text", props: { name: "a" } }],
     });
     expect(r.success).toBe(true);
   });
 
-  it('rejeita schemaVersion errado', () => {
+  it("rejeita schemaVersion errado", () => {
     const r = FormSchema.safeParse({
       schemaVersion: 2,
-      formId: 'f',
-      createdAt: '',
-      updatedAt: '',
+      formId: "f",
+      createdAt: "",
+      updatedAt: "",
       fields: [],
     });
     expect(r.success).toBe(false);

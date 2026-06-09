@@ -1,12 +1,10 @@
-﻿import { FormSchema, type FormPayload } from '@/schemas/form.schema';
+﻿import { FormSchema, type FormPayload } from "@/schemas/form.schema";
 
-export type ImportResult =
-  | { ok: true; data: FormPayload }
-  | { ok: false; errors: string[] };
+export type ImportResult = { ok: true; data: FormPayload } | { ok: false; errors: string[] };
 
 export function parseImport(input: string | unknown): ImportResult {
   let raw: unknown = input;
-  if (typeof input === 'string') {
+  if (typeof input === "string") {
     try {
       raw = JSON.parse(input);
     } catch (err) {
@@ -15,7 +13,10 @@ export function parseImport(input: string | unknown): ImportResult {
   }
   const parsed = FormSchema.safeParse(raw);
   if (!parsed.success) {
-    return { ok: false, errors: parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`) };
+    return {
+      ok: false,
+      errors: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`),
+    };
   }
   return { ok: true, data: parsed.data };
 }

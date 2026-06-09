@@ -1,4 +1,4 @@
-﻿import { FormSchema, type FormPayload } from '@/schemas/form.schema';
+﻿import { FormSchema, type FormPayload } from "@/schemas/form.schema";
 
 export interface ExportResult {
   ok: boolean;
@@ -9,7 +9,10 @@ export interface ExportResult {
 export function buildExport(payload: FormPayload): ExportResult {
   const parsed = FormSchema.safeParse(payload);
   if (!parsed.success) {
-    return { ok: false, errors: parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`) };
+    return {
+      ok: false,
+      errors: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`),
+    };
   }
   return { ok: true, data: parsed.data };
 }
@@ -18,10 +21,10 @@ export function serializeForm(payload: FormPayload): string {
   return JSON.stringify(payload, null, 2);
 }
 
-export function downloadForm(payload: FormPayload, filename = 'form.json'): void {
-  const blob = new Blob([serializeForm(payload)], { type: 'application/json' });
+export function downloadForm(payload: FormPayload, filename = "form.json"): void {
+  const blob = new Blob([serializeForm(payload)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
+  const a = document.createElement("a");
   a.href = url;
   a.download = filename;
   document.body.appendChild(a);

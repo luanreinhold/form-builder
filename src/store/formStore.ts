@@ -1,11 +1,11 @@
-﻿import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { nanoid } from 'nanoid';
-import { FieldSchema, type Field, type FieldType } from '@/schemas/inputs.schema';
-import { FormSchema, type FormPayload } from '@/schemas/form.schema';
-import { REGISTRY } from '@/components/inputs/registry';
+﻿import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { nanoid } from "nanoid";
+import { FieldSchema, type Field, type FieldType } from "@/schemas/inputs.schema";
+import { FormSchema, type FormPayload } from "@/schemas/form.schema";
+import { REGISTRY } from "@/components/inputs/registry";
 
-const STORAGE_KEY = 'form-builder:draft';
+const STORAGE_KEY = "form-builder:draft";
 
 interface FormState {
   formId: string;
@@ -57,7 +57,7 @@ export const useFormStore = create<FormStore>()(
         const newField = {
           id,
           type,
-          class: '',
+          class: "",
           hide: false,
           colSpan: 12,
           props: { ...entry.defaultProps },
@@ -85,9 +85,7 @@ export const useFormStore = create<FormStore>()(
           touch({
             ...s,
             fields: s.fields.map((f) =>
-              f.id === id
-                ? ({ ...f, props: { ...f.props, ...patch } } as Field)
-                : f,
+              f.id === id ? ({ ...f, props: { ...f.props, ...patch } } as Field) : f,
             ),
           }),
         ),
@@ -111,7 +109,13 @@ export const useFormStore = create<FormStore>()(
       reorderByIndex: (oldIndex, newIndex) =>
         set((s) => {
           if (oldIndex === newIndex) return s;
-          if (oldIndex < 0 || newIndex < 0 || oldIndex >= s.fields.length || newIndex >= s.fields.length) return s;
+          if (
+            oldIndex < 0 ||
+            newIndex < 0 ||
+            oldIndex >= s.fields.length ||
+            newIndex >= s.fields.length
+          )
+            return s;
           const next = [...s.fields];
           const [moved] = next.splice(oldIndex, 1);
           next.splice(newIndex, 0, moved);
@@ -133,15 +137,20 @@ export const useFormStore = create<FormStore>()(
       importJSON: (payload) => {
         const parsed = FormSchema.safeParse(payload);
         if (!parsed.success) {
-          return { ok: false, errors: parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`) };
+          return {
+            ok: false,
+            errors: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`),
+          };
         }
-        set(() => touch({
-          formId: parsed.data.formId,
-          createdAt: parsed.data.createdAt,
-          updatedAt: parsed.data.updatedAt,
-          fields: parsed.data.fields,
-          selectedFieldId: null,
-        }));
+        set(() =>
+          touch({
+            formId: parsed.data.formId,
+            createdAt: parsed.data.createdAt,
+            updatedAt: parsed.data.updatedAt,
+            fields: parsed.data.fields,
+            selectedFieldId: null,
+          }),
+        );
         return { ok: true };
       },
 
@@ -161,12 +170,12 @@ export const useFormStore = create<FormStore>()(
       storage: createJSONStorage(() => localStorage),
       version: 2,
       migrate: (persisted, fromVersion) => {
-        if (!persisted || typeof persisted !== 'object') return persisted;
+        if (!persisted || typeof persisted !== "object") return persisted;
         if (fromVersion < 2) {
           const p = persisted as { fields?: unknown[] };
           if (Array.isArray(p.fields)) {
             p.fields = p.fields.map((f) =>
-              f && typeof f === 'object' && (f as Record<string, unknown>).colSpan === undefined
+              f && typeof f === "object" && (f as Record<string, unknown>).colSpan === undefined
                 ? { ...(f as Record<string, unknown>), colSpan: 12 }
                 : f,
             );
@@ -181,7 +190,7 @@ export const useFormStore = create<FormStore>()(
         fields: state.fields,
       }),
       merge: (persisted, current) => {
-        if (!persisted || typeof persisted !== 'object') return current;
+        if (!persisted || typeof persisted !== "object") return current;
         const p = persisted as Partial<FormState>;
         if (!Array.isArray(p.fields)) return current;
         // Valida cada field via Zod; se algum falhar, descarta tudo.
@@ -190,7 +199,11 @@ export const useFormStore = create<FormStore>()(
           const r = FieldSchema.safeParse(f);
           if (!r.success) {
             // Corrupted storage - reset to initial
-            try { localStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
+            try {
+              localStorage.removeItem(STORAGE_KEY);
+            } catch {
+              /* noop */
+            }
             return current;
           }
           validFields.push(r.data);

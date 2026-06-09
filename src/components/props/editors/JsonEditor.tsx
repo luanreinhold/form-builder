@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from "react";
 
 interface Props {
   label: string;
@@ -10,11 +10,13 @@ export function JsonEditor({ label, value, onChange }: Props) {
   const [text, setText] = useState(() => safeStringify(value));
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => { setText(safeStringify(value)); }, [value]);
+  useEffect(() => {
+    setText(safeStringify(value));
+  }, [value]);
 
   function handleChange(next: string) {
     setText(next);
-    if (next.trim() === '') {
+    if (next.trim() === "") {
       setError(null);
       onChange(undefined);
       return;
@@ -35,7 +37,7 @@ export function JsonEditor({ label, value, onChange }: Props) {
         value={text}
         onChange={(e) => handleChange(e.target.value)}
         rows={3}
-        className={`w-full font-mono text-xs rounded border px-2 py-1 ${error ? 'border-red-400' : 'border-slate-300'}`}
+        className={`w-full font-mono text-xs rounded border px-2 py-1 ${error ? "border-red-400" : "border-slate-300"}`}
       />
       {error && <span className="text-xs text-red-600 mt-1 block">{error}</span>}
     </label>
@@ -43,7 +45,11 @@ export function JsonEditor({ label, value, onChange }: Props) {
 }
 
 function safeStringify(v: unknown): string {
-  if (v === undefined || v === null) return '';
-  if (typeof v === 'string') return v;
-  try { return JSON.stringify(v, null, 2); } catch { return ''; }
+  if (v === undefined || v === null) return "";
+  if (typeof v === "string") return v;
+  try {
+    return JSON.stringify(v, null, 2);
+  } catch {
+    return "";
+  }
 }

@@ -1,5 +1,5 @@
-﻿import { z } from 'zod';
-import { FieldSchema } from './inputs.schema';
+﻿import { z } from "zod";
+import { FieldSchema } from "./inputs.schema";
 
 export const FormSchema = z.object({
   schemaVersion: z.literal(1),

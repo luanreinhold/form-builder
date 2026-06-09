@@ -1,5 +1,5 @@
-﻿import { useFormStore } from '@/store/formStore';
-import { PropEditor } from '@/components/props/PropEditor';
+﻿import { PropEditor } from "@/components/props/PropEditor";
+import { useFormStore } from "@/store/formStore";
 
 export function PropsPanel() {
   const selectedFieldId = useFormStore((s) => s.selectedFieldId);

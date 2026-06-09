@@ -19,14 +19,7 @@ export const SortableFormItem = memo(function SortableFormItem({
   onSelect,
   onRemove,
 }: Props) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: field.id,
     data: { source: "canvas", id: field.id },
   });

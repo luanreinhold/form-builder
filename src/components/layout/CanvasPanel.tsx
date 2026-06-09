@@ -1,8 +1,8 @@
-import { useDroppable } from '@dnd-kit/core';
-import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
-import clsx from 'clsx';
-import { useFormStore } from '@/store/formStore';
-import { SortableFormItem } from '@/components/dnd/SortableFormItem';
+import { useDroppable } from "@dnd-kit/core";
+import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
+import clsx from "clsx";
+import { useFormStore } from "@/store/formStore";
+import { SortableFormItem } from "@/components/dnd/SortableFormItem";
 
 export function CanvasPanel() {
   const fields = useFormStore((s) => s.fields);
@@ -10,7 +10,7 @@ export function CanvasPanel() {
   const selectField = useFormStore((s) => s.selectField);
   const removeField = useFormStore((s) => s.removeField);
 
-  const { setNodeRef, isOver } = useDroppable({ id: 'canvas-droppable' });
+  const { setNodeRef, isOver } = useDroppable({ id: "canvas-droppable" });
 
   return (
     <main className="flex-1 overflow-y-auto p-6">
@@ -18,8 +18,8 @@ export function CanvasPanel() {
         ref={setNodeRef}
         data-testid="canvas-drop-area"
         className={clsx(
-          'mx-auto max-w-5xl rounded-lg border-2 border-dashed bg-white p-4 min-h-[400px]',
-          isOver ? 'border-blue-500 bg-blue-50' : 'border-slate-300',
+          "mx-auto max-w-5xl rounded-lg border-2 border-dashed bg-white p-4 min-h-[400px]",
+          isOver ? "border-blue-500 bg-blue-50" : "border-slate-300",
         )}
       >
         {fields.length === 0 ? (
