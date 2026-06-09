@@ -1,5 +1,5 @@
-﻿import type { FieldType } from '@/schemas/inputs.schema';
-import { REGISTRY } from '@/components/inputs/registry';
+﻿import { REGISTRY } from "@/components/inputs/registry";
+import type { FieldType } from "@/schemas/inputs.schema";
 
 interface Props {
   type: FieldType;
