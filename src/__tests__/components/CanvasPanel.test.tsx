@@ -34,4 +34,28 @@ describe('CanvasPanel', () => {
     fireEvent.click(item.closest('div')!);
     expect(useFormStore.getState().selectedFieldId).toBe(id);
   });
+
+  it('container interno usa grid de 12 colunas', () => {
+    useFormStore.getState().addField('input-text');
+    const { container } = renderWithDnd(<CanvasPanel />);
+    const grid = container.querySelector('[data-testid="canvas-grid"]');
+    expect(grid).toBeTruthy();
+    expect(grid!.className).toMatch(/grid-cols-12/);
+  });
+
+  it('item aplica col-span da field', () => {
+    const id = useFormStore.getState().addField('input-text');
+    useFormStore.getState().updateFieldMeta(id, { colSpan: 6 });
+    const { container } = renderWithDnd(<CanvasPanel />);
+    const item = container.querySelector(`[data-field-id="${id}"]`);
+    expect(item).toBeTruthy();
+    expect(item!.className).toMatch(/col-span-6/);
+  });
+
+  it('item sem colSpan usa col-span-12 por padrao', () => {
+    const id = useFormStore.getState().addField('input-text');
+    const { container } = renderWithDnd(<CanvasPanel />);
+    const item = container.querySelector(`[data-field-id="${id}"]`);
+    expect(item!.className).toMatch(/col-span-12/);
+  });
 });

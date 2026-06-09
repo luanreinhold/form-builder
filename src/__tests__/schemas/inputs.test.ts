@@ -85,6 +85,26 @@ describe('FieldSchema', () => {
       expect(r.data.hide).toBe(false);
     }
   });
+
+  it('aplica default colSpan = 12 quando ausente', () => {
+    const r = FieldSchema.safeParse({ id: 'x', type: 'input-text', props: { name: 'a' } });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect(r.data.colSpan).toBe(12);
+    }
+  });
+
+  it('aceita colSpan customizado entre 1 e 12', () => {
+    const r = FieldSchema.safeParse({ id: 'x', type: 'input-text', colSpan: 6, props: { name: 'a' } });
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.colSpan).toBe(6);
+  });
+
+  it('rejeita colSpan fora de 1..12', () => {
+    expect(FieldSchema.safeParse({ id: 'x', type: 'input-text', colSpan: 0, props: { name: 'a' } }).success).toBe(false);
+    expect(FieldSchema.safeParse({ id: 'x', type: 'input-text', colSpan: 13, props: { name: 'a' } }).success).toBe(false);
+    expect(FieldSchema.safeParse({ id: 'x', type: 'input-text', colSpan: 1.5, props: { name: 'a' } }).success).toBe(false);
+  });
 });
 
 describe('FormSchema', () => {
