@@ -1,5 +1,5 @@
-﻿import { describe, it, expect } from "vitest";
-import { REGISTRY, listByCategory, getRegistry } from "@/components/inputs/registry";
+﻿import { describe, expect, it } from "vitest";
+import { getRegistry, listByCategory, REGISTRY } from "@/components/inputs/registry";
 import { FIELD_TYPES } from "@/types";
 
 describe("registry", () => {

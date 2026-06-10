@@ -1,4 +1,4 @@
-﻿import { FormSchema, type FormPayload } from "@/schemas/form.schema";
+﻿import { type FormPayload, FormSchema } from "@/schemas/form.schema";
 
 export type ImportResult = { ok: true; data: FormPayload } | { ok: false; errors: string[] };
 
@@ -8,7 +8,10 @@ export function parseImport(input: string | unknown): ImportResult {
     try {
       raw = JSON.parse(input);
     } catch (err) {
-      return { ok: false, errors: [`JSON invalido: ${(err as Error).message}`] };
+      return {
+        ok: false,
+        errors: [`JSON invalido: ${(err as Error).message}`],
+      };
     }
   }
   const parsed = FormSchema.safeParse(raw);

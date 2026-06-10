@@ -1,21 +1,21 @@
-﻿import { useState } from "react";
 import {
-  DndContext,
-  DragOverlay,
-  PointerSensor,
   closestCenter,
+  DndContext,
+  type DragEndEvent,
+  DragOverlay,
+  type DragStartEvent,
+  PointerSensor,
   useSensor,
   useSensors,
-  type DragStartEvent,
-  type DragEndEvent,
 } from "@dnd-kit/core";
-import { Toolbar } from "./Toolbar";
-import { LeftPanel } from "./LeftPanel";
-import { CanvasPanel } from "./CanvasPanel";
-import { PropsPanel } from "./PropsPanel";
+import { useState } from "react";
 import { DragOverlayCard } from "@/components/dnd/DragOverlayCard";
-import { useFormStore } from "@/store/formStore";
 import type { FieldType } from "@/schemas/inputs.schema";
+import { useFormStore } from "@/store/formStore";
+import { CanvasPanel } from "./CanvasPanel";
+import { LeftPanel } from "./LeftPanel";
+import { PropsPanel } from "./PropsPanel";
+import { Toolbar } from "./Toolbar";
 
 export function AppShell() {
   const addField = useFormStore((s) => s.addField);
@@ -27,6 +27,12 @@ export function AppShell() {
   const [activeFieldId, setActiveFieldId] = useState<string | null>(null);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+
+  function onDragCancel() {
+    setActiveType(null);
+    setActiveSource(null);
+    setActiveFieldId(null);
+  }
 
   function onDragStart(e: DragStartEvent) {
     const data = e.active.data.current as
@@ -61,15 +67,7 @@ export function AppShell() {
       if (oldIndex !== -1 && newIndex !== -1) reorderByIndex(oldIndex, newIndex);
     }
 
-    setActiveType(null);
-    setActiveSource(null);
-    setActiveFieldId(null);
-  }
-
-  function onDragCancel() {
-    setActiveType(null);
-    setActiveSource(null);
-    setActiveFieldId(null);
+    onDragCancel();
   }
 
   const activeCanvasField =

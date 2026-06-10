@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { colSpanClass, COL_SPAN_CLASS } from "@/utils/gridClass";
+import { describe, expect, it } from "vitest";
+import { COL_SPAN_CLASS, colSpanClass } from "@/utils/gridClass";
 
 describe("colSpanClass", () => {
   it("mapeia 1..12 para col-span-{n}", () => {

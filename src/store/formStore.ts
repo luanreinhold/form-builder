@@ -1,9 +1,9 @@
-﻿import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
-import { nanoid } from "nanoid";
-import { FieldSchema, type Field, type FieldType } from "@/schemas/inputs.schema";
-import { FormSchema, type FormPayload } from "@/schemas/form.schema";
+﻿import { nanoid } from "nanoid";
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { REGISTRY } from "@/components/inputs/registry";
+import { type FormPayload, FormSchema } from "@/schemas/form.schema";
+import { type Field, FieldSchema, type FieldType } from "@/schemas/inputs.schema";
 
 const STORAGE_KEY = "form-builder:draft";
 

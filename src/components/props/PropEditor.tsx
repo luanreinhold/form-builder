@@ -1,7 +1,7 @@
 ﻿import type { Field } from "@/schemas/inputs.schema";
-import { StringEditor } from "./editors/StringEditor";
 import { BooleanEditor } from "./editors/BooleanEditor";
 import { JsonEditor } from "./editors/JsonEditor";
+import { StringEditor } from "./editors/StringEditor";
 
 interface Props {
   field: Field;

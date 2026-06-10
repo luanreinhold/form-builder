@@ -1,8 +1,8 @@
 import { useDroppable } from "@dnd-kit/core";
-import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
+import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import clsx from "clsx";
-import { useFormStore } from "@/store/formStore";
 import { SortableFormItem } from "@/components/dnd/SortableFormItem";
+import { useFormStore } from "@/store/formStore";
 
 export function CanvasPanel() {
   const fields = useFormStore((s) => s.fields);

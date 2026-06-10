@@ -1,6 +1,6 @@
-﻿import { describe, it, expect, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
-import { DndContext } from "@dnd-kit/core";
+﻿import { DndContext } from "@dnd-kit/core";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it } from "vitest";
 import { CanvasPanel } from "@/components/layout/CanvasPanel";
 import { useFormStore } from "@/store/formStore";
 

@@ -1,7 +1,7 @@
-﻿import { describe, it, expect } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 import { BaseInputPropsSchema } from "@/schemas/base.schema";
-import { FieldSchema } from "@/schemas/inputs.schema";
 import { FormSchema } from "@/schemas/form.schema";
+import { FieldSchema } from "@/schemas/inputs.schema";
 
 describe("BaseInputPropsSchema", () => {
   it("exige name", () => {
