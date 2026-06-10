@@ -1,7 +1,8 @@
 ﻿export type { BaseInputProps } from "@/schemas/base.schema";
+export type { FormPayload } from "@/schemas/form.schema";
 export type { Field, FieldType } from "@/schemas/inputs.schema";
 export { FIELD_TYPES } from "@/schemas/inputs.schema";
-export type { FormPayload } from "@/schemas/form.schema";
+export type { FormSourceItem } from "@/types/formSourceItem";
 
 export type Category =
   | "Texto"

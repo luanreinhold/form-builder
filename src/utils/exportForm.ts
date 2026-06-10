@@ -1,9 +1,45 @@
-﻿import { FormSchema, type FormPayload } from "@/schemas/form.schema";
+import { type FormPayload, FormSchema } from "@/schemas/form.schema";
+import type { Field } from "@/schemas/inputs.schema";
+import type { FormSourceItem } from "@/types/formSourceItem";
 
 export interface ExportResult {
   ok: boolean;
-  data?: FormPayload;
+  data?: FormSourceItem[];
   errors?: string[];
+}
+
+/** Converte min/max numericos para number (a v3 espera ex.: "max": 45) e remove chaves undefined. */
+function pruneProps(props: Field["props"]): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(props)) {
+    if (value === undefined) continue;
+    if (
+      (key === "min" || key === "max") &&
+      typeof value === "string" &&
+      value.trim() !== "" &&
+      !Number.isNaN(Number(value))
+    ) {
+      out[key] = Number(value);
+      continue;
+    }
+    out[key] = value;
+  }
+  return out;
+}
+
+function toV3SourceItem(field: Field): FormSourceItem {
+  const item: FormSourceItem = {
+    type: field.type,
+    class: field.class || `d-block mb-2 col-md-${field.colSpan}`,
+    props: pruneProps(field.props),
+  };
+  if (field.hide) item.hide = true;
+  return item;
+}
+
+/** Mapeia o payload interno do builder para a lista IFormSourceItem[] consumida pela v3. */
+export function toV3SourceList(payload: FormPayload): FormSourceItem[] {
+  return payload.fields.map(toV3SourceItem);
 }
 
 export function buildExport(payload: FormPayload): ExportResult {
@@ -14,15 +50,15 @@ export function buildExport(payload: FormPayload): ExportResult {
       errors: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`),
     };
   }
-  return { ok: true, data: parsed.data };
+  return { ok: true, data: toV3SourceList(parsed.data) };
 }
 
-export function serializeForm(payload: FormPayload): string {
-  return JSON.stringify(payload, null, 2);
+export function serializeForm(items: FormSourceItem[]): string {
+  return JSON.stringify(items, null, 2);
 }
 
-export function downloadForm(payload: FormPayload, filename = "form.json"): void {
-  const blob = new Blob([serializeForm(payload)], { type: "application/json" });
+export function downloadForm(items: FormSourceItem[], filename = "form.json"): void {
+  const blob = new Blob([serializeForm(items)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -33,9 +69,9 @@ export function downloadForm(payload: FormPayload, filename = "form.json"): void
   URL.revokeObjectURL(url);
 }
 
-export async function copyFormToClipboard(payload: FormPayload): Promise<boolean> {
+export async function copyFormToClipboard(items: FormSourceItem[]): Promise<boolean> {
   try {
-    await navigator.clipboard.writeText(serializeForm(payload));
+    await navigator.clipboard.writeText(serializeForm(items));
     return true;
   } catch {
     return false;

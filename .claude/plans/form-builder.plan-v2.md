@@ -113,7 +113,7 @@ src/
 6. `tsconfig.json`: `"strict": true`, paths para `@/*`.
 7. Confirmar que `populis-v3-core/` está como submódulo (já está; apenas consultado para mapeamento).
 
-**Deliverable:** projeto buildando vazio, `npm run dev` e `npm run test` rodando.
+**Deliverable:** projeto buildando vazio, `pnpm dev` e `pnpm test` rodando.
 
 ---
 

@@ -1,5 +1,5 @@
-﻿import { describe, it, expect } from "vitest";
-import { buildExport, serializeForm } from "@/utils/exportForm";
+import { describe, expect, it } from "vitest";
+import { buildExport, serializeForm, toV3SourceList } from "@/utils/exportForm";
 import { parseImport } from "@/utils/importForm";
 
 const sample = {
@@ -8,15 +8,59 @@ const sample = {
   createdAt: "2026-06-08T00:00:00Z",
   updatedAt: "2026-06-08T00:00:00Z",
   fields: [
-    { id: "a", type: "input-text" as const, class: "", hide: false, props: { name: "nome" } },
+    {
+      id: "a",
+      type: "input-text" as const,
+      class: "",
+      hide: false,
+      colSpan: 6,
+      props: { name: "nome", required: true, max: "45" },
+    },
   ],
 };
 
 describe("exportForm", () => {
-  it("buildExport valida com sucesso", () => {
+  it("buildExport retorna lista no shape v3 (IFormSourceItem[])", () => {
     const r = buildExport(sample);
     expect(r.ok).toBe(true);
-    expect(r.data?.fields).toHaveLength(1);
+    expect(r.data).toHaveLength(1);
+    const item = r.data?.[0] as Record<string, unknown>;
+    expect(item.type).toBe("input-text");
+    expect(item).not.toHaveProperty("id");
+    expect(item).not.toHaveProperty("colSpan");
+  });
+
+  it("gera classe bootstrap a partir do colSpan quando class esta vazia", () => {
+    const r = buildExport(sample);
+    expect(r.data?.[0]?.class).toBe("d-block mb-2 col-md-6");
+  });
+
+  it("preserva classe customizada quando definida", () => {
+    const custom = {
+      ...sample,
+      fields: [{ ...sample.fields[0], class: "d-none" }],
+    };
+    const r = buildExport(custom);
+    expect(r.data?.[0]?.class).toBe("d-none");
+  });
+
+  it("omite hide quando false e inclui quando true", () => {
+    const r = buildExport(sample);
+    expect(r.data?.[0]).not.toHaveProperty("hide");
+
+    const hidden = {
+      ...sample,
+      fields: [{ ...sample.fields[0], hide: true }],
+    };
+    const r2 = buildExport(hidden);
+    expect(r2.data?.[0]?.hide).toBe(true);
+  });
+
+  it("converte min/max numericos para number nas props", () => {
+    const r = buildExport(sample);
+    expect(r.data?.[0]?.props.max).toBe(45);
+    expect(r.data?.[0]?.props.required).toBe(true);
+    expect(r.data?.[0]?.props.name).toBe("nome");
   });
 
   it("buildExport falha em payload invalido", () => {
@@ -26,9 +70,12 @@ describe("exportForm", () => {
     expect((r.errors ?? []).length).toBeGreaterThan(0);
   });
 
-  it("serializeForm produz JSON valido", () => {
-    const s = serializeForm(sample);
-    expect(JSON.parse(s).formId).toBe("f1");
+  it("serializeForm produz JSON valido do array v3", () => {
+    const items = toV3SourceList(sample);
+    const s = serializeForm(items);
+    const parsed = JSON.parse(s);
+    expect(Array.isArray(parsed)).toBe(true);
+    expect(parsed[0].props.name).toBe("nome");
   });
 });
 
@@ -54,15 +101,10 @@ describe("importForm", () => {
     expect(r.ok).toBe(false);
   });
 
-  it("round-trip export -> import preserva dados", () => {
+  it("parseImport rejeita o formato v3 exportado (export e one-way)", () => {
     const exported = buildExport(sample);
     expect(exported.ok).toBe(true);
-    const serialized = serializeForm(exported.data!);
-    const imported = parseImport(serialized);
-    expect(imported.ok).toBe(true);
-    if (imported.ok) {
-      expect(imported.data.formId).toBe(sample.formId);
-      expect(imported.data.fields).toHaveLength(1);
-    }
+    const r = parseImport(serializeForm(exported.data ?? []));
+    expect(r.ok).toBe(false);
   });
 });
