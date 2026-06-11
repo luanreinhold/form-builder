@@ -2,6 +2,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import clsx from "clsx";
 import { SortableFormItem } from "@/components/dnd/SortableFormItem";
+import { Icon } from "@/components/icons/Icon";
 import { useFormStore } from "@/store/formStore";
 
 export function CanvasPanel() {
@@ -18,13 +19,18 @@ export function CanvasPanel() {
         ref={setNodeRef}
         data-testid="canvas-drop-area"
         className={clsx(
-          "mx-auto max-w-5xl rounded-lg border-2 border-dashed bg-white p-4 min-h-[400px]",
-          isOver ? "border-blue-500 bg-blue-50" : "border-slate-300",
+          "mx-auto min-h-[400px] max-w-5xl rounded-xl border-2 border-dashed p-4 transition-colors",
+          isOver
+            ? "border-indigo-500 bg-indigo-50 dark:border-indigo-400 dark:bg-indigo-950/30"
+            : "border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900",
         )}
       >
         {fields.length === 0 ? (
-          <div className="flex h-full min-h-[360px] items-center justify-center text-slate-400">
-            Arraste inputs aqui para construir o formulario
+          <div className="flex h-full min-h-[360px] flex-col items-center justify-center gap-3 text-slate-400 dark:text-slate-500">
+            <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
+              <Icon name="app-window" width={24} height={24} />
+            </span>
+            <p className="text-sm">Arraste inputs aqui para construir o formulario</p>
           </div>
         ) : (
           <SortableContext items={fields.map((f) => f.id)} strategy={rectSortingStrategy}>

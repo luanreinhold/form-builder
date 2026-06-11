@@ -83,7 +83,7 @@ export function AppShell() {
       onDragEnd={onDragEnd}
       onDragCancel={onDragCancel}
     >
-      <div className="flex h-screen flex-col bg-slate-100">
+      <div className="flex h-screen flex-col bg-slate-200 dark:bg-slate-950">
         <Toolbar />
         <div className="flex flex-1 overflow-hidden">
           <LeftPanel />

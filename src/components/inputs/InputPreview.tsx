@@ -19,12 +19,17 @@ export function InputPreview({ field }: Props) {
 
   return (
     <div className="space-y-1">
-      <label className="block text-sm font-medium text-slate-700">
-        {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
+      {/* biome-ignore lint/a11y/noLabelWithoutControl: o controle e renderizado dentro do label via renderControl() */}
+      <label className="block">
+        <span className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">
+          {label}
+          {required && <span className="ml-1 text-red-500 dark:text-red-400">*</span>}
+        </span>
+        {renderControl(field, placeholder)}
       </label>
-      {renderControl(field, placeholder)}
-      {props.hint ? <p className="text-xs text-slate-500">{props.hint as string}</p> : null}
+      {props.hint ? (
+        <p className="text-xs text-slate-500 dark:text-slate-400">{props.hint as string}</p>
+      ) : null}
     </div>
   );
 }
@@ -32,7 +37,7 @@ export function InputPreview({ field }: Props) {
 function renderControl(field: Field, placeholder: string): JSX.Element {
   const type = field.type;
   const baseCls =
-    "w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+    "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:placeholder:text-slate-500";
 
   switch (type) {
     case "input-textarea":
@@ -70,7 +75,7 @@ function renderControl(field: Field, placeholder: string): JSX.Element {
     case "input-money":
       return (
         <div className="flex items-center gap-1">
-          <span className="text-sm text-slate-600">R$</span>
+          <span className="text-sm text-slate-600 dark:text-slate-300">R$</span>
           <input className={baseCls} placeholder={placeholder || "0,00"} disabled />
         </div>
       );
@@ -79,7 +84,11 @@ function renderControl(field: Field, placeholder: string): JSX.Element {
       return (
         <div className="flex gap-2">
           <input className={baseCls} placeholder={placeholder} disabled />
-          <button type="button" className="rounded bg-slate-200 px-3 text-sm" disabled>
+          <button
+            type="button"
+            className="rounded-lg bg-slate-200 px-3 text-sm text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+            disabled
+          >
             Buscar
           </button>
         </div>

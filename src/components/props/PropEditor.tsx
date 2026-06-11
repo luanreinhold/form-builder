@@ -37,24 +37,28 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-2 dark:border-slate-800">
         <div>
-          <div className="text-xs uppercase text-slate-400">Editando</div>
-          <div className="text-sm font-semibold text-slate-700">{field.type}</div>
+          <div className="text-xs uppercase text-slate-400 dark:text-slate-500">Editando</div>
+          <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+            {field.type}
+          </div>
         </div>
         <button
           type="button"
           onClick={() => {
             if (typeof window === "undefined" || window.confirm("Remover este campo?")) onDelete();
           }}
-          className="text-xs rounded bg-red-50 px-2 py-1 text-red-700 hover:bg-red-100"
+          className="rounded-lg bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-700 transition-colors hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:bg-red-950/40 dark:text-red-400 dark:hover:bg-red-950/70"
         >
           Excluir
         </button>
       </div>
 
       <section className="space-y-2">
-        <h4 className="text-xs font-semibold uppercase text-slate-500">Identificacao</h4>
+        <h4 className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          Identificacao
+        </h4>
         <StringEditor
           label="name"
           value={nameValue}
@@ -75,7 +79,9 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
       </section>
 
       <section className="space-y-2">
-        <h4 className="text-xs font-semibold uppercase text-slate-500">Texto/Hint</h4>
+        <h4 className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          Texto/Hint
+        </h4>
         <StringEditor
           label="hint"
           value={(props.hint as string) ?? ""}
@@ -104,7 +110,9 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
       </section>
 
       <section className="space-y-2">
-        <h4 className="text-xs font-semibold uppercase text-slate-500">Comportamento</h4>
+        <h4 className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          Comportamento
+        </h4>
         {BASE_BOOLEAN_PROPS.map((key) => (
           <BooleanEditor
             key={key}
@@ -117,7 +125,9 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
 
       {specifics.length > 0 && (
         <section className="space-y-2">
-          <h4 className="text-xs font-semibold uppercase text-slate-500">Especificas</h4>
+          <h4 className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            Especificas
+          </h4>
           {specifics.map(({ key, kind }) => {
             if (kind === "boolean") {
               return (
@@ -166,13 +176,17 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
       )}
 
       <section className="space-y-2">
-        <h4 className="text-xs font-semibold uppercase text-slate-500">Wrapper (BaseControl)</h4>
+        <h4 className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          Wrapper (BaseControl)
+        </h4>
         <label className="block">
-          <span className="block text-xs font-medium text-slate-600 mb-1">colSpan (1-12)</span>
+          <span className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-300">
+            colSpan (1-12)
+          </span>
           <select
             value={field.colSpan ?? 12}
             onChange={(e) => onChangeMeta({ colSpan: Number(e.target.value) })}
-            className="w-full rounded border border-slate-300 px-2 py-1 text-sm"
+            className="w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-700 transition-colors focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:focus:ring-indigo-500/40"
           >
             {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
               <option key={n} value={n}>
