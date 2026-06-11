@@ -2,6 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import clsx from "clsx";
 import { memo } from "react";
+import { Icon } from "@/components/icons/Icon";
 import { InputPreview } from "@/components/inputs/InputPreview";
 import type { Field } from "@/schemas/inputs.schema";
 import { colSpanClass } from "@/utils/gridClass";
@@ -52,7 +53,7 @@ export const SortableFormItem = memo(function SortableFormItem({
           aria-label="Arrastar campo"
           onClick={(e) => e.stopPropagation()}
         >
-          ⋮⋮
+          <Icon name="drag-handle" width={16} height={16} />
         </button>
         <div className="flex-1 min-w-0">
           <InputPreview field={field} />
@@ -63,10 +64,10 @@ export const SortableFormItem = memo(function SortableFormItem({
             e.stopPropagation();
             onRemove(field.id);
           }}
-          className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 text-sm"
+          className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700"
           aria-label="Remover campo"
         >
-          ✕
+          <Icon name="x" width={16} height={16} />
         </button>
       </div>
     </span>

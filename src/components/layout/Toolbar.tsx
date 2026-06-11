@@ -1,4 +1,5 @@
 ﻿import { useState } from "react";
+import { Icon } from "@/components/icons/Icon";
 import { useFormStore } from "@/store/formStore";
 import { buildExport, copyFormToClipboard, downloadForm } from "@/utils/exportForm";
 import { parseImport } from "@/utils/importForm";
@@ -74,22 +75,25 @@ export function Toolbar() {
         <button
           type="button"
           onClick={() => setImportOpen((v) => !v)}
-          className="rounded border border-slate-300 px-3 py-1 text-sm hover:bg-slate-50"
+          className="flex items-center gap-1.5 rounded border border-slate-300 px-3 py-1 text-sm hover:bg-slate-50"
         >
+          <Icon name="upload" width={14} height={14} />
           Importar
         </button>
         <button
           type="button"
           onClick={handleExport}
-          className="rounded bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700"
+          className="flex items-center gap-1.5 rounded bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700"
         >
+          <Icon name="download" width={14} height={14} />
           Exportar JSON
         </button>
         <button
           type="button"
           onClick={handleClear}
-          className="rounded border border-red-300 px-3 py-1 text-sm text-red-700 hover:bg-red-50"
+          className="flex items-center gap-1.5 rounded border border-red-300 px-3 py-1 text-sm text-red-700 hover:bg-red-50"
         >
+          <Icon name="trash" width={14} height={14} />
           Limpar
         </button>
         <span className="ml-2 text-xs text-slate-500" data-testid="autosave-status">
