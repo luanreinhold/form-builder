@@ -37,9 +37,9 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between border-b border-slate-200 pb-2 dark:border-slate-800">
+      <div className="flex items-center justify-between border-b border-slate-300 pb-2 dark:border-slate-800">
         <div>
-          <div className="text-xs uppercase text-slate-400 dark:text-slate-500">Editando</div>
+          <div className="text-xs uppercase text-slate-500 dark:text-slate-500">Editando</div>
           <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">
             {field.type}
           </div>
@@ -56,7 +56,7 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
       </div>
 
       <section className="space-y-2">
-        <h4 className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+        <h4 className="text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
           Identificacao
         </h4>
         <StringEditor
@@ -79,7 +79,7 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
       </section>
 
       <section className="space-y-2">
-        <h4 className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+        <h4 className="text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
           Texto/Hint
         </h4>
         <StringEditor
@@ -110,7 +110,7 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
       </section>
 
       <section className="space-y-2">
-        <h4 className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+        <h4 className="text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
           Comportamento
         </h4>
         {BASE_BOOLEAN_PROPS.map((key) => (
@@ -125,7 +125,7 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
 
       {specifics.length > 0 && (
         <section className="space-y-2">
-          <h4 className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          <h4 className="text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
             Especificas
           </h4>
           {specifics.map(({ key, kind }) => {
@@ -176,7 +176,7 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
       )}
 
       <section className="space-y-2">
-        <h4 className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+        <h4 className="text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
           Wrapper (BaseControl)
         </h4>
         <label className="block">
