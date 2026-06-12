@@ -26,7 +26,9 @@ export const SortableFormItem = memo(function SortableFormItem({
   });
 
   const style = {
-    transform: isDragging ? undefined : CSS.Transform.toString(transform),
+    // Translate (sem scale): com colSpans variaveis, o scaleX/scaleY da
+    // strategy achata os cards para o tamanho do slot do item arrastado
+    transform: isDragging ? undefined : CSS.Translate.toString(transform),
     transition,
   };
 
