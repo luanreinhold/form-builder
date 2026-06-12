@@ -22,7 +22,9 @@ describe("CanvasPanel", () => {
     useFormStore.getState().addField("input-text");
     useFormStore.getState().addField("input-email");
     renderWithDnd(<CanvasPanel />);
-    const previews = screen.getAllByRole("textbox", { hidden: true }).filter(() => true);
+    const previews = screen
+      .getAllByRole("textbox", { hidden: true })
+      .filter(() => true);
     expect(previews.length).toBeGreaterThanOrEqual(2);
   });
 

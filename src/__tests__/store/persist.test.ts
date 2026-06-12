@@ -1,8 +1,7 @@
 ﻿import { beforeEach, describe, expect, it } from "vitest";
-import { initialState, useFormStore } from "@/store/formStore";
+import { useFormStore } from "@/store/formStore";
 
 const STORAGE_KEY = "form-builder:draft";
-const defaultStoreValue = initialState();
 
 describe("persist middleware", () => {
   beforeEach(() => {

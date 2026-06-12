@@ -16,8 +16,7 @@ export const COL_SPAN_CLASS = {
 export type ColSpan = keyof typeof COL_SPAN_CLASS;
 
 export function colSpanClass(n: number | undefined): string {
-  if (!n || Number.isNaN(n)) return COL_SPAN_CLASS[12];
-  // if (!n === undefined || Number.isNaN(n)) return COL_SPAN_CLASS[12];
+  if (n === undefined || Number.isNaN(n)) return COL_SPAN_CLASS[12];
   const clamped = Math.min(12, Math.max(1, Math.floor(n))) as ColSpan;
   return COL_SPAN_CLASS[clamped];
 }
