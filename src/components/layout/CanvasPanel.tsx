@@ -25,14 +25,12 @@ export function CanvasPanel() {
         data-testid="canvas-drop-area"
         className={clsx(
           "mx-auto min-h-[400px] max-w-5xl rounded-xl border-2 border-dashed p-4 transition-colors",
-          isOver
-            ? "border-indigo-500 bg-indigo-50 dark:border-indigo-400 dark:bg-indigo-950/30"
-            : "border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900",
+          isOver ? "border-primary-active bg-primary-surface" : "border-edge-input bg-surface",
         )}
       >
         {fields.length === 0 ? (
-          <div className="flex h-full min-h-[360px] flex-col items-center justify-center gap-3 text-slate-400 dark:text-slate-500">
-            <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
+          <div className="flex h-full min-h-[360px] flex-col items-center justify-center gap-3 text-faint">
+            <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-faint">
               <Icon name="app-window" width={24} height={24} />
             </span>
             <p className="text-sm">Arraste inputs aqui para construir o formulario</p>

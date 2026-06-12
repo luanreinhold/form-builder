@@ -2,12 +2,93 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Tokens semanticos de tema (canais RGB para suportar <alpha-value> no Tailwind) */
 :root {
   color-scheme: light;
+
+  /* superficies */
+  --background: 226 232 240; /* slate-200 */
+  --surface: 248 250 252; /* slate-50 */
+  --card: 255 255 255; /* white */
+  --card-hover: 241 245 249; /* slate-100 */
+  --popover: 255 255 255; /* white */
+  --muted: 226 232 240; /* slate-200 */
+
+  /* texto */
+  --foreground: 15 23 42; /* slate-900 */
+  --muted-foreground: 71 85 105; /* slate-600 */
+  --faint: 148 163 184; /* slate-400 */
+
+  /* bordas */
+  --edge: 203 213 225; /* slate-300 */
+  --edge-input: 203 213 225; /* slate-300 */
+  --edge-soft: 226 232 240; /* slate-200 */
+  --edge-hover: 203 213 225; /* slate-300 */
+
+  /* primaria */
+  --primary: 79 70 229; /* indigo-600 */
+  --primary-hover: 67 56 202; /* indigo-700 */
+  --primary-foreground: 255 255 255; /* white */
+  --primary-active: 99 102 241; /* indigo-500 */
+  --primary-surface: 238 242 255; /* indigo-50 */
+
+  /* acento (interativo sutil) */
+  --accent: 238 242 255; /* indigo-50 */
+  --accent-hover: 224 231 255; /* indigo-100 */
+  --accent-foreground: 67 56 202; /* indigo-700 */
+  --accent-edge: 165 180 252; /* indigo-300 */
+
+  /* focus */
+  --ring: 99 102 241; /* indigo-500 */
+  --ring-soft: 199 210 254; /* indigo-200 */
+
+  /* estados */
+  --danger: 220 38 38; /* red-600 */
+  --danger-hover: 185 28 28; /* red-700 */
+  --danger-surface: 254 242 242; /* red-50 */
+  --danger-surface-hover: 254 226 226; /* red-100 */
+  --danger-edge: 254 202 202; /* red-200 */
+  --danger-active: 248 113 113; /* red-400 */
+  --danger-soft: 254 202 202; /* red-200 */
+  --success: 16 185 129; /* emerald-500 */
 }
 
 :root.dark {
   color-scheme: dark;
+
+  --background: 2 6 23; /* slate-950 */
+  --surface: 15 23 42; /* slate-900 */
+  --card: 30 41 59; /* slate-800 */
+  --card-hover: 51 65 85; /* slate-700 */
+  --popover: 15 23 42; /* slate-900 */
+  --muted: 30 41 59; /* slate-800 */
+
+  --foreground: 241 245 249; /* slate-100 */
+  --muted-foreground: 148 163 184; /* slate-400 */
+  --faint: 100 116 139; /* slate-500 */
+
+  --edge: 30 41 59; /* slate-800 */
+  --edge-input: 51 65 85; /* slate-700 */
+  --edge-soft: 51 65 85; /* slate-700 */
+  --edge-hover: 71 85 105; /* slate-600 */
+
+  --primary-active: 129 140 248; /* indigo-400 */
+  --primary-surface: 30 27 75 / 0.3; /* indigo-950/30 */
+
+  --accent: 51 65 85; /* slate-700 */
+  --accent-hover: 71 85 105; /* slate-600 */
+  --accent-foreground: 165 180 252; /* indigo-300 */
+  --accent-edge: 99 102 241; /* indigo-500 */
+
+  --ring-soft: 99 102 241 / 0.4; /* indigo-500/40 */
+
+  --danger: 248 113 113; /* red-400 */
+  --danger-hover: 252 165 165; /* red-300 */
+  --danger-surface: 69 10 10 / 0.4; /* red-950/40 */
+  --danger-surface-hover: 69 10 10 / 0.7; /* red-950/70 */
+  --danger-edge: 127 29 29; /* red-900 */
+  --danger-active: 239 68 68; /* red-500 */
+  --danger-soft: 239 68 68 / 0.4; /* red-500/40 */
 }
 
 html, body, #root {
@@ -17,11 +98,7 @@ html, body, #root {
 }
 
 body {
-  @apply bg-slate-200 text-slate-900 antialiased;
-}
-
-.dark body {
-  @apply bg-slate-950 text-slate-100;
+  @apply bg-background text-foreground antialiased;
 }
 
 * { box-sizing: border-box; }

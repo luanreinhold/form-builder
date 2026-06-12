@@ -21,15 +21,13 @@ export function InputPreview({ field }: Props) {
     <div className="space-y-1">
       {/* biome-ignore lint/a11y/noLabelWithoutControl: o controle e renderizado dentro do label via renderControl() */}
       <label className="block">
-        <span className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">
+        <span className="mb-1 block text-sm font-medium text-foreground">
           {label}
-          {required && <span className="ml-1 text-red-500 dark:text-red-400">*</span>}
+          {required && <span className="ml-1 text-danger">*</span>}
         </span>
         {renderControl(field, placeholder)}
       </label>
-      {props.hint ? (
-        <p className="text-xs text-slate-500 dark:text-slate-400">{props.hint as string}</p>
-      ) : null}
+      {props.hint ? <p className="text-xs text-muted-foreground">{props.hint as string}</p> : null}
     </div>
   );
 }
@@ -37,7 +35,7 @@ export function InputPreview({ field }: Props) {
 function renderControl(field: Field, placeholder: string): JSX.Element {
   const type = field.type;
   const baseCls =
-    "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:placeholder:text-slate-500";
+    "w-full rounded-lg border border-edge-input bg-surface px-3 py-2 text-sm text-foreground placeholder:text-faint focus:outline-none focus:ring-2 focus:ring-ring";
 
   switch (type) {
     case "input-textarea":
@@ -75,7 +73,7 @@ function renderControl(field: Field, placeholder: string): JSX.Element {
     case "input-money":
       return (
         <div className="flex items-center gap-1">
-          <span className="text-sm text-slate-600 dark:text-slate-300">R$</span>
+          <span className="text-sm text-muted-foreground">R$</span>
           <input className={baseCls} placeholder={placeholder || "0,00"} disabled />
         </div>
       );
@@ -86,7 +84,7 @@ function renderControl(field: Field, placeholder: string): JSX.Element {
           <input className={baseCls} placeholder={placeholder} disabled />
           <button
             type="button"
-            className="rounded-lg bg-slate-200 px-3 text-sm text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+            className="rounded-lg bg-muted px-3 text-sm text-muted-foreground"
             disabled
           >
             Buscar

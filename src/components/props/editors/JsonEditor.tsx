@@ -32,20 +32,18 @@ export function JsonEditor({ label, value, onChange }: Props) {
 
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-300">
-        {label}
-      </span>
+      <span className="mb-1 block text-xs font-medium text-muted-foreground">{label}</span>
       <textarea
         value={text}
         onChange={(e) => handleChange(e.target.value)}
         rows={3}
-        className={`w-full rounded-lg border bg-white px-2.5 py-1.5 font-mono text-xs text-slate-700 transition-colors focus:outline-none focus:ring-2 dark:bg-slate-800 dark:text-slate-200 ${
+        className={`w-full rounded-lg border bg-card px-2.5 py-1.5 font-mono text-xs text-foreground transition-colors focus:outline-none focus:ring-2 ${
           error
-            ? "border-red-400 focus:border-red-400 focus:ring-red-200 dark:border-red-500 dark:focus:ring-red-500/40"
-            : "border-slate-300 focus:border-indigo-400 focus:ring-indigo-200 dark:border-slate-700 dark:focus:ring-indigo-500/40"
+            ? "border-danger-active focus:border-danger-active focus:ring-danger-soft"
+            : "border-edge-input focus:border-primary-active focus:ring-ring-soft"
         }`}
       />
-      {error && <span className="mt-1 block text-xs text-red-600 dark:text-red-400">{error}</span>}
+      {error && <span className="mt-1 block text-xs text-danger">{error}</span>}
     </label>
   );
 }

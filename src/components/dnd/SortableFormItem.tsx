@@ -49,10 +49,10 @@ export const SortableFormItem = memo(function SortableFormItem({
       }}
       className={clsx(
         colSpanClass(field.colSpan),
-        "group relative cursor-pointer rounded-lg border bg-white p-3 shadow-sm transition-colors dark:bg-slate-800",
+        "group relative cursor-pointer rounded-lg border bg-card p-3 shadow-sm transition-colors",
         selected
-          ? "border-indigo-500 ring-2 ring-indigo-200 dark:border-indigo-400 dark:ring-indigo-500/30"
-          : "border-slate-200 hover:border-slate-300 dark:border-slate-700 dark:hover:border-slate-600",
+          ? "border-primary-active ring-2 ring-ring-soft"
+          : "border-edge-soft hover:border-edge-hover",
         isDragging && "invisible",
         field.class,
       )}
@@ -62,7 +62,7 @@ export const SortableFormItem = memo(function SortableFormItem({
           type="button"
           {...attributes}
           {...listeners}
-          className="-m-1 cursor-grab rounded p-1 text-slate-400 transition-colors hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:text-slate-500 dark:hover:text-slate-200"
+          className="-m-1 cursor-grab rounded p-1 text-faint transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Arrastar campo"
           onClick={(e) => e.stopPropagation()}
         >
@@ -77,7 +77,7 @@ export const SortableFormItem = memo(function SortableFormItem({
             e.stopPropagation();
             onRemove(field.id);
           }}
-          className="-m-1 rounded p-1 text-red-500 opacity-0 transition-opacity hover:text-red-700 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 group-hover:opacity-100 dark:text-red-400 dark:hover:text-red-300"
+          className="-m-1 rounded p-1 text-danger opacity-0 transition-opacity hover:text-danger-hover focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger group-hover:opacity-100"
           aria-label="Remover campo"
         >
           <Icon name="x" width={16} height={16} />
