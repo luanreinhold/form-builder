@@ -48,7 +48,6 @@ function renderControl(field: Field, placeholder: string): JSX.Element {
       return <input type="time" className={baseCls} disabled />;
     case "input-attach":
       return <input type="file" className={baseCls} disabled />;
-    case "select-component":
     case "select-multiple":
     case "select-search":
     case "dynamic-select":

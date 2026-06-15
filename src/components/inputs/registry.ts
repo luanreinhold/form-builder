@@ -34,12 +34,6 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
     category: "Texto",
     defaultProps: baseDefaults("senha"),
   },
-  "input-search": {
-    type: "input-search",
-    label: "Busca",
-    category: "Texto",
-    defaultProps: baseDefaults("busca"),
-  },
   "input-number": {
     type: "input-number",
     label: "Numero",
@@ -94,16 +88,10 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
     category: "Documentos BR",
     defaultProps: baseDefaults("pis"),
   },
-  "input-cep": {
-    type: "input-cep",
-    label: "CEP",
-    category: "Endereco",
-    defaultProps: baseDefaults("cep"),
-  },
   "input-phone": {
     type: "input-phone",
     label: "Telefone",
-    category: "Contato",
+    category: "Texto",
     defaultProps: baseDefaults("telefone"),
   },
   "input-mask": {
@@ -153,12 +141,6 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
     label: "Relatorio",
     category: "Avancado",
     defaultProps: baseDefaults("relatorio"),
-  },
-  "select-component": {
-    type: "select-component",
-    label: "Select",
-    category: "Selecao",
-    defaultProps: { ...baseDefaults("selecao"), source: [] },
   },
   "select-multiple": {
     type: "select-multiple",

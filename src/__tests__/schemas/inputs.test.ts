@@ -66,7 +66,7 @@ describe("FieldSchema", () => {
   it("aceita select com source", () => {
     const r = FieldSchema.safeParse({
       id: "s",
-      type: "select-component",
+      type: "select-multiple",
       props: {
         name: "sel",
         source: [

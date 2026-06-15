@@ -20,7 +20,6 @@ const Text = wrap(
 const Textarea = wrap("input-textarea", BaseInputPropsSchema);
 const Email = wrap("input-email", BaseInputPropsSchema);
 const Password = wrap("input-password", BaseInputPropsSchema);
-const Search = wrap("input-search", BaseInputPropsSchema);
 const NumberInput = wrap("input-number", BaseInputPropsSchema);
 const Decimal = wrap("input-decimal", BaseInputPropsSchema);
 const Money = wrap(
@@ -43,7 +42,6 @@ const Cpf = wrap("input-cpf", BaseInputPropsSchema);
 const Cnpj = wrap("input-cnpj", BaseInputPropsSchema);
 const Rg = wrap("input-rg", BaseInputPropsSchema);
 const Pis = wrap("input-pis", BaseInputPropsSchema);
-const Cep = wrap("input-cep", BaseInputPropsSchema);
 const Phone = wrap("input-phone", BaseInputPropsSchema);
 const Mask = wrap(
   "input-mask",
@@ -97,7 +95,6 @@ const SelectBase = BaseInputPropsSchema.extend({
   optionLabel: z.string().optional(),
   optionValue: z.string().optional(),
 });
-const SelectComponent = wrap("select-component", SelectBase);
 const SelectMultiple = wrap("select-multiple", SelectBase);
 const SelectSearch = wrap("select-search", SelectBase);
 const DynamicSelect = wrap("dynamic-select", SelectBase);
@@ -107,7 +104,6 @@ export const FieldSchema = z.discriminatedUnion("type", [
   Textarea,
   Email,
   Password,
-  Search,
   NumberInput,
   Decimal,
   Money,
@@ -117,7 +113,6 @@ export const FieldSchema = z.discriminatedUnion("type", [
   Cnpj,
   Rg,
   Pis,
-  Cep,
   Phone,
   Mask,
   Color,
@@ -127,7 +122,6 @@ export const FieldSchema = z.discriminatedUnion("type", [
   Json,
   Ocr,
   Report,
-  SelectComponent,
   SelectMultiple,
   SelectSearch,
   DynamicSelect,
@@ -141,7 +135,6 @@ export const FIELD_TYPES = [
   "input-textarea",
   "input-email",
   "input-password",
-  "input-search",
   "input-number",
   "input-decimal",
   "input-money",
@@ -151,7 +144,6 @@ export const FIELD_TYPES = [
   "input-cnpj",
   "input-rg",
   "input-pis",
-  "input-cep",
   "input-phone",
   "input-mask",
   "input-color",
@@ -161,7 +153,6 @@ export const FIELD_TYPES = [
   "input-json",
   "input-ocr",
   "input-report",
-  "select-component",
   "select-multiple",
   "select-search",
   "dynamic-select",

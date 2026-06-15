@@ -9,8 +9,6 @@ export type Category =
   | "Numerico"
   | "Data/Hora"
   | "Documentos BR"
-  | "Endereco"
-  | "Contato"
   | "Avancado"
   | "Upload"
   | "Modal/Lookup"

@@ -166,8 +166,6 @@ export const CATEGORY_ICONS: Record<Category, IconName> = {
   Numerico: "hash",
   "Data/Hora": "calendar",
   "Documentos BR": "id-card",
-  Endereco: "map-pin",
-  Contato: "phone",
   Avancado: "sliders",
   Upload: "upload",
   "Modal/Lookup": "app-window",
