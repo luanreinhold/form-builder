@@ -64,12 +64,6 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
     category: "Data/Hora",
     defaultProps: { ...baseDefaults("data"), format: "dd/MM/yyyy" },
   },
-  "input-date-calendar": {
-    type: "input-date-calendar",
-    label: "Data (Calendario)",
-    category: "Data/Hora",
-    defaultProps: { ...baseDefaults("data"), format: "dd/MM/yyyy" },
-  },
   "input-time": {
     type: "input-time",
     label: "Hora",
@@ -124,29 +118,11 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
     category: "Avancado",
     defaultProps: baseDefaults("cor"),
   },
-  "input-file": {
-    type: "input-file",
-    label: "Arquivo",
-    category: "Upload",
-    defaultProps: { ...baseDefaults("arquivo"), multiple: false },
-  },
   "input-attach": {
     type: "input-attach",
     label: "Anexo",
     category: "Upload",
     defaultProps: { ...baseDefaults("anexo"), multiple: false },
-  },
-  "input-attach-base64": {
-    type: "input-attach-base64",
-    label: "Anexo (Base64)",
-    category: "Upload",
-    defaultProps: { ...baseDefaults("anexo"), multiple: false },
-  },
-  "input-photography": {
-    type: "input-photography",
-    label: "Foto",
-    category: "Upload",
-    defaultProps: baseDefaults("foto"),
   },
   "input-modal": {
     type: "input-modal",

@@ -38,14 +38,6 @@ const DateInput = wrap(
     maxDate: z.string().optional(),
   }),
 );
-const DateCalendar = wrap(
-  "input-date-calendar",
-  BaseInputPropsSchema.extend({
-    format: z.string().optional(),
-    minDate: z.string().optional(),
-    maxDate: z.string().optional(),
-  }),
-);
 const TimeInput = wrap("input-time", BaseInputPropsSchema);
 const Cpf = wrap("input-cpf", BaseInputPropsSchema);
 const Cnpj = wrap("input-cnpj", BaseInputPropsSchema);
@@ -62,13 +54,6 @@ const Mask = wrap(
   }),
 );
 const Color = wrap("input-color", BaseInputPropsSchema);
-const FileInput = wrap(
-  "input-file",
-  BaseInputPropsSchema.extend({
-    accept: z.string().optional(),
-    multiple: z.boolean().optional(),
-  }),
-);
 const Attach = wrap(
   "input-attach",
   BaseInputPropsSchema.extend({
@@ -76,14 +61,6 @@ const Attach = wrap(
     multiple: z.boolean().optional(),
   }),
 );
-const AttachBase64 = wrap(
-  "input-attach-base64",
-  BaseInputPropsSchema.extend({
-    accept: z.string().optional(),
-    multiple: z.boolean().optional(),
-  }),
-);
-const Photography = wrap("input-photography", BaseInputPropsSchema);
 const ModalInput = wrap(
   "input-modal",
   BaseInputPropsSchema.extend({
@@ -135,7 +112,6 @@ export const FieldSchema = z.discriminatedUnion("type", [
   Decimal,
   Money,
   DateInput,
-  DateCalendar,
   TimeInput,
   Cpf,
   Cnpj,
@@ -145,10 +121,7 @@ export const FieldSchema = z.discriminatedUnion("type", [
   Phone,
   Mask,
   Color,
-  FileInput,
   Attach,
-  AttachBase64,
-  Photography,
   ModalInput,
   CepModal,
   Json,
@@ -173,7 +146,6 @@ export const FIELD_TYPES = [
   "input-decimal",
   "input-money",
   "input-date",
-  "input-date-calendar",
   "input-time",
   "input-cpf",
   "input-cnpj",
@@ -183,10 +155,7 @@ export const FIELD_TYPES = [
   "input-phone",
   "input-mask",
   "input-color",
-  "input-file",
   "input-attach",
-  "input-attach-base64",
-  "input-photography",
   "input-modal",
   "input-cep-modal",
   "input-json",

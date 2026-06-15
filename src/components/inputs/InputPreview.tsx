@@ -43,14 +43,10 @@ function renderControl(field: Field, placeholder: string): JSX.Element {
     case "input-color":
       return <input type="color" className="h-9 w-16 cursor-not-allowed" disabled />;
     case "input-date":
-    case "input-date-calendar":
       return <input type="date" className={baseCls} disabled />;
     case "input-time":
       return <input type="time" className={baseCls} disabled />;
-    case "input-file":
     case "input-attach":
-    case "input-attach-base64":
-    case "input-photography":
       return <input type="file" className={baseCls} disabled />;
     case "select-component":
     case "select-multiple":
