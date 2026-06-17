@@ -1,4 +1,5 @@
-﻿import type { Field } from "@/schemas/inputs.schema";
+﻿import { Button } from "@/components/ui/Button";
+import type { Field } from "@/schemas/inputs.schema";
 import { BooleanEditor } from "./editors/BooleanEditor";
 import { JsonEditor } from "./editors/JsonEditor";
 import { StringEditor } from "./editors/StringEditor";
@@ -6,7 +7,11 @@ import { StringEditor } from "./editors/StringEditor";
 interface Props {
   field: Field;
   onChangeProp: (key: string, value: unknown) => void;
-  onChangeMeta: (meta: { class?: string; hide?: boolean; colSpan?: number }) => void;
+  onChangeMeta: (meta: {
+    class?: string;
+    hide?: boolean;
+    colSpan?: number;
+  }) => void;
   onDelete: () => void;
 }
 
@@ -29,7 +34,12 @@ const BASE_BOOLEAN_PROPS = [
   "requestFocus",
 ] as const;
 
-export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Props) {
+export function PropEditor({
+  field,
+  onChangeProp,
+  onChangeMeta,
+  onDelete,
+}: Props) {
   const props = field.props as Record<string, unknown>;
   const specifics = listSpecificProps(field);
   const nameValue = (props.name as string) ?? "";
@@ -40,17 +50,23 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
       <div className="flex items-center justify-between border-b border-edge pb-2">
         <div>
           <div className="text-xs uppercase text-faint">Editando</div>
-          <div className="text-sm font-semibold text-foreground">{field.type}</div>
+          <div className="text-sm font-semibold text-foreground">
+            {field.type}
+          </div>
         </div>
-        <button
-          type="button"
+        <Button
+          variant="danger-solid"
+          size="sm"
           onClick={() => {
-            if (typeof window === "undefined" || window.confirm("Remover este campo?")) onDelete();
+            if (
+              typeof window === "undefined" ||
+              window.confirm("Remover este campo?")
+            )
+              onDelete();
           }}
-          className="rounded-lg bg-danger-surface px-2.5 py-1.5 text-xs font-medium text-danger transition-colors hover:bg-danger-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger"
         >
           Excluir
-        </button>
+        </Button>
       </div>
 
       <section className="space-y-2">
@@ -155,7 +171,8 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
                   value={props[key] !== undefined ? String(props[key]) : ""}
                   onChange={(v) => {
                     if (v === "") onChangeProp(key, undefined);
-                    else if (!Number.isNaN(Number(v))) onChangeProp(key, Number(v));
+                    else if (!Number.isNaN(Number(v)))
+                      onChangeProp(key, Number(v));
                   }}
                   type="number"
                 />
@@ -218,7 +235,9 @@ function listSpecificProps(field: Field): Specific[] {
     "keyboardOptions",
   ]);
   const items: Specific[] = [];
-  for (const [key, value] of Object.entries(field.props as Record<string, unknown>)) {
+  for (const [key, value] of Object.entries(
+    field.props as Record<string, unknown>,
+  )) {
     if (base.has(key)) continue;
     const kind: Specific["kind"] =
       typeof value === "boolean"

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Icon } from "@/components/icons/Icon";
+import { Button } from "@/components/ui/Button";
 import { useTheme } from "@/hooks/useTheme";
 import { useFormStore } from "@/store/formStore";
 import { buildExport, copyFormToClipboard, downloadForm } from "@/utils/exportForm";
@@ -86,40 +87,29 @@ export function Toolbar() {
           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-success" aria-hidden="true" />
           {status}
         </span>
-        <button
-          type="button"
-          onClick={() => setImportOpen((v) => !v)}
-          className="flex items-center gap-1.5 rounded-lg border border-edge-input bg-card px-3 py-1.5 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
+        <Button variant="secondary" onClick={() => setImportOpen((v) => !v)}>
           <Icon name="upload" width={14} height={14} className="text-muted-foreground" />
           Importar
-        </button>
-        <button
-          type="button"
-          onClick={handleExport}
-          className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
-        >
+        </Button>
+        <Button onClick={handleExport}>
           <Icon name="download" width={14} height={14} />
           Exportar JSON
-        </button>
-        <button
-          type="button"
-          onClick={handleClear}
-          className="flex items-center gap-1.5 rounded-lg border border-transparent px-3 py-1.5 text-sm font-medium text-danger transition-colors hover:border-danger-edge hover:bg-danger-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger"
-        >
+        </Button>
+        <Button variant="danger" onClick={handleClear}>
           <Icon name="trash" width={14} height={14} />
           Limpar
-        </button>
-        <button
-          type="button"
+        </Button>
+        <Button
+          variant="secondary"
+          size="icon"
           onClick={toggleTheme}
           aria-pressed={theme === "dark"}
           aria-label={theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"}
           title={theme === "dark" ? "Modo claro" : "Modo escuro"}
-          className="ml-1 flex h-8 w-8 items-center justify-center rounded-lg border border-edge-input bg-card text-muted-foreground shadow-sm transition-colors hover:bg-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="ml-1"
         >
           <Icon name={theme === "dark" ? "sun" : "moon"} width={16} height={16} />
-        </button>
+        </Button>
       </div>
 
       {importOpen && (
@@ -144,20 +134,16 @@ export function Toolbar() {
             </pre>
           )}
           <div className="mt-3 flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => setImportOpen(false)}
-              className="rounded-lg px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-card-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
+            <Button variant="ghost" size="sm" onClick={() => setImportOpen(false)}>
               Cancelar
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
+              size="sm"
               onClick={handleImport}
-              className="rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-popover"
+              className="focus-visible:ring-offset-popover"
             >
               Importar
-            </button>
+            </Button>
           </div>
         </div>
       )}
