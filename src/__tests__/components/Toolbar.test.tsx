@@ -1,6 +1,7 @@
-﻿import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+﻿import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Toolbar } from "@/components/layout/Toolbar";
+import { AlertDialogHost } from "@/components/ui/AlertDialog";
 import { useFormStore } from "@/store/formStore";
 
 beforeEach(() => {
@@ -28,12 +29,18 @@ describe("Toolbar", () => {
     expect(screen.getByPlaceholderText(/Cole o JSON aqui/)).toBeInTheDocument();
   });
 
-  it("limpar reseta o store", () => {
+  it("limpar reseta o store apos confirmar no dialog", async () => {
     useFormStore.getState().addField("input-text");
-    vi.spyOn(window, "confirm").mockReturnValue(true);
-    render(<Toolbar />);
+    render(
+      <>
+        <Toolbar />
+        <AlertDialogHost />
+      </>,
+    );
     fireEvent.click(screen.getByText("Limpar"));
-    expect(useFormStore.getState().fields).toHaveLength(0);
+    const dialog = await screen.findByRole("alertdialog");
+    fireEvent.click(within(dialog).getByRole("button", { name: "Limpar tudo" }));
+    await waitFor(() => expect(useFormStore.getState().fields).toHaveLength(0));
   });
 
   it("exporta dispara download via Blob URL", async () => {
