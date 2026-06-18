@@ -78,6 +78,53 @@ describe("FieldSchema", () => {
     expect(r.success).toBe(true);
   });
 
+  it("aceita dynamic-select com entity e fields (objeto chave/valor)", () => {
+    const r = FieldSchema.safeParse({
+      id: "ds",
+      type: "dynamic-select",
+      props: {
+        name: "subMabo",
+        label: "Submotivo de Abono",
+        entity: "submabo",
+        filters: {},
+        fields: { key: "atrNomeSubMotivoAbono", value: "atrIdSubMotivoAbono" },
+      },
+    });
+    expect(r.success).toBe(true);
+  });
+
+  it("aplica defaults de entity, filters e fields no dynamic-select", () => {
+    const r = FieldSchema.safeParse({
+      id: "ds",
+      type: "dynamic-select",
+      props: { name: "subMabo" },
+    });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      const props = r.data.props as {
+        entity: string;
+        filters: unknown;
+        fields: unknown;
+      };
+      expect(props.entity).toBe("");
+      expect(props.filters).toEqual({});
+      expect(props.fields).toEqual({ key: "", value: "" });
+    }
+  });
+
+  it("rejeita dynamic-select com fields como array", () => {
+    const r = FieldSchema.safeParse({
+      id: "ds",
+      type: "dynamic-select",
+      props: {
+        name: "subMabo",
+        entity: "submabo",
+        fields: [{ key: "k", value: "v" }],
+      },
+    });
+    expect(r.success).toBe(false);
+  });
+
   it("rejeita id vazio", () => {
     const r = FieldSchema.safeParse({ id: "", type: "input-text", props: { name: "a" } });
     expect(r.success).toBe(false);

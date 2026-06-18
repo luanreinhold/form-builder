@@ -24,7 +24,7 @@ describe("exportForm", () => {
     const r = buildExport(sample);
     expect(r.ok).toBe(true);
     expect(r.data).toHaveLength(1);
-    const item = r.data?.[0] as Record<string, unknown>;
+    const item = r.data?.[0] as unknown as Record<string, unknown>;
     expect(item.type).toBe("input-text");
     expect(item).not.toHaveProperty("id");
     expect(item).not.toHaveProperty("colSpan");
@@ -76,6 +76,62 @@ describe("exportForm", () => {
     const parsed = JSON.parse(s);
     expect(Array.isArray(parsed)).toBe(true);
     expect(parsed[0].props.name).toBe("nome");
+  });
+
+  it("exporta dynamic-select com entity, filters e fields (objeto), sem source", () => {
+    const form = {
+      ...sample,
+      fields: [
+        {
+          id: "ds",
+          type: "dynamic-select" as const,
+          class: "d-block mb-2",
+          hide: true,
+          colSpan: 12,
+          props: {
+            name: "subMabo",
+            label: "Submotivo de Abono",
+            entity: "submabo",
+            filters: {},
+            fields: { key: "atrNomeSubMotivoAbono", value: "atrIdSubMotivoAbono" },
+          },
+        },
+      ],
+    };
+    const r = buildExport(form);
+    expect(r.ok).toBe(true);
+    const props = r.data?.[0]?.props as Record<string, unknown>;
+    expect(props.entity).toBe("submabo");
+    expect(props.filters).toEqual({});
+    expect(props.fields).toEqual({
+      key: "atrNomeSubMotivoAbono",
+      value: "atrIdSubMotivoAbono",
+    });
+    expect(props).not.toHaveProperty("source");
+  });
+
+  it("falha ao exportar dynamic-select com entity vazio", () => {
+    const form = {
+      ...sample,
+      fields: [
+        {
+          id: "ds",
+          type: "dynamic-select" as const,
+          class: "",
+          hide: false,
+          colSpan: 12,
+          props: {
+            name: "subMabo",
+            entity: "",
+            filters: {},
+            fields: { key: "k", value: "v" },
+          },
+        },
+      ],
+    };
+    const r = buildExport(form);
+    expect(r.ok).toBe(false);
+    expect((r.errors ?? []).some((e) => /entity/i.test(e))).toBe(true);
   });
 });
 
