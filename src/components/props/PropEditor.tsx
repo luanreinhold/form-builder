@@ -1,5 +1,6 @@
 ﻿import { Button } from "@/components/ui/Button";
 import type { Field } from "@/schemas/inputs.schema";
+import { confirm } from "@/store/dialogStore";
 import { BooleanEditor } from "./editors/BooleanEditor";
 import { FieldsEditor } from "./editors/FieldsEditor";
 import { JsonEditor } from "./editors/JsonEditor";
@@ -48,8 +49,14 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
         <Button
           variant="danger-solid"
           size="sm"
-          onClick={() => {
-            if (typeof window === "undefined" || window.confirm("Remover este campo?")) onDelete();
+          onClick={async () => {
+            const ok = await confirm({
+              title: "Remover este campo?",
+              description: "Esta ação não pode ser desfeita.",
+              confirmLabel: "Excluir",
+              variant: "danger",
+            });
+            if (ok) onDelete();
           }}
         >
           Excluir
