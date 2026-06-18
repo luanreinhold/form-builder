@@ -50,6 +50,21 @@ export function buildExport(payload: FormPayload): ExportResult {
       errors: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`),
     };
   }
+  // dynamic-select exige `entity` preenchido para consultar o backend; barra aqui
+  // (e nao no schema) para nao derrubar rascunhos meio-preenchidos na reidratacao.
+  const semEntity = parsed.data.fields
+    .filter(
+      (f) =>
+        f.type === "dynamic-select" &&
+        String((f.props as { entity?: unknown }).entity ?? "").trim() === "",
+    )
+    .map((f) => (f.props as { name?: string }).name ?? f.type);
+  if (semEntity.length > 0) {
+    return {
+      ok: false,
+      errors: [`dynamic-select sem entity: ${semEntity.join(", ")}`],
+    };
+  }
   return { ok: true, data: toV3SourceList(parsed.data) };
 }
 
