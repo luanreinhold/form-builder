@@ -88,6 +88,8 @@ const Report = wrap(
 const SelectSourceItem = z.object({
   key: z.union([z.string(), z.number()]),
   value: z.string(),
+  selected: z.boolean().optional(),
+  icon: z.string().optional(),
 });
 const SelectBase = BaseInputPropsSchema.extend({
   source: z.array(SelectSourceItem).optional(),

@@ -37,9 +37,7 @@ describe("Button", () => {
 
   it("concatena className do chamador (aditivo)", () => {
     render(<Button className="ml-1">X</Button>);
-    expect(screen.getByRole("button", { name: "X" }).className).toContain(
-      "ml-1",
-    );
+    expect(screen.getByRole("button", { name: "X" }).className).toContain("ml-1");
   });
 
   it("encaminha ref para o elemento button", () => {
@@ -50,10 +48,6 @@ describe("Button", () => {
 
   it("permite sobrepor o type", () => {
     render(<Button type="submit">Enviar</Button>);
-    expect(screen.getByRole("button", { name: "Enviar" })).toHaveAttribute(
-      "type",
-      "submit",
-    );
+    expect(screen.getByRole("button", { name: "Enviar" })).toHaveAttribute("type", "submit");
   });
 });
-

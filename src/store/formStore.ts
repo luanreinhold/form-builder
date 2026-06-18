@@ -68,7 +68,7 @@ export const useFormStore = create<FormStore>()(
           type,
           class: "",
           hide: false,
-          colSpan: 6,
+          colSpan: 12,
           props: { ...entry.defaultProps },
         } as Field;
         set((s) => {
