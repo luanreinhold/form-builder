@@ -3,11 +3,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { REGISTRY } from "@/components/inputs/registry";
 import { type FormPayload, FormSchema } from "@/schemas/form.schema";
-import {
-  type Field,
-  FieldSchema,
-  type FieldType,
-} from "@/schemas/inputs.schema";
+import { type Field, FieldSchema, type FieldType } from "@/schemas/inputs.schema";
 
 const STORAGE_KEY = "form-builder:draft";
 
@@ -23,17 +19,12 @@ interface FormActions {
   addField: (type: FieldType, index?: number) => string;
   removeField: (id: string) => void;
   updateField: (id: string, patch: Partial<Record<string, unknown>>) => void;
-  updateFieldMeta: (
-    id: string,
-    meta: { class?: string; hide?: boolean; colSpan?: number },
-  ) => void;
+  updateFieldMeta: (id: string, meta: { class?: string; hide?: boolean; colSpan?: number }) => void;
   reorderFields: (fromId: string, toId: string) => void;
   reorderByIndex: (oldIndex: number, newIndex: number) => void;
   selectField: (id: string | null) => void;
   clearAll: () => void;
-  importJSON: (
-    payload: unknown,
-  ) => { ok: true } | { ok: false; errors: string[] };
+  importJSON: (payload: unknown) => { ok: true } | { ok: false; errors: string[] };
   exportJSON: () => FormPayload;
 }
 
@@ -73,8 +64,7 @@ export const useFormStore = create<FormStore>()(
         } as Field;
         set((s) => {
           const next = [...s.fields];
-          if (index === undefined || index < 0 || index >= next.length)
-            next.push(newField);
+          if (index === undefined || index < 0 || index >= next.length) next.push(newField);
           else next.splice(index, 0, newField);
           return touch({ ...s, fields: next, selectedFieldId: id });
         });
@@ -86,8 +76,7 @@ export const useFormStore = create<FormStore>()(
           touch({
             ...s,
             fields: s.fields.filter((f) => f.id !== id),
-            selectedFieldId:
-              s.selectedFieldId === id ? null : s.selectedFieldId,
+            selectedFieldId: s.selectedFieldId === id ? null : s.selectedFieldId,
           }),
         ),
 
@@ -96,9 +85,7 @@ export const useFormStore = create<FormStore>()(
           touch({
             ...s,
             fields: s.fields.map((f) =>
-              f.id === id
-                ? ({ ...f, props: { ...f.props, ...patch } } as Field)
-                : f,
+              f.id === id ? ({ ...f, props: { ...f.props, ...patch } } as Field) : f,
             ),
           }),
         ),
@@ -107,9 +94,7 @@ export const useFormStore = create<FormStore>()(
         set((s) =>
           touch({
             ...s,
-            fields: s.fields.map((f) =>
-              f.id === id ? ({ ...f, ...meta } as Field) : f,
-            ),
+            fields: s.fields.map((f) => (f.id === id ? ({ ...f, ...meta } as Field) : f)),
           }),
         ),
 
@@ -154,9 +139,7 @@ export const useFormStore = create<FormStore>()(
         if (!parsed.success) {
           return {
             ok: false,
-            errors: parsed.error.issues.map(
-              (i) => `${i.path.join(".")}: ${i.message}`,
-            ),
+            errors: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`),
           };
         }
         set(() =>
@@ -192,9 +175,7 @@ export const useFormStore = create<FormStore>()(
           const p = persisted as { fields?: unknown[] };
           if (Array.isArray(p.fields)) {
             p.fields = p.fields.map((f) =>
-              f &&
-              typeof f === "object" &&
-              (f as Record<string, unknown>).colSpan === undefined
+              f && typeof f === "object" && (f as Record<string, unknown>).colSpan === undefined
                 ? { ...(f as Record<string, unknown>), colSpan: 12 }
                 : f,
             );

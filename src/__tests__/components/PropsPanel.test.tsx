@@ -23,7 +23,7 @@ describe("PropsPanel", () => {
     expect(labelInput).toBeTruthy();
     await userEvent.clear(labelInput);
     await userEvent.type(labelInput, "Nome Completo");
-    const props = useFormStore.getState().fields.find((f) => f.id === id)!.props as Record<
+    const props = useFormStore.getState().fields.find((f) => f.id === id)?.props as Record<
       string,
       unknown
     >;
@@ -35,7 +35,7 @@ describe("PropsPanel", () => {
     render(<PropsPanel />);
     const checkbox = screen.getByLabelText("required") as HTMLInputElement;
     fireEvent.click(checkbox);
-    const props = useFormStore.getState().fields.find((f) => f.id === id)!.props as Record<
+    const props = useFormStore.getState().fields.find((f) => f.id === id)?.props as Record<
       string,
       unknown
     >;

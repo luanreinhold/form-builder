@@ -175,7 +175,7 @@ export function listByCategory(): Array<{
   const groups = new Map<string, RegistryEntry[]>();
   for (const entry of Object.values(REGISTRY)) {
     if (!groups.has(entry.category)) groups.set(entry.category, []);
-    groups.get(entry.category)!.push(entry);
+    groups.get(entry.category)?.push(entry);
   }
   return Array.from(groups.entries()).map(([category, items]) => ({
     category,
