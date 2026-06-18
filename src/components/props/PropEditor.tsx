@@ -1,6 +1,7 @@
 ﻿import { Button } from "@/components/ui/Button";
 import type { Field } from "@/schemas/inputs.schema";
 import { BooleanEditor } from "./editors/BooleanEditor";
+import { FieldsEditor } from "./editors/FieldsEditor";
 import { JsonEditor } from "./editors/JsonEditor";
 import { SourceEditor } from "./editors/SourceEditor";
 import { StringEditor } from "./editors/StringEditor";
@@ -136,6 +137,30 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
                   label={key}
                   value={props[key]}
                   onChange={(v) => onChangeProp(key, v)}
+                />
+              );
+            }
+            if (key === "fields") {
+              return (
+                <FieldsEditor
+                  key={key}
+                  label={key}
+                  value={props[key]}
+                  onChange={(v) => onChangeProp(key, v)}
+                />
+              );
+            }
+            if (key === "entity") {
+              const entityValue = (props.entity as string) ?? "";
+              return (
+                <StringEditor
+                  key={key}
+                  label="entity"
+                  value={entityValue}
+                  onChange={(v) => onChangeProp("entity", v)}
+                  required
+                  placeholder="Nome da entidade (ex.: submabo)"
+                  error={entityValue.trim() === "" ? "entity e obrigatorio" : undefined}
                 />
               );
             }

@@ -158,7 +158,12 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
     type: "dynamic-select",
     label: "Select Dinamico",
     category: "Selecao",
-    defaultProps: { ...baseDefaults("selecao"), source: [] },
+    defaultProps: {
+      ...baseDefaults("selecao"),
+      entity: "",
+      filters: {},
+      fields: { key: "", value: "" },
+    },
   },
 };
 

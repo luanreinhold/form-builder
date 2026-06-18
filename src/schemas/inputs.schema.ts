@@ -99,7 +99,22 @@ const SelectBase = BaseInputPropsSchema.extend({
 });
 const SelectMultiple = wrap("select-multiple", SelectBase);
 const SelectSearch = wrap("select-search", SelectBase);
-const DynamicSelect = wrap("dynamic-select", SelectBase);
+
+// dynamic-select busca opcoes no backend via `entity` e mapeia a resposta com
+// `fields` (objeto chave/valor) — nao usa `source` (lista estatica).
+// Espelha IDynamicSelectProperties da populis-v3-core.
+const DynamicSelectProps = BaseInputPropsSchema.extend({
+  entity: z.string().optional().default(""),
+  fields: z
+    .object({
+      key: z.string().optional().default(""),
+      value: z.string().optional().default(""),
+    })
+    .optional()
+    .default({ key: "", value: "" }),
+  filters: z.record(z.unknown()).optional().default({}),
+});
+const DynamicSelect = wrap("dynamic-select", DynamicSelectProps);
 
 export const FieldSchema = z.discriminatedUnion("type", [
   Text,

@@ -41,4 +41,18 @@ describe("PropsPanel", () => {
     >;
     expect(props.required).toBe(true);
   });
+
+  it("marca entity como obrigatorio no dynamic-select quando vazio", () => {
+    useFormStore.getState().addField("dynamic-select");
+    render(<PropsPanel />);
+    expect(screen.getByText("entity e obrigatorio")).toBeInTheDocument();
+  });
+
+  it("remove o erro de entity ao preencher", async () => {
+    useFormStore.getState().addField("dynamic-select");
+    render(<PropsPanel />);
+    const entityInput = screen.getByPlaceholderText(/entidade/i) as HTMLInputElement;
+    await userEvent.type(entityInput, "submabo");
+    expect(screen.queryByText("entity e obrigatorio")).not.toBeInTheDocument();
+  });
 });
