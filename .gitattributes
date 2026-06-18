@@ -1,0 +1,4 @@
+# Normaliza finais de linha de forma consistente em qualquer SO.
+# No histórico do repositório os arquivos de texto usam sempre LF;
+# eol=lf garante LF também no working copy (Windows, Linux, macOS).
+* text=auto eol=lf
