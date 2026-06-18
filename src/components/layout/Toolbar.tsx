@@ -137,11 +137,7 @@ export function Toolbar() {
             <Button variant="ghost" size="sm" onClick={() => setImportOpen(false)}>
               Cancelar
             </Button>
-            <Button
-              size="sm"
-              onClick={handleImport}
-              className="focus-visible:ring-offset-popover"
-            >
+            <Button size="sm" onClick={handleImport} className="focus-visible:ring-offset-popover">
               Importar
             </Button>
           </div>

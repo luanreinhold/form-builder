@@ -1,12 +1,7 @@
 import clsx from "clsx";
 import { forwardRef } from "react";
 
-export type ButtonVariant =
-  | "primary"
-  | "secondary"
-  | "danger"
-  | "danger-solid"
-  | "ghost";
+export type ButtonVariant = "primary" | "secondary" | "danger" | "danger-solid" | "ghost";
 export type ButtonSize = "sm" | "md" | "icon";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -33,8 +28,7 @@ const VARIANTS: Record<ButtonVariant, string> = {
     "border border-transparent text-danger hover:border-danger-edge hover:bg-danger-surface focus-visible:ring-danger",
   "danger-solid":
     "bg-danger-surface text-danger hover:bg-danger-surface-hover focus-visible:ring-danger",
-  ghost:
-    "text-muted-foreground hover:bg-card-hover hover:text-foreground focus-visible:ring-ring",
+  ghost: "text-muted-foreground hover:bg-card-hover hover:text-foreground focus-visible:ring-ring",
 };
 
 const SIZES: Record<ButtonSize, string> = {
@@ -43,18 +37,16 @@ const SIZES: Record<ButtonSize, string> = {
   icon: "h-8 w-8 shrink-0",
 };
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  function Button(
-    { variant = "primary", size = "md", type = "button", className, ...rest },
-    ref,
-  ) {
-    return (
-      <button
-        ref={ref}
-        type={type}
-        className={clsx(BASE, VARIANTS[variant], SIZES[size], className)}
-        {...rest}
-      />
-    );
-  },
-);
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  { variant = "primary", size = "md", type = "button", className, ...rest },
+  ref,
+) {
+  return (
+    <button
+      ref={ref}
+      type={type}
+      className={clsx(BASE, VARIANTS[variant], SIZES[size], className)}
+      {...rest}
+    />
+  );
+});

@@ -364,20 +364,18 @@ Os três se comunicam **exclusivamente via Zustand store** — não há props dr
 
 ## Tipos de Input Suportados
 
-**32 tipos** organizados em 10 categorias (mapeamento completo da `populis-v3-core`):
+**25 tipos** organizados em 8 categorias (mapeamento completo da `populis-v3-core`):
 
 | Categoria | Tipos |
 |---|---|
-| **Texto** | `input-text`, `input-textarea`, `input-email`, `input-password`, `input-search` |
+| **Texto** | `input-text`, `input-textarea`, `input-email`, `input-password`, `input-phone` |
 | **Numérico** | `input-number`, `input-decimal`, `input-money` |
-| **Data/Hora** | `input-date`, `input-date-calendar`, `input-time` |
+| **Data/Hora** | `input-date`, `input-time` |
 | **Documentos BR** | `input-cpf`, `input-cnpj`, `input-rg`, `input-pis` |
-| **Endereço** | `input-cep` |
-| **Contato** | `input-phone` |
 | **Avançado** | `input-mask`, `input-color`, `input-json`, `input-ocr`, `input-report` |
-| **Upload** | `input-file`, `input-attach`, `input-attach-base64`, `input-photography` |
+| **Upload** | `input-attach` |
 | **Modal/Lookup** | `input-modal`, `input-cep-modal` |
-| **Seleção** | `select-component`, `select-multiple`, `select-search`, `dynamic-select` |
+| **Seleção** | `select-multiple`, `select-search`, `dynamic-select` |
 
 ### Props base (herdadas por todos)
 

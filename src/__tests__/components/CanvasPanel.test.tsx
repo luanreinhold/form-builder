@@ -22,9 +22,7 @@ describe("CanvasPanel", () => {
     useFormStore.getState().addField("input-text");
     useFormStore.getState().addField("input-email");
     renderWithDnd(<CanvasPanel />);
-    const previews = screen
-      .getAllByRole("textbox", { hidden: true })
-      .filter(() => true);
+    const previews = screen.getAllByRole("textbox", { hidden: true }).filter(() => true);
     expect(previews.length).toBeGreaterThanOrEqual(2);
   });
 
@@ -42,7 +40,7 @@ describe("CanvasPanel", () => {
     const { container } = renderWithDnd(<CanvasPanel />);
     const grid = container.querySelector('[data-testid="canvas-grid"]');
     expect(grid).toBeTruthy();
-    expect(grid!.className).toMatch(/grid-cols-12/);
+    expect(grid?.className).toMatch(/grid-cols-12/);
   });
 
   it("item aplica col-span da field", () => {
@@ -51,13 +49,13 @@ describe("CanvasPanel", () => {
     const { container } = renderWithDnd(<CanvasPanel />);
     const item = container.querySelector(`[data-field-id="${id}"]`);
     expect(item).toBeTruthy();
-    expect(item!.className).toMatch(/col-span-6/);
+    expect(item?.className).toMatch(/col-span-6/);
   });
 
   it("item sem colSpan usa col-span-12 por padrao", () => {
     const id = useFormStore.getState().addField("input-text");
     const { container } = renderWithDnd(<CanvasPanel />);
     const item = container.querySelector(`[data-field-id="${id}"]`);
-    expect(item!.className).toMatch(/col-span-12/);
+    expect(item?.className).toMatch(/col-span-12/);
   });
 });
