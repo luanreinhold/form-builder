@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Icon } from "@/components/icons/Icon";
 import { Button } from "@/components/ui/Button";
 import { useTheme } from "@/hooks/useTheme";
+import { confirm } from "@/store/dialogStore";
 import { useFormStore } from "@/store/formStore";
 import { buildExport, copyFormToClipboard, downloadForm } from "@/utils/exportForm";
 import { parseImport } from "@/utils/importForm";
@@ -30,7 +31,7 @@ export function Toolbar() {
     });
   }
 
-  function handleImport() {
+  async function handleImport() {
     setImportError(null);
     const result = parseImport(importText);
     if (!result.ok) {
@@ -39,8 +40,12 @@ export function Toolbar() {
     }
     if (
       fieldsCount > 0 &&
-      typeof window !== "undefined" &&
-      !window.confirm("Sobrescrever rascunho atual?")
+      !(await confirm({
+        title: "Sobrescrever rascunho atual?",
+        description: "Os campos atuais serão substituídos pelo conteúdo do JSON importado.",
+        confirmLabel: "Sobrescrever",
+        variant: "danger",
+      }))
     )
       return;
     const applied = importJSON(result.data);
@@ -53,14 +58,16 @@ export function Toolbar() {
     setStatus("Importado");
   }
 
-  function handleClear() {
-    if (
-      typeof window === "undefined" ||
-      window.confirm("Limpar formulario e remover do localStorage?")
-    ) {
-      clearAll();
-      setStatus("Limpado");
-    }
+  async function handleClear() {
+    const ok = await confirm({
+      title: "Limpar formulário?",
+      description: "Isso remove todos os campos e apaga o rascunho salvo no localStorage.",
+      confirmLabel: "Limpar tudo",
+      variant: "danger",
+    });
+    if (!ok) return;
+    clearAll();
+    setStatus("Limpado");
   }
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
