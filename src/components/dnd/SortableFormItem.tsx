@@ -5,6 +5,7 @@ import { memo } from "react";
 import { Icon } from "@/components/icons/Icon";
 import { InputPreview } from "@/components/inputs/InputPreview";
 import type { Field } from "@/schemas/inputs.schema";
+import { confirm } from "@/store/dialogStore";
 import { colSpanClass } from "@/utils/gridClass";
 
 interface Props {
@@ -73,9 +74,15 @@ export const SortableFormItem = memo(function SortableFormItem({
         </div>
         <button
           type="button"
-          onClick={(e) => {
+          onClick={async (e) => {
+            const shouldRemove: boolean = await confirm({
+              title: "Remover campo",
+              description: "Tem certeza que deseja remover este campo?",
+            });
             e.stopPropagation();
-            onRemove(field.id);
+            if (shouldRemove) {
+              onRemove(field.id);
+            }
           }}
           className="-m-1 rounded p-1 text-danger opacity-0 transition-opacity hover:text-danger-hover focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger group-hover:opacity-100"
           aria-label="Remover campo"
