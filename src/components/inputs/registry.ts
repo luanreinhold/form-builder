@@ -116,7 +116,7 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
     type: "input-modal",
     label: "Modal",
     category: "Modal/Lookup",
-    defaultProps: baseDefaults("selecao"),
+    defaultProps: { ...baseDefaults("selecao"), allowFields: [], redirectFields: {} },
   },
   "input-cep-modal": {
     type: "input-cep-modal",

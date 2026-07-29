@@ -59,10 +59,14 @@ const Attach = wrap(
     multiple: z.boolean().optional(),
   }),
 );
+// allowFields/redirectFields espelham IInputModalProperties da populis-v3-core:
+// redirectFields mapeia { nomeDoCampoDoFormulario: propriedadeDoItemSelecionado }.
 const ModalInput = wrap(
   "input-modal",
   BaseInputPropsSchema.extend({
     modalProps: z.record(z.unknown()).optional(),
+    allowFields: z.array(z.string()).optional(),
+    redirectFields: z.record(z.string()).optional(),
   }),
 );
 const CepModal = wrap(

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { BooleanEditor } from "./editors/BooleanEditor";
 import { FieldsEditor } from "./editors/FieldsEditor";
 import { JsonEditor } from "./editors/JsonEditor";
+import { RedirectFieldsEditor } from "./editors/RedirectFieldsEditor";
 import { SourceEditor } from "./editors/SourceEditor";
 import { StringEditor } from "./editors/StringEditor";
 
@@ -13,6 +14,8 @@ export type EditorContext = {
   key: string;
   value: unknown;
   onChange: (value: unknown) => void;
+  /** Id do campo em edicao — usado por editores que abrem o FieldPicker. */
+  fieldId?: string;
 };
 
 type EditorFactory = (ctx: EditorContext) => ReactNode;
@@ -24,6 +27,9 @@ const KEY_EDITORS: Record<string, EditorFactory> = {
   ),
   fields: ({ key, value, onChange }) => (
     <FieldsEditor label={key} value={value} onChange={onChange} />
+  ),
+  redirectFields: ({ key, value, onChange, fieldId }) => (
+    <RedirectFieldsEditor label={key} value={value} onChange={onChange} fieldId={fieldId} />
   ),
   entity: ({ value, onChange }) => {
     const entityValue = (value as string) ?? "";
