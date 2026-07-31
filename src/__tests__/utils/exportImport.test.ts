@@ -157,10 +157,111 @@ describe("importForm", () => {
     expect(r.ok).toBe(false);
   });
 
-  it("parseImport rejeita o formato v3 exportado (export e one-way)", () => {
+  it("parseImport aceita o formato v3 exportado (round-trip)", () => {
     const exported = buildExport(sample);
     expect(exported.ok).toBe(true);
     const r = parseImport(serializeForm(exported.data ?? []));
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.data.fields).toHaveLength(1);
+    const f = r.data.fields[0];
+    expect(f.type).toBe("input-text");
+    expect(f.id).toBeTruthy();
+    expect(f.colSpan).toBe(6); // derivado de col-md-6
+    expect(f.class).toBe(""); // classe gerada pelo export volta a vazio
+    expect((f.props as { max?: string }).max).toBe("45"); // number -> string
+    expect((f.props as { required?: boolean }).required).toBe(true);
+  });
+
+  it("parseImport preserva classe customizada e deriva colSpan dela", () => {
+    const r = parseImport(
+      JSON.stringify([{ type: "input-text", class: "d-none col-md-4", props: { name: "x" } }]),
+    );
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.data.fields[0].class).toBe("d-none col-md-4");
+    expect(r.data.fields[0].colSpan).toBe(4);
+  });
+
+  it("parseImport usa colSpan 12 quando a classe nao tem col-md-N", () => {
+    const r = parseImport(JSON.stringify([{ type: "input-text", props: { name: "x" } }]));
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.data.fields[0].colSpan).toBe(12);
+    expect(r.data.fields[0].hide).toBe(false);
+  });
+
+  it("parseImport rejeita tipo desconhecido com indice no erro", () => {
+    const r = parseImport(
+      JSON.stringify([
+        { type: "input-text", props: { name: "ok" } },
+        { type: "input-foo", props: { name: "x" } },
+      ]),
+    );
     expect(r.ok).toBe(false);
+    if (r.ok) return;
+    expect(r.errors[0]).toMatch(/fields\.1\.type: tipo desconhecido "input-foo"/);
+  });
+
+  it("parseImport rejeita item v3 sem props.name", () => {
+    const r = parseImport(JSON.stringify([{ type: "input-text", props: {} }]));
+    expect(r.ok).toBe(false);
+    if (r.ok) return;
+    expect(r.errors[0]).toMatch(/fields\.0\.props\.name/);
+  });
+
+  it("importa dynamic-select v3 com redirectFields e preserva props extras (conditions)", () => {
+    const v3 = [
+      {
+        type: "dynamic-select",
+        class: "d-block mb-2 col-md-6",
+        hide: true,
+        props: {
+          name: "subMabo",
+          entity: "submabo",
+          fields: { key: "atrNome", value: "atrId" },
+          filters: {},
+          redirectFields: { destino: "atrNomePessoa" },
+          conditions: [{ field: "tipo", value: 1, operator: "===" }],
+        },
+      },
+    ];
+    const r = parseImport(JSON.stringify(v3));
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    const props = r.data.fields[0].props as Record<string, unknown>;
+    expect(props.redirectFields).toEqual({ destino: "atrNomePessoa" });
+    expect(props.conditions).toEqual([{ field: "tipo", value: 1, operator: "===" }]);
+    expect(r.data.fields[0].hide).toBe(true);
+    expect(r.data.fields[0].colSpan).toBe(6);
+
+    // re-export mantem redirectFields e conditions (fidelidade round-trip)
+    const back = buildExport(r.data);
+    expect(back.ok).toBe(true);
+    const exportedProps = back.data?.[0]?.props as Record<string, unknown>;
+    expect(exportedProps.redirectFields).toEqual({ destino: "atrNomePessoa" });
+    expect(exportedProps.conditions).toEqual([{ field: "tipo", value: 1, operator: "===" }]);
+    expect(back.data?.[0]?.hide).toBe(true);
+  });
+
+  it("importa input-modal v3 com redirectFields e components (passthrough)", () => {
+    const v3 = [
+      {
+        type: "input-modal",
+        props: {
+          name: "selecao",
+          redirectFields: { campo: "atrX" },
+          allowFields: ["a", "b"],
+          components: { search: { entity: "pessoa" } },
+        },
+      },
+    ];
+    const r = parseImport(JSON.stringify(v3));
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    const props = r.data.fields[0].props as Record<string, unknown>;
+    expect(props.redirectFields).toEqual({ campo: "atrX" });
+    expect(props.allowFields).toEqual(["a", "b"]);
+    expect(props.components).toEqual({ search: { entity: "pessoa" } });
   });
 });
