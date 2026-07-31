@@ -69,6 +69,23 @@ describe("Toolbar", () => {
     expect(useFormStore.getState().formId).toBe("imp");
   });
 
+  it("importa array v3 exportado atraves do textarea", () => {
+    const v3 = [
+      { type: "input-text", class: "d-block mb-2 col-md-6", props: { name: "nome", max: 45 } },
+    ];
+    render(<Toolbar />);
+    fireEvent.click(screen.getByText("Importar"));
+    const ta = screen.getByPlaceholderText(/Cole o JSON aqui/) as HTMLTextAreaElement;
+    fireEvent.change(ta, { target: { value: JSON.stringify(v3) } });
+    const importBtns = screen.getAllByText("Importar");
+    fireEvent.click(importBtns[importBtns.length - 1]);
+    const fields = useFormStore.getState().fields;
+    expect(fields).toHaveLength(1);
+    expect(fields[0].type).toBe("input-text");
+    expect(fields[0].colSpan).toBe(6);
+    expect((fields[0].props as { max?: string }).max).toBe("45");
+  });
+
   it("importa JSON invalido mostra erro", () => {
     render(<Toolbar />);
     fireEvent.click(screen.getByText("Importar"));

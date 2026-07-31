@@ -1,14 +1,18 @@
 ﻿import { z } from "zod";
 import { BaseInputPropsSchema } from "./base.schema";
 
-const wrap = <T extends z.ZodTypeAny>(typeLiteral: string, propsSchema: T) =>
+// `.passthrough()` preserva props da v3 que o builder (ainda) nao declara —
+// ex.: conditions, components, crudPanel. Sem isso o Zod as descartaria em
+// silencio no import/persist e o re-export sairia sem elas.
+// Lacunas conhecidas mapeadas em docs/v3-props-gaps.md.
+const wrap = <T extends z.AnyZodObject>(typeLiteral: string, propsSchema: T) =>
   z.object({
     id: z.string().min(1),
     type: z.literal(typeLiteral),
     class: z.string().optional().default(""),
     hide: z.boolean().optional().default(false),
     colSpan: z.number().int().min(1).max(12).optional().default(12),
-    props: propsSchema,
+    props: propsSchema.passthrough(),
   });
 
 const Text = wrap(
@@ -117,6 +121,7 @@ const DynamicSelectProps = BaseInputPropsSchema.extend({
     .optional()
     .default({ key: "", value: "" }),
   filters: z.record(z.unknown()).optional().default({}),
+  redirectFields: z.record(z.string()).optional(),
 });
 const DynamicSelect = wrap("dynamic-select", DynamicSelectProps);
 

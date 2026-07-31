@@ -112,6 +112,43 @@ describe("FieldSchema", () => {
     }
   });
 
+  it("aceita dynamic-select com redirectFields", () => {
+    const r = FieldSchema.safeParse({
+      id: "ds",
+      type: "dynamic-select",
+      props: {
+        name: "subMabo",
+        entity: "submabo",
+        redirectFields: { destino: "atrNomePessoa" },
+      },
+    });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect((r.data.props as { redirectFields?: unknown }).redirectFields).toEqual({
+        destino: "atrNomePessoa",
+      });
+    }
+  });
+
+  it("preserva props desconhecidas da v3 via passthrough", () => {
+    const r = FieldSchema.safeParse({
+      id: "ds",
+      type: "dynamic-select",
+      props: {
+        name: "subMabo",
+        entity: "submabo",
+        conditions: [{ field: "tipo", value: 1, operator: "===" }],
+        forceSelection: true,
+      },
+    });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      const props = r.data.props as Record<string, unknown>;
+      expect(props.conditions).toEqual([{ field: "tipo", value: 1, operator: "===" }]);
+      expect(props.forceSelection).toBe(true);
+    }
+  });
+
   it("rejeita dynamic-select com fields como array", () => {
     const r = FieldSchema.safeParse({
       id: "ds",
