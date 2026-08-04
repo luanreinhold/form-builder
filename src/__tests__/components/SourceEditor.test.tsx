@@ -160,3 +160,71 @@ describe("SourceEditor", () => {
     expect(lastCall(onChange)).toEqual([{ key: "Código CID", value: "CID" }]);
   });
 });
+
+describe("SourceEditor com itemShape label (radio-component)", () => {
+  it("renderiza itens { label, value } inclusive com value numerico", () => {
+    render(
+      <SourceEditor
+        label="source"
+        value={[
+          { label: "Seleção 1", value: 1 },
+          { label: "Seleção 2", value: 2 },
+        ]}
+        onChange={vi.fn()}
+        itemShape="label"
+      />,
+    );
+    const items = screen.getAllByRole("listitem");
+    expect(items).toHaveLength(2);
+    expect(within(items[0]).getByDisplayValue("Seleção 1")).toBeInTheDocument();
+    expect(within(items[0]).getByDisplayValue("1")).toBeInTheDocument();
+  });
+
+  it("nao descarta itens { label, value } ao editar inline (semantica do radio)", () => {
+    const onChange = vi.fn();
+    render(
+      <SourceEditor
+        label="source"
+        value={[
+          { label: "Sim", value: "S" },
+          { label: "Não", value: "N" },
+        ]}
+        onChange={onChange}
+        itemShape="label"
+      />,
+    );
+    const item = screen.getAllByRole("listitem")[0];
+    fireEvent.change(within(item).getByDisplayValue("Sim"), {
+      target: { value: "Sim!" },
+    });
+    expect(onChange.mock.calls.at(-1)?.[0]).toEqual([
+      { label: "Sim!", value: "S" },
+      { label: "Não", value: "N" },
+    ]);
+  });
+
+  it("adiciona item no shape { label, value }", () => {
+    const onChange = vi.fn();
+    render(<SourceEditor label="source" value={[]} onChange={onChange} itemShape="label" />);
+    fireEvent.change(screen.getByLabelText("Novo rótulo"), {
+      target: { value: "Seleção 1" },
+    });
+    fireEvent.change(screen.getByLabelText("Novo valor"), {
+      target: { value: "1" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
+    expect(onChange.mock.calls.at(-1)?.[0]).toEqual([{ label: "Seleção 1", value: "1" }]);
+  });
+
+  it("filtra itens no shape errado ({ key, value }) sem quebrar", () => {
+    render(
+      <SourceEditor
+        label="source"
+        value={[{ key: "Seleção 1", value: "1" }]}
+        onChange={vi.fn()}
+        itemShape="label"
+      />,
+    );
+    expect(screen.queryAllByRole("listitem")).toHaveLength(0);
+  });
+});

@@ -101,7 +101,9 @@ describe("RedirectFieldsEditor", () => {
         onChange={onChange}
       />,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Remover redirecionamento atrNomePessoa1" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Remover redirecionamento atrNomePessoa1" }),
+    );
     expect(onChange).toHaveBeenLastCalledWith({ searchInitiator: "atrIdPessoa" });
   });
 
@@ -142,7 +144,9 @@ describe("RedirectFieldsEditor", () => {
         <FieldPickerHost />
       </>,
     );
-    fireEvent.click(screen.getByRole("button", { name: "Alterar campo de destino atrNomePessoa1" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Alterar campo de destino atrNomePessoa1" }),
+    );
     await screen.findByRole("dialog");
     fireEvent.click(screen.getByText("searchInitiator"));
     await waitFor(() =>

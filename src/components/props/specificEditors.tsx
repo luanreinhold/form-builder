@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { FieldType } from "@/types";
 import { BooleanEditor } from "./editors/BooleanEditor";
 import { FieldsEditor } from "./editors/FieldsEditor";
 import { JsonEditor } from "./editors/JsonEditor";
@@ -16,14 +17,22 @@ export type EditorContext = {
   onChange: (value: unknown) => void;
   /** Id do campo em edicao — usado por editores que abrem o FieldPicker. */
   fieldId?: string;
+  /** Tipo do campo em edicao — usado por editores cujo shape varia por tipo. */
+  fieldType?: FieldType;
 };
 
 type EditorFactory = (ctx: EditorContext) => ReactNode;
 
 /** Editors selected by the specific prop name. Takes priority over kind. */
 const KEY_EDITORS: Record<string, EditorFactory> = {
-  source: ({ key, value, onChange }) => (
-    <SourceEditor label={key} value={value} onChange={onChange} />
+  // radio-component usa itens { label, value }; selects usam { key, value }.
+  source: ({ key, value, onChange, fieldType }) => (
+    <SourceEditor
+      label={key}
+      value={value}
+      onChange={onChange}
+      itemShape={fieldType === "radio-component" ? "label" : "key"}
+    />
   ),
   fields: ({ key, value, onChange }) => (
     <FieldsEditor label={key} value={value} onChange={onChange} />

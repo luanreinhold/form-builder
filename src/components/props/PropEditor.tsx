@@ -68,6 +68,7 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
         props={props}
         onChangeProp={onChangeProp}
         fieldId={field.id}
+        fieldType={field.type}
       />
       <WrapperSection field={field} onChangeMeta={onChangeMeta} />
     </div>
@@ -166,11 +167,13 @@ function SpecificsSection({
   props,
   onChangeProp,
   fieldId,
+  fieldType,
 }: {
   specifics: Specific[];
   props: Record<string, unknown>;
   onChangeProp: ChangeProp;
   fieldId: string;
+  fieldType: Field["type"];
 }) {
   if (specifics.length === 0) return null;
   return (
@@ -183,6 +186,7 @@ function SpecificsSection({
             value: props[specific.key],
             onChange: (v) => onChangeProp(specific.key, v),
             fieldId,
+            fieldType,
           })}
         </Fragment>
       ))}
