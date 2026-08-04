@@ -162,6 +162,74 @@ describe("FieldSchema", () => {
     expect(r.success).toBe(false);
   });
 
+  it("aceita radio-component com source { label, value } e values numericos", () => {
+    const r = FieldSchema.safeParse({
+      id: "r",
+      type: "radio-component",
+      props: {
+        name: "opcao",
+        source: [
+          { label: "Seleção 1", value: 1 },
+          { label: "Seleção 2", value: 2 },
+          { label: "Seleção 3", value: 3, selected: true },
+        ],
+        vertical: true,
+      },
+    });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect((r.data.props as { source: unknown }).source).toEqual([
+        { label: "Seleção 1", value: 1 },
+        { label: "Seleção 2", value: 2 },
+        { label: "Seleção 3", value: 3, selected: true },
+      ]);
+    }
+  });
+
+  it("aceita radio-component com selected", () => {
+    const r = FieldSchema.safeParse({
+      id: "r",
+      type: "radio-component",
+      props: { name: "ativo", selected: "A" },
+    });
+    expect(r.success).toBe(true);
+  });
+
+  it("radio-component importado com sourceType da v3 segue valido (passthrough)", () => {
+    const r = FieldSchema.safeParse({
+      id: "r",
+      type: "radio-component",
+      props: { name: "ativo", sourceType: "active-inactive" },
+    });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect((r.data.props as Record<string, unknown>).sourceType).toBe("active-inactive");
+    }
+  });
+
+  it("rejeita radio-component com source no shape de select ({ key, value })", () => {
+    const r = FieldSchema.safeParse({
+      id: "r",
+      type: "radio-component",
+      props: { name: "opcao", source: [{ key: 1, value: "A" }] },
+    });
+    expect(r.success).toBe(false);
+  });
+
+  it("radio-component preserva props desconhecidas via passthrough", () => {
+    const r = FieldSchema.safeParse({
+      id: "r",
+      type: "radio-component",
+      props: { name: "opcao", conditions: [{ field: "tipo", value: 1 }] },
+    });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect((r.data.props as Record<string, unknown>).conditions).toEqual([
+        { field: "tipo", value: 1 },
+      ]);
+    }
+  });
+
   it("rejeita id vazio", () => {
     const r = FieldSchema.safeParse({ id: "", type: "input-text", props: { name: "a" } });
     expect(r.success).toBe(false);
