@@ -8,28 +8,39 @@ export interface SourceItem {
   icon?: string;
 }
 
+/**
+ * Item generico manipulado pelo editor. O nome do campo que guarda o texto
+ * exibido varia por itemShape: "key" nos selects ({ key, value }) e "label"
+ * no radio ({ label, value }) — nos dois casos `value` e o valor armazenado.
+ */
+type EditableItem = {
+  value: string | number;
+  selected?: boolean;
+} & Record<string, unknown>;
+
 interface Props {
   label: string;
   value: unknown;
-  onChange: (v: SourceItem[] | undefined) => void;
+  onChange: (v: EditableItem[] | undefined) => void;
+  itemShape?: "key" | "label";
 }
 
 const inputClass =
   "w-full rounded-lg border border-edge-input bg-card px-2.5 py-1.5 text-sm text-foreground transition-colors focus:border-primary-active focus:outline-none focus:ring-2 focus:ring-ring-soft";
 
-function normalize(value: unknown): SourceItem[] {
+function normalize(value: unknown, labelField: "key" | "label"): EditableItem[] {
   if (!Array.isArray(value)) return [];
   return value.filter(
-    (item): item is SourceItem =>
-      !!item && typeof item === "object" && "key" in item && "value" in item,
+    (item): item is EditableItem =>
+      !!item && typeof item === "object" && labelField in item && "value" in item,
   );
 }
 
-export function SourceEditor({ label, value, onChange }: Props) {
-  const items = normalize(value);
+export function SourceEditor({ label, value, onChange, itemShape = "key" }: Props) {
+  const items = normalize(value, itemShape);
   const [mode, setMode] = useState<"form" | "json">("form");
 
-  const emit = (next: SourceItem[]) => onChange(next.length ? next : []);
+  const emit = (next: EditableItem[]) => onChange(next.length ? next : []);
 
   return (
     <div className="space-y-2">
@@ -47,13 +58,21 @@ export function SourceEditor({ label, value, onChange }: Props) {
       {mode === "json" ? (
         <JsonMode items={items} onChange={onChange} />
       ) : (
-        <FormMode items={items} emit={emit} />
+        <FormMode items={items} emit={emit} labelField={itemShape} />
       )}
     </div>
   );
 }
 
-function FormMode({ items, emit }: { items: SourceItem[]; emit: (next: SourceItem[]) => void }) {
+function FormMode({
+  items,
+  emit,
+  labelField,
+}: {
+  items: EditableItem[];
+  emit: (next: EditableItem[]) => void;
+  labelField: "key" | "label";
+}) {
   const [key, setKey] = useState("");
   const [val, setVal] = useState("");
   const [selected, setSelected] = useState(false);
@@ -70,7 +89,7 @@ function FormMode({ items, emit }: { items: SourceItem[]; emit: (next: SourceIte
       setError("Já existe um item com esse valor (duplicado).");
       return;
     }
-    const item: SourceItem = { key: trimmedKey, value: trimmedVal };
+    const item: EditableItem = { [labelField]: trimmedKey, value: trimmedVal };
     if (selected) item.selected = true;
     emit([...items, item]);
     setKey("");
@@ -79,7 +98,7 @@ function FormMode({ items, emit }: { items: SourceItem[]; emit: (next: SourceIte
     setError(null);
   }
 
-  function update(index: number, patch: Partial<SourceItem>) {
+  function update(index: number, patch: Partial<EditableItem>) {
     emit(items.map((it, i) => (i === index ? { ...it, ...patch } : it)));
   }
 
@@ -143,13 +162,13 @@ function FormMode({ items, emit }: { items: SourceItem[]; emit: (next: SourceIte
             >
               <input
                 aria-label="Rótulo"
-                value={String(item.key)}
-                onChange={(e) => update(index, { key: e.target.value })}
+                value={String(item[labelField] ?? "")}
+                onChange={(e) => update(index, { [labelField]: e.target.value })}
                 className={inputClass}
               />
               <input
                 aria-label="Valor"
-                value={item.value}
+                value={String(item.value)}
                 onChange={(e) => update(index, { value: e.target.value })}
                 className={inputClass}
               />
@@ -200,8 +219,8 @@ function JsonMode({
   items,
   onChange,
 }: {
-  items: SourceItem[];
-  onChange: (v: SourceItem[] | undefined) => void;
+  items: EditableItem[];
+  onChange: (v: EditableItem[] | undefined) => void;
 }) {
   const [text, setText] = useState(() => JSON.stringify(items, null, 2));
   const [error, setError] = useState<string | null>(null);
@@ -222,7 +241,7 @@ function JsonMode({
       const parsed = JSON.parse(next);
       if (!Array.isArray(parsed)) throw new Error("O source deve ser um array.");
       setError(null);
-      onChange(parsed as SourceItem[]);
+      onChange(parsed as EditableItem[]);
     } catch (e) {
       setError((e as Error).message);
     }

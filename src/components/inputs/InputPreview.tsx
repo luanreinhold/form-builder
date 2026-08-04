@@ -56,6 +56,8 @@ function renderControl(field: Field, placeholder: string): JSX.Element {
           <option>{placeholder || "Selecione..."}</option>
         </select>
       );
+    case "radio-component":
+      return renderRadio(field.props as Record<string, unknown>);
     case "input-json":
       return (
         <textarea
@@ -96,4 +98,44 @@ function renderControl(field: Field, placeholder: string): JSX.Element {
     default:
       return <input type="text" className={baseCls} placeholder={placeholder} disabled />;
   }
+}
+
+type RadioOption = { label: string; value: string | number; selected?: boolean };
+
+function radioOptions(props: Record<string, unknown>): RadioOption[] {
+  const source = props.source;
+  if (Array.isArray(source) && source.length > 0) return source as RadioOption[];
+  return [
+    { label: "Opção 1", value: 1 },
+    { label: "Opção 2", value: 2 },
+  ];
+}
+
+function renderRadio(props: Record<string, unknown>): JSX.Element {
+  const options = radioOptions(props);
+  const vertical = props.vertical === true;
+  const selected = props.selected;
+  return (
+    <div className={`flex gap-x-4 gap-y-1 ${vertical ? "flex-col" : "flex-wrap items-center"}`}>
+      {options.map((opt) => (
+        <label
+          key={String(opt.value)}
+          className="flex cursor-not-allowed items-center gap-1.5 text-sm text-foreground"
+        >
+          <input
+            type="radio"
+            className="h-4 w-4"
+            checked={
+              selected !== undefined && selected !== ""
+                ? String(selected) === String(opt.value)
+                : opt.selected === true
+            }
+            readOnly
+            disabled
+          />
+          <span>{opt.label}</span>
+        </label>
+      ))}
+    </div>
+  );
 }

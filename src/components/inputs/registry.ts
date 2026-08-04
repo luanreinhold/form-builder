@@ -166,6 +166,17 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
       redirectFields: {},
     },
   },
+  "radio-component": {
+    type: "radio-component",
+    label: "Radio",
+    category: "Selecao",
+    defaultProps: {
+      ...baseDefaults("opcao"),
+      source: [],
+      selected: "",
+      vertical: false,
+    },
+  },
 };
 
 export function getRegistry(type: FieldType): RegistryEntry {

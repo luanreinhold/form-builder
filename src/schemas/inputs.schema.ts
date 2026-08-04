@@ -108,6 +108,24 @@ const SelectBase = BaseInputPropsSchema.extend({
 const SelectMultiple = wrap("select-multiple", SelectBase);
 const SelectSearch = wrap("select-search", SelectBase);
 
+// radio-component usa source { label, value } — semantica INVERTIDA em relacao
+// aos selects ({ key, value }): aqui `label` e o texto exibido e `value` e o
+// valor armazenado (string ou numero). Espelha radio.component.ts da v3.
+const RadioSourceItem = z.object({
+  label: z.string(),
+  value: z.union([z.string(), z.number()]),
+  selected: z.boolean().optional(),
+});
+// O builder nao expoe sourceType (predefinicoes 'yes-no'/'active-inactive' da
+// v3): o source e sempre montado manualmente. Forms importados com sourceType
+// seguem validos via passthrough.
+const RadioProps = BaseInputPropsSchema.extend({
+  source: z.array(RadioSourceItem).optional(),
+  selected: z.union([z.string(), z.number()]).optional(),
+  vertical: z.boolean().optional(),
+});
+const Radio = wrap("radio-component", RadioProps);
+
 // dynamic-select busca opcoes no backend via `entity` e mapeia a resposta com
 // `fields` (objeto chave/valor) — nao usa `source` (lista estatica).
 // Espelha IDynamicSelectProperties da populis-v3-core.
@@ -151,6 +169,7 @@ export const FieldSchema = z.discriminatedUnion("type", [
   SelectMultiple,
   SelectSearch,
   DynamicSelect,
+  Radio,
 ]);
 
 export type Field = z.infer<typeof FieldSchema>;
@@ -182,4 +201,5 @@ export const FIELD_TYPES = [
   "select-multiple",
   "select-search",
   "dynamic-select",
+  "radio-component",
 ] as const satisfies readonly FieldType[];
