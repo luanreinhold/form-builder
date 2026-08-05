@@ -125,6 +125,21 @@ const RadioProps = BaseInputPropsSchema.extend({
   vertical: z.boolean().optional(),
 });
 const Radio = wrap("radio-component", RadioProps);
+  
+// divider-component estende BaseComponent (nao InputBaseComponent) na v3 —
+// nao e um input: nada de placeholder/required/value, e `name` e opcional
+// (usado apenas como alvo de acoes hideById do form-panel). transformDivider
+// preenchido troca o label por um <hr> com essa classe ('medium' 2px,
+// 'large' 4px; vazio renderiza o label). Espelha divider.component.ts da v3.
+const DividerProps = z.object({
+  name: z.string().optional(),
+  label: z.string().optional(),
+  labelClass: z.string().optional(),
+  fontSize: z.string().optional(),
+  doNotTranslate: z.boolean().optional(),
+  transformDivider: z.string().optional(),
+});
+const Divider = wrap("divider-component", DividerProps);
 
 // dynamic-select busca opcoes no backend via `entity` e mapeia a resposta com
 // `fields` (objeto chave/valor) — nao usa `source` (lista estatica).
@@ -170,6 +185,7 @@ export const FieldSchema = z.discriminatedUnion("type", [
   SelectSearch,
   DynamicSelect,
   Radio,
+  Divider,
 ]);
 
 export type Field = z.infer<typeof FieldSchema>;
@@ -202,4 +218,5 @@ export const FIELD_TYPES = [
   "select-search",
   "dynamic-select",
   "radio-component",
+  "divider-component",
 ] as const satisfies readonly FieldType[];

@@ -13,6 +13,11 @@ interface Props {
 export function InputPreview({ field }: Props) {
   const entry = REGISTRY[field.type];
   const props = field.props as Record<string, unknown>;
+
+  // divider nao e um input: sem wrapper de label/asterisco de obrigatorio.
+  if (field.type === "divider-component") {
+    return renderDivider(props);
+  }
   const label = (props.label as string) || (props.name as string) || entry.label;
   const required = props.required === true;
   const placeholder = (props.placeholder as string) ?? "";
@@ -98,6 +103,21 @@ function renderControl(field: Field, placeholder: string): JSX.Element {
     default:
       return <input type="text" className={baseCls} placeholder={placeholder} disabled />;
   }
+}
+
+// O preview exibe sempre o label: transformDivider so muda a renderizacao
+// na v3 (troca label por <hr>), nao a exibicao do campo no builder.
+function renderDivider(props: Record<string, unknown>): JSX.Element {
+  const label = (props.label as string) || "Divisória";
+  const fontSize = props.fontSize as string | undefined;
+  return (
+    <div
+      className={`text-sm font-medium text-foreground ${(props.labelClass as string) || ""}`}
+      style={fontSize ? { fontSize } : undefined}
+    >
+      {label}
+    </div>
+  );
 }
 
 type RadioOption = { label: string; value: string | number; selected?: boolean };
