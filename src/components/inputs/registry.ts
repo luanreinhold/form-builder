@@ -177,6 +177,16 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
       vertical: false,
     },
   },
+  "divider-component": {
+    type: "divider-component",
+    label: "Divisória",
+    category: "Avancado",
+    defaultProps: {
+      name: "divider",
+      label: "Divisória",
+      transformDivider: "",
+    },
+  },
 };
 
 export function getRegistry(type: FieldType): RegistryEntry {

@@ -230,6 +230,54 @@ describe("FieldSchema", () => {
     }
   });
 
+  it("aceita divider-component sem name (nao e um input)", () => {
+    const r = FieldSchema.safeParse({
+      id: "d",
+      type: "divider-component",
+      props: {},
+    });
+    expect(r.success).toBe(true);
+  });
+
+  it("aceita divider-component com todas as directives da v3", () => {
+    const r = FieldSchema.safeParse({
+      id: "d",
+      type: "divider-component",
+      props: {
+        name: "dividerNome",
+        label: "Dados Pessoais",
+        labelClass: "cls",
+        fontSize: "18px",
+        doNotTranslate: true,
+        transformDivider: "medium",
+      },
+    });
+    expect(r.success).toBe(true);
+  });
+
+  it("rejeita divider-component com doNotTranslate nao-boolean", () => {
+    const r = FieldSchema.safeParse({
+      id: "d",
+      type: "divider-component",
+      props: { doNotTranslate: "sim" },
+    });
+    expect(r.success).toBe(false);
+  });
+
+  it("divider-component preserva props desconhecidas via passthrough", () => {
+    const r = FieldSchema.safeParse({
+      id: "d",
+      type: "divider-component",
+      props: { label: "Secao", conditions: [{ field: "tipo", value: 1 }] },
+    });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect((r.data.props as Record<string, unknown>).conditions).toEqual([
+        { field: "tipo", value: 1 },
+      ]);
+    }
+  });
+
   it("rejeita id vazio", () => {
     const r = FieldSchema.safeParse({ id: "", type: "input-text", props: { name: "a" } });
     expect(r.success).toBe(false);

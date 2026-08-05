@@ -56,6 +56,19 @@ const STRING_SECTIONS: { title: string; fields: StringFieldCfg[] }[] = [
 
 export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Props) {
   const props = field.props as Record<string, unknown>;
+
+  // divider nao e um input na v3 (estende BaseComponent): as secoes de
+  // Identificacao/Comportamento nao se aplicam — so as props do divider.
+  if (field.type === "divider-component") {
+    return (
+      <div className="space-y-4">
+        <EditorHeader type={field.type} onDelete={onDelete} />
+        <DividerSection props={props} onChangeProp={onChangeProp} />
+        <WrapperSection field={field} onChangeMeta={onChangeMeta} />
+      </div>
+    );
+  }
+
   const specifics = listSpecificProps(field);
 
   return (
@@ -158,6 +171,43 @@ function BehaviorSection({
           onChange={(v) => onChangeProp(key, v)}
         />
       ))}
+    </section>
+  );
+}
+
+// transformDivider e texto livre como na v3: qualquer classe CSS vale
+// ('medium' 2px, 'large' 4px); vazio renderiza o label.
+const DIVIDER_STRING_PROPS = [
+  "name",
+  "label",
+  "labelClass",
+  "fontSize",
+  "transformDivider",
+] as const;
+
+function DividerSection({
+  props,
+  onChangeProp,
+}: {
+  props: Record<string, unknown>;
+  onChangeProp: ChangeProp;
+}) {
+  return (
+    <section className="space-y-2">
+      <SectionTitle>Divisoria</SectionTitle>
+      {DIVIDER_STRING_PROPS.map((key) => (
+        <StringEditor
+          key={key}
+          label={key}
+          value={(props[key] as string) ?? ""}
+          onChange={(v) => onChangeProp(key, v)}
+        />
+      ))}
+      <BooleanEditor
+        label="doNotTranslate"
+        value={Boolean(props.doNotTranslate)}
+        onChange={(v) => onChangeProp("doNotTranslate", v)}
+      />
     </section>
   );
 }
