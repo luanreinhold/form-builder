@@ -110,6 +110,28 @@ describe("exportForm", () => {
     expect(props).not.toHaveProperty("source");
   });
 
+  it("exporta divider-component sem exigir name (nao e um input)", () => {
+    const form = {
+      ...sample,
+      fields: [
+        {
+          id: "d",
+          type: "divider-component" as const,
+          class: "",
+          hide: false,
+          colSpan: 12,
+          props: { label: "Dados Pessoais", transformDivider: "medium" },
+        },
+      ],
+    };
+    const r = buildExport(form);
+    expect(r.ok).toBe(true);
+    const props = r.data?.[0]?.props as Record<string, unknown>;
+    expect(props.label).toBe("Dados Pessoais");
+    expect(props.transformDivider).toBe("medium");
+    expect(props).not.toHaveProperty("name");
+  });
+
   it("falha ao exportar dynamic-select com entity vazio", () => {
     const form = {
       ...sample,
@@ -242,6 +264,29 @@ describe("importForm", () => {
     expect(exportedProps.redirectFields).toEqual({ destino: "atrNomePessoa" });
     expect(exportedProps.conditions).toEqual([{ field: "tipo", value: 1, operator: "===" }]);
     expect(back.data?.[0]?.hide).toBe(true);
+  });
+
+  it("importa divider-component v3 e mantem round-trip fiel", () => {
+    const v3 = [
+      {
+        type: "divider-component",
+        class: "d-block mb-2 col-md-12",
+        props: { name: "dividerNome", label: "Endereço", transformDivider: "large" },
+      },
+    ];
+    const r = parseImport(JSON.stringify(v3));
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    const f = r.data.fields[0];
+    expect(f.type).toBe("divider-component");
+    const props = f.props as Record<string, unknown>;
+    expect(props.name).toBe("dividerNome");
+    expect(props.label).toBe("Endereço");
+    expect(props.transformDivider).toBe("large");
+
+    const back = buildExport(r.data);
+    expect(back.ok).toBe(true);
+    expect(back.data?.[0]?.props).toEqual(v3[0].props);
   });
 
   it("importa input-modal v3 com redirectFields e components (passthrough)", () => {
