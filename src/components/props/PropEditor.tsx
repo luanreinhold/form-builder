@@ -228,7 +228,7 @@ function SpecificsSection({
   if (specifics.length === 0) return null;
   return (
     <section className="space-y-2">
-      <SectionTitle>Especificas</SectionTitle>
+      <SectionTitle>Específicas</SectionTitle>
       {specifics.map((specific) => (
         <Fragment key={specific.key}>
           {renderSpecificEditor(specific, {

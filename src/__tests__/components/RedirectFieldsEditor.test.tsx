@@ -26,12 +26,12 @@ beforeEach(() => {
 describe("RedirectFieldsEditor", () => {
   it("mostra estado vazio quando nao ha redirecionamentos", () => {
     render(<RedirectFieldsEditor label="redirectFields" value={{}} onChange={vi.fn()} />);
-    expect(screen.getByText(/Nenhum redirecionamento/)).toBeInTheDocument();
+    expect(screen.getByText(/Selecione aqui os campos do formulário/)).toBeInTheDocument();
   });
 
   it("trata value undefined sem quebrar", () => {
     render(<RedirectFieldsEditor label="redirectFields" value={undefined} onChange={vi.fn()} />);
-    expect(screen.getByText(/Nenhum redirecionamento/)).toBeInTheDocument();
+    expect(screen.getByText(/Selecione aqui os campos do formulário/)).toBeInTheDocument();
   });
 
   it("renderiza pares chave -> propriedade do item", () => {
@@ -71,7 +71,7 @@ describe("RedirectFieldsEditor", () => {
       />,
     );
     expect(screen.getByRole("alert")).toHaveTextContent(
-      'Campo "campoRenomeado" nao existe no formulario',
+      'Campo "campoRenomeado" não existe no formulário',
     );
   });
 

@@ -13,5 +13,4 @@ coverage
 .env
 .env.local
 .claude/*
-tsconfig.app.json
-tsconfig.app.tsbuildinfo.json
+*.tsbuildinfo

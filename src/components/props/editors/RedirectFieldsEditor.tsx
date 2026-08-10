@@ -54,7 +54,7 @@ export function RedirectFieldsEditor({ label, value, onChange, fieldId }: Props)
 
   async function changeKey(oldKey: string) {
     const name = await pickField({
-      title: "Redirecionar valor para qual campo?",
+      title: "Selecione o campo do formulário que receberá o valor do item selecionado no modal",
       excludeFieldId: fieldId,
       disabledNames: Object.keys(redirects).filter((k) => k !== oldKey),
     });
@@ -79,8 +79,7 @@ export function RedirectFieldsEditor({ label, value, onChange, fieldId }: Props)
       <span className="block text-xs font-medium text-muted-foreground">{label}</span>
       {entries.length === 0 && (
         <p className="rounded-lg border border-dashed border-edge-input px-3 py-3 text-xs text-faint">
-          Nenhum redirecionamento. Adicione para preencher campos do formulario com propriedades do
-          item selecionado no modal.
+          Selecione aqui os campos do formulário que receberão os valores do item selecionado no modal.
         </p>
       )}
       {entries.map(([key, val]) => {
@@ -113,11 +112,11 @@ export function RedirectFieldsEditor({ label, value, onChange, fieldId }: Props)
             </div>
             {orphan && (
               <p role="alert" className="text-[11px] text-amber-600 dark:text-amber-400">
-                Campo "{key}" nao existe no formulario (foi renomeado ou removido).
+                Campo "{key}" não existe no formulário (foi renomeado ou removido).
               </p>
             )}
             <label className="block">
-              <span className="mb-1 block text-[11px] text-faint">propriedade do item</span>
+              <span className="mb-1 block text-[11px] text-faint">Propriedade do item</span>
               <input
                 aria-label={`Propriedade do item para ${key}`}
                 value={val}

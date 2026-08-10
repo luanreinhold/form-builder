@@ -1,9 +1,9 @@
-﻿import { nanoid } from "nanoid";
-import { create } from "zustand";
+﻿import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { REGISTRY } from "@/components/inputs/registry";
 import { type FormPayload, FormSchema } from "@/schemas/form.schema";
 import { type Field, FieldSchema, type FieldType } from "@/schemas/inputs.schema";
+import { generateId } from "@/utils/id";
 
 const STORAGE_KEY = "form-builder:draft";
 
@@ -33,7 +33,7 @@ export type FormStore = FormState & FormActions;
 export function initialState(): FormState {
   const now = new Date().toISOString();
   return {
-    formId: nanoid(),
+    formId: generateId(),
     createdAt: now,
     updatedAt: now,
     fields: [],
@@ -51,7 +51,7 @@ export const useFormStore = create<FormStore>()(
       ...initialState(),
 
       addField: (type, index) => {
-        const id = nanoid();
+        const id = generateId();
         const entry = REGISTRY[type];
         if (!entry) throw new Error(`Tipo desconhecido: ${type}`);
         const newField = {

@@ -1,7 +1,7 @@
-import { nanoid } from "nanoid";
 import { type FormPayload, FormSchema } from "@/schemas/form.schema";
 import { FIELD_TYPES, type Field, FieldSchema } from "@/schemas/inputs.schema";
 import type { FormSourceItem } from "@/types/formSourceItem";
+import { generateId } from "@/utils/id";
 
 export type ImportResult = { ok: true; data: FormPayload } | { ok: false; errors: string[] };
 
@@ -37,7 +37,7 @@ function reviveProps(props: Record<string, unknown>): Record<string, unknown> {
 function fromV3SourceItem(item: FormSourceItem): unknown {
   const cls = item.class ?? "";
   return {
-    id: nanoid(),
+    id: generateId(),
     type: item.type,
     class: GENERATED_CLASS.test(cls) ? "" : cls,
     hide: item.hide === true,
@@ -72,7 +72,7 @@ function parseV3List(list: unknown[]): ImportResult {
   const now = new Date().toISOString();
   return {
     ok: true,
-    data: { schemaVersion: 1, formId: nanoid(), createdAt: now, updatedAt: now, fields },
+    data: { schemaVersion: 1, formId: generateId(), createdAt: now, updatedAt: now, fields },
   };
 }
 
