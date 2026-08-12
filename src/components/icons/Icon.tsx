@@ -1,5 +1,4 @@
 import type { SVGProps } from "react";
-import type { Category } from "@/types";
 
 /**
  * Desenhos copiados do catálogo Lucide (lucide.dev, licença ISC) e
@@ -171,14 +170,3 @@ export function Icon({ name, ...props }: IconProps) {
     </svg>
   );
 }
-
-export const CATEGORY_ICONS: Record<Category, IconName> = {
-  Texto: "text",
-  Numérico: "hash",
-  "Data/Hora": "calendar",
-  "Documentos BR": "id-card",
-  Avançado: "sliders",
-  Upload: "upload",
-  "Modal/Lookup": "app-window",
-  Seleção: "list",
-};
