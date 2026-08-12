@@ -42,6 +42,17 @@ const paths = {
       <circle cx="15" cy="19" r="1" />
     </>
   ),
+  form: (
+    <>
+      <rect width="18" height="18" x="3" y="3" rx="1.5" />
+      <path d="M3 7H20" />
+      <path d="M15 11H21" />
+      <path d="M15 15H21" />
+      <path d="M11.5 11H12" />
+      <path d="M11.5 15H12" />
+      <path d="M7 3L7 21" />
+    </>
+  ),
   hash: (
     <>
       <line x1="4" x2="20" y1="9" y2="9" />
