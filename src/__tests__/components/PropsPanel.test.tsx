@@ -45,7 +45,7 @@ describe("PropsPanel", () => {
   it("marca entity como obrigatorio no dynamic-select quando vazio", () => {
     useFormStore.getState().addField("dynamic-select");
     render(<PropsPanel />);
-    expect(screen.getByText("entity é obrigatória")).toBeInTheDocument();
+    expect(screen.getByLabelText(/entity/)).toBeInvalid();
   });
 
   it("remove o erro de entity ao preencher", async () => {
@@ -53,6 +53,6 @@ describe("PropsPanel", () => {
     render(<PropsPanel />);
     const entityInput = screen.getByPlaceholderText(/entidade/i) as HTMLInputElement;
     await userEvent.type(entityInput, "submabo");
-    expect(screen.queryByText("entity é obrigatória")).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/entity/)).toBeValid();
   });
 });

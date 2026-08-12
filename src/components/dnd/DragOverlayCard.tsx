@@ -1,4 +1,5 @@
-import { CATEGORY_ICONS, Icon } from "@/components/icons/Icon";
+import { Icon } from "@/components/icons/Icon";
+import { CATEGORIES } from "@/components/inputs/categories";
 import { REGISTRY } from "@/components/inputs/registry";
 import type { FieldType } from "@/schemas/inputs.schema";
 
@@ -12,7 +13,7 @@ export function DragOverlayCard({ type }: Props) {
     <div className="flex items-center gap-2 rounded-lg border border-primary-active bg-card px-3 py-2 text-sm font-medium text-foreground shadow-xl ring-2 ring-ring-soft">
       {entry && (
         <Icon
-          name={CATEGORY_ICONS[entry.category]}
+          name={CATEGORIES[entry.category].icon}
           width={14}
           height={14}
           className="shrink-0 text-primary-active"

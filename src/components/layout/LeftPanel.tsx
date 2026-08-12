@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { DraggableInput } from "@/components/dnd/DraggableInput";
 import { Icon } from "@/components/icons/Icon";
+import { CATEGORIES } from "@/components/inputs/categories";
 import { listByCategory } from "@/components/inputs/registry";
 
 export function LeftPanel() {
@@ -24,7 +25,7 @@ export function LeftPanel() {
               className="mb-2 flex w-full items-center justify-between rounded px-1 py-1 text-left text-[11px] font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               onClick={() => setOpen((o) => ({ ...o, [g.category]: !o[g.category] }))}
             >
-              <span>{g.category}</span>
+              <span>{CATEGORIES[g.category].label}</span>
               <Icon
                 name={open[g.category] ? "chevron-down" : "chevron-right"}
                 width={14}
