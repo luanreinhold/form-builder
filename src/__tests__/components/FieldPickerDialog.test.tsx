@@ -114,6 +114,6 @@ describe("FieldPickerHost", () => {
     act(() => {
       void pickField();
     });
-    expect(screen.getByText("Nenhum outro campo no formulario.")).toBeInTheDocument();
+    expect(screen.getByText("Nenhum outro campo no formulário.")).toBeInTheDocument();
   });
 });

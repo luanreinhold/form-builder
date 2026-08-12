@@ -6,13 +6,13 @@ export type { FormSourceItem } from "@/types/formSourceItem";
 
 export type Category =
   | "Texto"
-  | "Numerico"
+  | "Numérico"
   | "Data/Hora"
   | "Documentos BR"
-  | "Avancado"
+  | "Avançado"
   | "Upload"
   | "Modal/Lookup"
-  | "Selecao";
+  | "Seleção";
 
 export interface RegistryEntry {
   type: import("@/schemas/inputs.schema").FieldType;

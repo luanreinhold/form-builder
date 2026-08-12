@@ -43,7 +43,7 @@ export function FieldPickerHost() {
 
   if (!open || !options) return null;
 
-  const { title = "Selecionar campo do formulario", excludeFieldId, disabledNames = [] } = options;
+  const { title = "Selecionar campo do formulário", excludeFieldId, disabledNames = [] } = options;
 
   const candidates = fields.filter((f) => f.id !== excludeFieldId);
   const term = query.trim().toLowerCase();
@@ -99,12 +99,12 @@ export function FieldPickerHost() {
           placeholder="Buscar por name, label ou tipo..."
           className="mt-3 w-full rounded-lg border border-edge-input bg-card px-2.5 py-1.5 text-sm text-foreground transition-colors focus:border-primary-active focus:outline-none focus:ring-2 focus:ring-ring-soft"
         />
-        <ul className="mt-3 flex-1 space-y-1 overflow-y-auto" aria-label="Campos do formulario">
+        <ul className="mt-3 flex-1 space-y-1 overflow-y-auto" aria-label="Campos do formulário">
           {visible.length === 0 && (
             <li className="rounded-lg border border-dashed border-edge-input px-3 py-6 text-center text-sm text-faint">
               {candidates.length === 0
-                ? "Nenhum outro campo no formulario."
-                : "Nenhum campo corresponde a busca."}
+                ? "Nenhum outro campo no formulário."
+                : "Nenhum campo corresponde à busca."}
             </li>
           )}
           {visible.map((f) => {
@@ -125,7 +125,7 @@ export function FieldPickerHost() {
                     </span>
                     <span className="block truncate text-xs text-muted-foreground">
                       {props.label || "(sem label)"}
-                      {disabled && " — ja utilizado"}
+                      {disabled && " — já utilizado"}
                     </span>
                   </span>
                   <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[10px] uppercase text-faint">

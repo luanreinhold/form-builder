@@ -35,13 +35,22 @@ describe("exportForm", () => {
     expect(r.data?.[0]?.class).toBe("d-block mb-2 col-md-6");
   });
 
-  it("preserva classe customizada quando definida", () => {
+  it("mescla classe customizada com o col-md do colSpan", () => {
     const custom = {
       ...sample,
       fields: [{ ...sample.fields[0], class: "d-none" }],
     };
     const r = buildExport(custom);
-    expect(r.data?.[0]?.class).toBe("d-none");
+    expect(r.data?.[0]?.class).toBe("d-none col-md-6");
+  });
+
+  it("colSpan prevalece sobre col-md conflitante na classe customizada", () => {
+    const custom = {
+      ...sample,
+      fields: [{ ...sample.fields[0], class: "d-none col-md-8" }],
+    };
+    const r = buildExport(custom);
+    expect(r.data?.[0]?.class).toBe("d-none col-md-6");
   });
 
   it("omite hide quando false e inclui quando true", () => {
@@ -195,14 +204,25 @@ describe("importForm", () => {
     expect((f.props as { required?: boolean }).required).toBe(true);
   });
 
-  it("parseImport preserva classe customizada e deriva colSpan dela", () => {
+  it("parseImport deriva colSpan da classe customizada e remove o token col-md dela", () => {
     const r = parseImport(
       JSON.stringify([{ type: "input-text", class: "d-none col-md-4", props: { name: "x" } }]),
     );
     expect(r.ok).toBe(true);
     if (!r.ok) return;
-    expect(r.data.fields[0].class).toBe("d-none col-md-4");
+    expect(r.data.fields[0].class).toBe("d-none");
     expect(r.data.fields[0].colSpan).toBe(4);
+  });
+
+  it("round-trip com classe customizada mantem class e colSpan estaveis", () => {
+    const r = parseImport(
+      JSON.stringify([{ type: "input-text", class: "d-none col-md-4", props: { name: "x" } }]),
+    );
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    const back = buildExport(r.data);
+    expect(back.ok).toBe(true);
+    expect(back.data?.[0]?.class).toBe("d-none col-md-4");
   });
 
   it("parseImport usa colSpan 12 quando a classe nao tem col-md-N", () => {
