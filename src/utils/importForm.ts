@@ -8,11 +8,17 @@ export type ImportResult = { ok: true; data: FormPayload } | { ok: false; errors
 /** Classe gerada pelo export quando o campo nao tem classe customizada. */
 const GENERATED_CLASS = /^d-block mb-2 col-md-(\d{1,2})$/;
 const COL_MD = /col-md-(\d{1,2})/;
+const COL_MD_TOKEN = /\bcol-md-\d{1,2}\b/g;
 
 function colSpanFromClass(cls: string): number {
   const match = COL_MD.exec(cls);
   if (!match) return 12;
   return Math.min(12, Math.max(1, Number(match[1])));
+}
+
+/** Remove o token col-md-N da classe customizada: o colSpan do campo passa a representa-lo. */
+function stripColMd(cls: string): string {
+  return cls.replace(COL_MD_TOKEN, "").replace(/\s+/g, " ").trim();
 }
 
 /** Inversa de pruneProps do export: a v3 usa min/max numericos; o builder edita como string. */
@@ -32,14 +38,15 @@ function reviveProps(props: Record<string, unknown>): Record<string, unknown> {
  * Inversa de toV3SourceItem do export. A lista v3 nao carrega `id` nem
  * `colSpan`: o id e gerado e o colSpan derivado do `col-md-N` da classe.
  * Classe identica a gerada pelo export volta a "" (round-trip); qualquer
- * outra e preservada como customizada. `action`/`group` da v3 sao ignorados.
+ * outra e preservada como customizada, sem o token `col-md-N` (que vira
+ * o colSpan do campo). `action`/`group` da v3 sao ignorados.
  */
 function fromV3SourceItem(item: FormSourceItem): unknown {
   const cls = item.class ?? "";
   return {
     id: generateId(),
     type: item.type,
-    class: GENERATED_CLASS.test(cls) ? "" : cls,
+    class: GENERATED_CLASS.test(cls) ? "" : stripColMd(cls),
     hide: item.hide === true,
     colSpan: colSpanFromClass(cls),
     props: reviveProps((item.props ?? {}) as Record<string, unknown>),
