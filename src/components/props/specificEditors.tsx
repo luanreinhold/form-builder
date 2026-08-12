@@ -49,7 +49,7 @@ const KEY_EDITORS: Record<string, EditorFactory> = {
         onChange={onChange}
         required
         placeholder="Nome da entidade (ex.: submabo)"
-        error={entityValue.trim() === "" ? "entity e obrigatorio" : undefined}
+        error={entityValue.trim() === "" ? "entity é obrigatória" : undefined}
       />
     );
   },

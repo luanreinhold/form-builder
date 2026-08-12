@@ -27,10 +27,24 @@ function pruneProps(props: Field["props"]): Record<string, unknown> {
   return out;
 }
 
+const COL_MD_TOKEN = /\bcol-md-\d{1,2}\b/g;
+
+/**
+ * Classe vazia gera o padrao `d-block mb-2 col-md-N`. Classe customizada e
+ * preservada e recebe o `col-md-N` do colSpan ao final; qualquer `col-md-*`
+ * ja presente na classe e descartado (o colSpan do campo prevalece).
+ */
+function mergeClass(field: Field): string {
+  const custom = (field.class ?? "").trim();
+  if (!custom) return `d-block mb-2 col-md-${field.colSpan}`;
+  const withoutColMd = custom.replace(COL_MD_TOKEN, "").replace(/\s+/g, " ").trim();
+  return `${withoutColMd} col-md-${field.colSpan}`.trim();
+}
+
 function toV3SourceItem(field: Field): FormSourceItem {
   const item: FormSourceItem = {
     type: field.type,
-    class: field.class || `d-block mb-2 col-md-${field.colSpan}`,
+    class: mergeClass(field),
     props: pruneProps(field.props),
   };
   if (field.hide) item.hide = true;

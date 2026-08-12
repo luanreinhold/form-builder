@@ -13,7 +13,7 @@ export function LeftPanel() {
     <aside className="w-64 shrink-0 overflow-y-auto border-r border-edge bg-surface p-4">
       <div className="mb-4">
         <h2 className="text-sm font-semibold text-foreground">Paleta</h2>
-        <p className="mt-0.5 text-xs text-muted-foreground">Arraste um campo para o formulario</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">Arraste um campo para o formulário</p>
       </div>
       <div className="space-y-4">
         {groups.map((g) => (

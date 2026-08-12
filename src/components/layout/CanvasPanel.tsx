@@ -33,7 +33,7 @@ export function CanvasPanel() {
             <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-faint">
               <Icon name="app-window" width={24} height={24} />
             </span>
-            <p className="text-sm">Arraste inputs aqui para construir o formulario</p>
+            <p className="text-sm">Arraste inputs aqui para construir o formulário</p>
           </div>
         ) : (
           <SortableContext items={fields.map((f) => f.id)} strategy={noProjectionStrategy}>

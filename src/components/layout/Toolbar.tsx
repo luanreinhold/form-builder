@@ -82,7 +82,7 @@ export function Toolbar() {
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-edge bg-surface px-4">
       <div className="flex items-center gap-2.5">
         <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-          <Icon name="app-window" width={18} height={18} />
+          <Icon name="form" width={18} height={18} />
         </span>
         <span className="text-sm font-semibold tracking-tight text-foreground">Form Builder</span>
       </div>
@@ -95,11 +95,11 @@ export function Toolbar() {
           {status}
         </span>
         <Button variant="secondary" onClick={() => setImportOpen((v) => !v)}>
-          <Icon name="upload" width={14} height={14} className="text-muted-foreground" />
+          <Icon name="download" width={14} height={14} className="text-muted-foreground" />
           Importar
         </Button>
         <Button onClick={handleExport}>
-          <Icon name="download" width={14} height={14} />
+          <Icon name="upload" width={14} height={14} />
           Exportar JSON
         </Button>
         <Button variant="danger" onClick={handleClear}>
