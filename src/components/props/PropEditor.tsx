@@ -35,21 +35,29 @@ const BASE_BOOLEAN_PROPS = [
   "requestFocus",
 ] as const;
 
-type StringFieldCfg = { key: string; required?: boolean };
+/**
+ * `key` e a prop real gravada no campo (vai para o JSON exportado da v3 — nao
+ * pode mudar); `label` e apenas o texto exibido ao usuario no painel.
+ */
+type StringFieldCfg = { key: string; label: string; required?: boolean };
 
 const STRING_SECTIONS: { title: string; fields: StringFieldCfg[] }[] = [
   {
-    title: "Identificacao",
-    fields: [{ key: "name", required: true }, { key: "label" }, { key: "placeholder" }],
+    title: "Identificadores",
+    fields: [
+      { key: "name", label: "Identificador (name)", required: true },
+      { key: "label", label: "Título (label)" },
+      { key: "placeholder", label: "Placeholder" },
+    ],
   },
   {
     title: "Texto/Hint",
     fields: [
-      { key: "hint" },
-      { key: "min" },
-      { key: "max" },
-      { key: "customRequiredWarning" },
-      { key: "labelClass" },
+      { key: "hint", label: "Dica (hint)" },
+      { key: "min", label: "Quantidade mínima (min)" },
+      { key: "max", label: "Quantidade máxima (max)" },
+      { key: "customRequiredWarning", label: "Aviso de campo obrigatório personalizado" },
+      { key: "labelClass", label: "Classe da label (labelClass)" },
     ],
   },
 ];
@@ -134,16 +142,16 @@ function StringSections({
       {STRING_SECTIONS.map((section) => (
         <section key={section.title} className="space-y-2">
           <SectionTitle>{section.title}</SectionTitle>
-          {section.fields.map(({ key, required }) => {
+          {section.fields.map(({ key, label, required }) => {
             const value = (props[key] as string) ?? "";
             return (
               <StringEditor
                 key={key}
-                label={key}
+                label={label}
                 value={value}
                 onChange={(v) => onChangeProp(key, v)}
                 required={required}
-                error={required && value.trim() === "" ? `${key} e obrigatorio` : undefined}
+                error={required && value.trim() === "" ? `${key} é obrigatório` : undefined}
               />
             );
           })}
@@ -194,7 +202,7 @@ function DividerSection({
 }) {
   return (
     <section className="space-y-2">
-      <SectionTitle>Divisoria</SectionTitle>
+      <SectionTitle>Divisória</SectionTitle>
       {DIVIDER_STRING_PROPS.map((key) => (
         <StringEditor
           key={key}
@@ -228,7 +236,7 @@ function SpecificsSection({
   if (specifics.length === 0) return null;
   return (
     <section className="space-y-2">
-      <SectionTitle>Específicas</SectionTitle>
+      <SectionTitle>Específicas do Input</SectionTitle>
       {specifics.map((specific) => (
         <Fragment key={specific.key}>
           {renderSpecificEditor(specific, {

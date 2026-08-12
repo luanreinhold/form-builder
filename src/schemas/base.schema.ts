@@ -6,7 +6,7 @@
  * + envoltorio BaseControl (class, hide).
  */
 export const BaseInputPropsSchema = z.object({
-  name: z.string().min(1, "name e obrigatorio"),
+  name: z.string().min(1, "name é obrigatório"),
   label: z.string().optional(),
   placeholder: z.string().optional(),
   required: z.boolean().optional(),

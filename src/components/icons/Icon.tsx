@@ -174,11 +174,11 @@ export function Icon({ name, ...props }: IconProps) {
 
 export const CATEGORY_ICONS: Record<Category, IconName> = {
   Texto: "text",
-  Numerico: "hash",
+  Numérico: "hash",
   "Data/Hora": "calendar",
   "Documentos BR": "id-card",
-  Avancado: "sliders",
+  Avançado: "sliders",
   Upload: "upload",
   "Modal/Lookup": "app-window",
-  Selecao: "list",
+  Seleção: "list",
 };

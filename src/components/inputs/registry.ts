@@ -36,20 +36,20 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
   },
   "input-number": {
     type: "input-number",
-    label: "Numero",
-    category: "Numerico",
+    label: "Número",
+    category: "Numérico",
     defaultProps: baseDefaults("numero"),
   },
   "input-decimal": {
     type: "input-decimal",
     label: "Decimal",
-    category: "Numerico",
+    category: "Numérico",
     defaultProps: baseDefaults("decimal"),
   },
   "input-money": {
     type: "input-money",
     label: "Dinheiro",
-    category: "Numerico",
+    category: "Numérico",
     defaultProps: { ...baseDefaults("valor"), minValue: 0 },
   },
   "input-date": {
@@ -96,14 +96,14 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
   },
   "input-mask": {
     type: "input-mask",
-    label: "Mascara",
-    category: "Avancado",
+    label: "Máscara",
+    category: "Avançado",
     defaultProps: { ...baseDefaults("campo"), mask: "" },
   },
   "input-color": {
     type: "input-color",
     label: "Cor",
-    category: "Avancado",
+    category: "Avançado",
     defaultProps: baseDefaults("cor"),
   },
   "input-attach": {
@@ -127,37 +127,37 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
   "input-json": {
     type: "input-json",
     label: "JSON",
-    category: "Avancado",
+    category: "Avançado",
     defaultProps: baseDefaults("dados"),
   },
   "input-ocr": {
     type: "input-ocr",
     label: "OCR",
-    category: "Avancado",
+    category: "Avançado",
     defaultProps: baseDefaults("ocr"),
   },
   "input-report": {
     type: "input-report",
-    label: "Relatorio",
-    category: "Avancado",
+    label: "Relatório",
+    category: "Avançado",
     defaultProps: baseDefaults("relatorio"),
   },
   "select-multiple": {
     type: "select-multiple",
-    label: "Select Multiplo",
-    category: "Selecao",
+    label: "Select Múltiplo",
+    category: "Seleção",
     defaultProps: { ...baseDefaults("selecao"), source: [] },
   },
   "select-search": {
     type: "select-search",
     label: "Select Busca",
-    category: "Selecao",
+    category: "Seleção",
     defaultProps: { ...baseDefaults("selecao"), source: [] },
   },
   "dynamic-select": {
     type: "dynamic-select",
-    label: "Select Dinamico",
-    category: "Selecao",
+    label: "Select Dinâmico",
+    category: "Seleção",
     defaultProps: {
       ...baseDefaults("selecao"),
       entity: "",
@@ -169,7 +169,7 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
   "radio-component": {
     type: "radio-component",
     label: "Radio",
-    category: "Selecao",
+    category: "Seleção",
     defaultProps: {
       ...baseDefaults("opcao"),
       source: [],
@@ -180,7 +180,7 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
   "divider-component": {
     type: "divider-component",
     label: "Divisória",
-    category: "Avancado",
+    category: "Avançado",
     defaultProps: {
       name: "divider",
       label: "Divisória",
