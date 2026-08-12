@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 interface Props {
   label: string;
@@ -7,6 +7,7 @@ interface Props {
 }
 
 export function JsonEditor({ label, value, onChange }: Props) {
+  const errId = useId();
   const [text, setText] = useState(() => safeStringify(value));
   const [error, setError] = useState<string | null>(null);
 
@@ -37,13 +38,19 @@ export function JsonEditor({ label, value, onChange }: Props) {
         value={text}
         onChange={(e) => handleChange(e.target.value)}
         rows={3}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? errId : undefined}
         className={`w-full rounded-lg border bg-card px-2.5 py-1.5 font-mono text-xs text-foreground transition-colors focus:outline-none focus:ring-2 ${
           error
             ? "border-danger-active focus:border-danger-active focus:ring-danger-soft"
             : "border-edge-input focus:border-primary-active focus:ring-ring-soft"
         }`}
       />
-      {error && <span className="mt-1 block text-xs text-danger">{error}</span>}
+      {error && (
+        <span id={errId} role="alert" className="mt-1 block text-xs text-danger">
+          {error}
+        </span>
+      )}
     </label>
   );
 }

@@ -1,6 +1,7 @@
 import { useDraggable } from "@dnd-kit/core";
 import clsx from "clsx";
-import { CATEGORY_ICONS, Icon } from "@/components/icons/Icon";
+import { Icon } from "@/components/icons/Icon";
+import { CATEGORIES } from "@/components/inputs/categories";
 import type { RegistryEntry } from "@/types";
 
 interface Props {
@@ -28,7 +29,7 @@ export function DraggableInput({ entry }: Props) {
       )}
     >
       <Icon
-        name={CATEGORY_ICONS[entry.category]}
+        name={CATEGORIES[entry.category].icon}
         width={14}
         height={14}
         className="shrink-0 text-faint transition-colors group-hover:text-primary-active"
