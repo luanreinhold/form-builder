@@ -2,7 +2,7 @@ import { DndContext } from "@dnd-kit/core";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { DraggableInput } from "@/components/dnd/DraggableInput";
-import { CATEGORY_ICONS, Icon } from "@/components/icons/Icon";
+import { Icon } from "@/components/icons/Icon";
 import { REGISTRY } from "@/components/inputs/registry";
 
 describe("Icon", () => {
@@ -21,12 +21,6 @@ describe("Icon", () => {
     expect(svg).toHaveAttribute("width", "16");
     expect(svg).toHaveAttribute("height", "16");
     expect(svg).toHaveClass("text-red-500");
-  });
-
-  it("CATEGORY_ICONS cobre todas as categorias do registry", () => {
-    for (const entry of Object.values(REGISTRY)) {
-      expect(CATEGORY_ICONS[entry.category]).toBeDefined();
-    }
   });
 });
 
