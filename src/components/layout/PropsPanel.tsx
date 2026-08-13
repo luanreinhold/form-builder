@@ -10,7 +10,7 @@ export function PropsPanel() {
   const removeField = useFormStore((s) => s.removeField);
 
   return (
-    <aside className="w-80 shrink-0 overflow-y-auto border-l border-edge bg-surface p-4">
+    <aside className="w-72 shrink-0 overflow-y-auto border-l border-edge bg-surface p-4 xl:w-80">
       <div className="mb-4">
         <h2 className="text-sm font-semibold text-foreground">Propriedades</h2>
         <p className="mt-0.5 text-xs text-muted-foreground">Configure o campo selecionado</p>

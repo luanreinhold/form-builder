@@ -19,7 +19,7 @@ export function CanvasPanel() {
   const { setNodeRef, isOver } = useDroppable({ id: CANVAS_DROPPABLE_ID });
 
   return (
-    <main className="flex-1 overflow-y-auto p-6">
+    <main className="flex-1 overflow-y-auto p-4 xl:p-6">
       <div
         ref={setNodeRef}
         data-testid="canvas-drop-area"

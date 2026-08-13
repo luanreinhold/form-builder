@@ -11,7 +11,7 @@ export function LeftPanel() {
   );
 
   return (
-    <aside className="w-64 shrink-0 overflow-y-auto border-r border-edge bg-surface p-4">
+    <aside className="w-56 shrink-0 overflow-y-auto border-r border-edge bg-surface p-4 xl:w-64">
       <div className="mb-4">
         <h2 className="text-sm font-semibold text-foreground">Paleta</h2>
         <p className="mt-0.5 text-xs text-muted-foreground">Arraste um campo para o formulário</p>

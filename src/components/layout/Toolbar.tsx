@@ -120,7 +120,7 @@ export function Toolbar() {
       </div>
 
       {importOpen && (
-        <div className="absolute right-4 top-16 z-10 w-96 rounded-xl border border-edge-soft bg-popover p-4 shadow-xl">
+        <div className="absolute right-4 top-16 z-10 w-96 max-w-[calc(100vw-2rem)] rounded-xl border border-edge-soft bg-popover p-4 shadow-xl">
           <h3 className="mb-3 text-sm font-semibold text-foreground">Importar JSON</h3>
           <input
             type="file"
