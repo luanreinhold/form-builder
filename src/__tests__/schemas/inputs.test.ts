@@ -78,6 +78,30 @@ describe("FieldSchema", () => {
     expect(r.success).toBe(true);
   });
 
+  it("aplica default de entity no input-modal", () => {
+    const r = FieldSchema.safeParse({
+      id: "im",
+      type: "input-modal",
+      props: { name: "selecao" },
+    });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect((r.data.props as { entity: string }).entity).toBe("");
+    }
+  });
+
+  it("aceita input-modal com entity preenchida", () => {
+    const r = FieldSchema.safeParse({
+      id: "im",
+      type: "input-modal",
+      props: { name: "selecao", entity: "pessoa" },
+    });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect((r.data.props as { entity: string }).entity).toBe("pessoa");
+    }
+  });
+
   it("aceita dynamic-select com entity e fields (objeto chave/valor)", () => {
     const r = FieldSchema.safeParse({
       id: "ds",
