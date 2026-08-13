@@ -47,13 +47,17 @@ describe("InputPreview", () => {
     });
 
     it("nao exibe hint quando ausente", () => {
-      const { container } = render(<InputPreview field={makeField("input-text", { label: "X" })} />);
+      const { container } = render(
+        <InputPreview field={makeField("input-text", { label: "X" })} />,
+      );
       expect(container.querySelector("p")).toBeNull();
     });
 
     it("repassa placeholder para o controle", () => {
       render(
-        <InputPreview field={makeField("input-text", { label: "X", placeholder: "Digite aqui" })} />,
+        <InputPreview
+          field={makeField("input-text", { label: "X", placeholder: "Digite aqui" })}
+        />,
       );
       expect(screen.getByPlaceholderText("Digite aqui")).toBeInTheDocument();
     });
@@ -61,7 +65,9 @@ describe("InputPreview", () => {
 
   describe("controles por tipo", () => {
     it("input-text renderiza input type=text desabilitado (branch default)", () => {
-      const { container } = render(<InputPreview field={makeField("input-text", { label: "X" })} />);
+      const { container } = render(
+        <InputPreview field={makeField("input-text", { label: "X" })} />,
+      );
       const input = container.querySelector('input[type="text"]');
       expect(input).toBeTruthy();
       expect(input).toBeDisabled();
@@ -75,17 +81,23 @@ describe("InputPreview", () => {
     });
 
     it("input-color renderiza input type=color", () => {
-      const { container } = render(<InputPreview field={makeField("input-color", { label: "X" })} />);
+      const { container } = render(
+        <InputPreview field={makeField("input-color", { label: "X" })} />,
+      );
       expect(container.querySelector('input[type="color"]')).toBeDisabled();
     });
 
     it("input-date renderiza input type=date", () => {
-      const { container } = render(<InputPreview field={makeField("input-date", { label: "X" })} />);
+      const { container } = render(
+        <InputPreview field={makeField("input-date", { label: "X" })} />,
+      );
       expect(container.querySelector('input[type="date"]')).toBeDisabled();
     });
 
     it("input-time renderiza input type=time", () => {
-      const { container } = render(<InputPreview field={makeField("input-time", { label: "X" })} />);
+      const { container } = render(
+        <InputPreview field={makeField("input-time", { label: "X" })} />,
+      );
       expect(container.querySelector('input[type="time"]')).toBeDisabled();
     });
 
@@ -96,15 +108,16 @@ describe("InputPreview", () => {
       expect(container.querySelector('input[type="file"]')).toBeDisabled();
     });
 
-    it.each(["select-multiple", "select-search", "dynamic-select"] as const)(
-      "%s renderiza select com placeholder padrao 'Selecione...'",
-      (type) => {
-        render(<InputPreview field={makeField(type, { label: "X" })} />);
-        const select = screen.getByRole("combobox", { hidden: true });
-        expect(select).toBeDisabled();
-        expect(screen.getByText("Selecione...")).toBeInTheDocument();
-      },
-    );
+    it.each([
+      "select-multiple",
+      "select-search",
+      "dynamic-select",
+    ] as const)("%s renderiza select com placeholder padrao 'Selecione...'", (type) => {
+      render(<InputPreview field={makeField(type, { label: "X" })} />);
+      const select = screen.getByRole("combobox", { hidden: true });
+      expect(select).toBeDisabled();
+      expect(screen.getByText("Selecione...")).toBeInTheDocument();
+    });
 
     it("select usa placeholder customizado quando informado", () => {
       render(
@@ -116,7 +129,9 @@ describe("InputPreview", () => {
     });
 
     it("input-json renderiza textarea com fonte mono e placeholder de exemplo", () => {
-      const { container } = render(<InputPreview field={makeField("input-json", { label: "X" })} />);
+      const { container } = render(
+        <InputPreview field={makeField("input-json", { label: "X" })} />,
+      );
       const textarea = container.querySelector("textarea");
       expect(textarea?.className).toContain("font-mono");
       expect(textarea).toHaveAttribute("placeholder", '{ "exemplo": true }');
@@ -135,13 +150,13 @@ describe("InputPreview", () => {
       expect(screen.getByPlaceholderText("10,00")).toBeInTheDocument();
     });
 
-    it.each(["input-modal", "input-cep-modal"] as const)(
-      "%s renderiza input com botao Buscar desabilitado",
-      (type) => {
-        render(<InputPreview field={makeField(type, { label: "X" })} />);
-        expect(screen.getByRole("button", { name: "Buscar", hidden: true })).toBeDisabled();
-      },
-    );
+    it.each([
+      "input-modal",
+      "input-cep-modal",
+    ] as const)("%s renderiza input com botao Buscar desabilitado", (type) => {
+      render(<InputPreview field={makeField(type, { label: "X" })} />);
+      expect(screen.getByRole("button", { name: "Buscar", hidden: true })).toBeDisabled();
+    });
 
     it("input-password renderiza input type=password", () => {
       const { container } = render(
@@ -151,22 +166,29 @@ describe("InputPreview", () => {
     });
 
     it("input-email renderiza input type=email", () => {
-      const { container } = render(<InputPreview field={makeField("input-email", { label: "X" })} />);
+      const { container } = render(
+        <InputPreview field={makeField("input-email", { label: "X" })} />,
+      );
       expect(container.querySelector('input[type="email"]')).toBeDisabled();
     });
 
-    it.each(["input-number", "input-decimal"] as const)("%s renderiza input type=number", (type) => {
+    it.each([
+      "input-number",
+      "input-decimal",
+    ] as const)("%s renderiza input type=number", (type) => {
       const { container } = render(<InputPreview field={makeField(type, { label: "X" })} />);
       expect(container.querySelector('input[type="number"]')).toBeDisabled();
     });
 
-    it.each(["input-cpf", "input-cnpj", "input-phone", "input-mask"] as const)(
-      "%s cai no branch default (input text)",
-      (type) => {
-        const { container } = render(<InputPreview field={makeField(type, { label: "X" })} />);
-        expect(container.querySelector('input[type="text"]')).toBeDisabled();
-      },
-    );
+    it.each([
+      "input-cpf",
+      "input-cnpj",
+      "input-phone",
+      "input-mask",
+    ] as const)("%s cai no branch default (input text)", (type) => {
+      const { container } = render(<InputPreview field={makeField(type, { label: "X" })} />);
+      expect(container.querySelector('input[type="text"]')).toBeDisabled();
+    });
   });
 
   describe("divider-component", () => {
@@ -188,7 +210,9 @@ describe("InputPreview", () => {
 
     it("aplica fontSize via style quando informado", () => {
       render(
-        <InputPreview field={makeField("divider-component", { label: "Secao", fontSize: "20px" })} />,
+        <InputPreview
+          field={makeField("divider-component", { label: "Secao", fontSize: "20px" })}
+        />,
       );
       expect(screen.getByText("Secao")).toHaveStyle({ fontSize: "20px" });
     });
@@ -234,7 +258,9 @@ describe("InputPreview", () => {
         { label: "Dois", value: 2 },
       ];
       render(
-        <InputPreview field={makeField("radio-component", { label: "X", source, selected: "2" })} />,
+        <InputPreview
+          field={makeField("radio-component", { label: "X", source, selected: "2" })}
+        />,
       );
       const radios = screen.getAllByRole("radio", { hidden: true });
       expect(radios[0]).not.toBeChecked();

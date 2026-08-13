@@ -93,7 +93,9 @@ describe("JsonEditor", () => {
   describe("sincronizacao com a prop value", () => {
     it("atualiza o texto quando value muda externamente", () => {
       const onChange = vi.fn();
-      const { rerender } = render(<JsonEditor label="Filtros" value={{ a: 1 }} onChange={onChange} />);
+      const { rerender } = render(
+        <JsonEditor label="Filtros" value={{ a: 1 }} onChange={onChange} />,
+      );
       rerender(<JsonEditor label="Filtros" value={{ b: 2 }} onChange={onChange} />);
       const textarea = screen.getByRole("textbox", { name: "Filtros" }) as HTMLTextAreaElement;
       expect(textarea.value).toBe('{\n  "b": 2\n}');

@@ -34,10 +34,10 @@ describe("persist middleware", () => {
 
   it("persiste colSpan no storage", () => {
     const id = useFormStore.getState().addField("input-text");
-    useFormStore.getState().updateFieldMeta(id, { colSpan: 6 });
+    useFormStore.getState().updateFieldMeta(id, { colSpan: 4 });
     const raw = localStorage.getItem(STORAGE_KEY);
     expect(raw).toBeTruthy();
     const parsed = JSON.parse(raw!);
-    expect(parsed.state.fields[0].colSpan).toBe(6);
+    expect(parsed.state.fields[0].colSpan).toBe(4);
   });
 });

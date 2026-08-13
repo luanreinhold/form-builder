@@ -128,7 +128,7 @@ const RadioProps = BaseInputPropsSchema.extend({
   vertical: z.boolean().optional(),
 });
 const Radio = wrap("radio-component", RadioProps);
-  
+
 // divider-component estende BaseComponent (nao InputBaseComponent) na v3 —
 // nao e um input: nada de placeholder/required/value, e `name` e opcional
 // (usado apenas como alvo de acoes hideById do form-panel). transformDivider

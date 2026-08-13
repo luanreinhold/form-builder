@@ -72,8 +72,7 @@ export function buildExport(payload: FormPayload): ExportResult {
     const semEntity = parsed.data.fields
       .filter(
         (f) =>
-          f.type === tipo &&
-          String((f.props as { entity?: unknown }).entity ?? "").trim() === "",
+          f.type === tipo && String((f.props as { entity?: unknown }).entity ?? "").trim() === "",
       )
       .map((f) => (f.props as { name?: string }).name ?? f.type);
     if (semEntity.length > 0) {
