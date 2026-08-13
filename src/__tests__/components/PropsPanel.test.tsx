@@ -48,6 +48,12 @@ describe("PropsPanel", () => {
     expect(screen.getByLabelText(/entity/)).toBeInvalid();
   });
 
+  it("marca entity como obrigatorio no input-modal quando vazio", () => {
+    useFormStore.getState().addField("input-modal");
+    render(<PropsPanel />);
+    expect(screen.getByLabelText(/entity/)).toBeInvalid();
+  });
+
   it("remove o erro de entity ao preencher", async () => {
     useFormStore.getState().addField("dynamic-select");
     render(<PropsPanel />);

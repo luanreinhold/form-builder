@@ -164,6 +164,55 @@ describe("exportForm", () => {
     expect(r.ok).toBe(false);
     expect((r.errors ?? []).some((e) => /entity/i.test(e))).toBe(true);
   });
+
+  it("falha ao exportar input-modal com entity vazio", () => {
+    const form = {
+      ...sample,
+      fields: [
+        {
+          id: "im",
+          type: "input-modal" as const,
+          class: "",
+          hide: false,
+          colSpan: 12,
+          props: {
+            name: "selecao",
+            entity: "",
+            allowFields: [],
+            redirectFields: {},
+          },
+        },
+      ],
+    };
+    const r = buildExport(form);
+    expect(r.ok).toBe(false);
+    expect((r.errors ?? []).some((e) => /input-modal sem entity/i.test(e))).toBe(true);
+  });
+
+  it("exporta input-modal com entity preenchida", () => {
+    const form = {
+      ...sample,
+      fields: [
+        {
+          id: "im",
+          type: "input-modal" as const,
+          class: "",
+          hide: false,
+          colSpan: 12,
+          props: {
+            name: "selecao",
+            entity: "pessoa",
+            allowFields: [],
+            redirectFields: {},
+          },
+        },
+      ],
+    };
+    const r = buildExport(form);
+    expect(r.ok).toBe(true);
+    const props = r.data?.[0]?.props as Record<string, unknown>;
+    expect(props.entity).toBe("pessoa");
+  });
 });
 
 describe("importForm", () => {

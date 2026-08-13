@@ -51,15 +51,15 @@ describe("formStore", () => {
     expect(f.hide).toBe(true);
   });
 
-  it("addField cria field com colSpan default 12", () => {
+  it("addField cria field com colSpan default 6", () => {
     useFormStore.getState().addField("input-text");
-    expect(useFormStore.getState().fields[0].colSpan).toBe(12);
+    expect(useFormStore.getState().fields[0].colSpan).toBe(6);
   });
 
   it("updateFieldMeta atualiza colSpan", () => {
     const id = useFormStore.getState().addField("input-text");
-    useFormStore.getState().updateFieldMeta(id, { colSpan: 6 });
-    expect(useFormStore.getState().fields[0].colSpan).toBe(6);
+    useFormStore.getState().updateFieldMeta(id, { colSpan: 4 });
+    expect(useFormStore.getState().fields[0].colSpan).toBe(4);
   });
 
   it("reorderByIndex move o item", () => {

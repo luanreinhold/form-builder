@@ -63,11 +63,14 @@ const Attach = wrap(
     multiple: z.boolean().optional(),
   }),
 );
-// allowFields/redirectFields espelham IInputModalProperties da populis-v3-core:
+// entity/allowFields/redirectFields espelham IInputModalProperties da populis-v3-core:
 // redirectFields mapeia { nomeDoCampoDoFormulario: propriedadeDoItemSelecionado }.
+// entity e obrigatoria na v3 (consulta ao backend) — default "" aqui para nao
+// derrubar rascunhos na reidratacao; o export barra quando vazia (buildExport).
 const ModalInput = wrap(
   "input-modal",
   BaseInputPropsSchema.extend({
+    entity: z.string().optional().default(""),
     modalProps: z.record(z.unknown()).optional(),
     allowFields: z.array(z.string()).optional(),
     redirectFields: z.record(z.string()).optional(),
@@ -125,7 +128,7 @@ const RadioProps = BaseInputPropsSchema.extend({
   vertical: z.boolean().optional(),
 });
 const Radio = wrap("radio-component", RadioProps);
-  
+
 // divider-component estende BaseComponent (nao InputBaseComponent) na v3 —
 // nao e um input: nada de placeholder/required/value, e `name` e opcional
 // (usado apenas como alvo de acoes hideById do form-panel). transformDivider
