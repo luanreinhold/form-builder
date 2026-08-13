@@ -26,13 +26,15 @@ export function InputPreview({ field }: Props) {
     <div className="space-y-1">
       {/* biome-ignore lint/a11y/noLabelWithoutControl: o controle e renderizado dentro do label via renderControl() */}
       <label className="block">
-        <span className="mb-1 block text-sm font-medium text-foreground">
-          {label}
-          {required && <span className="ml-1 text-danger">*</span>}
+        <span className="mb-1 flex items-baseline text-sm font-medium text-foreground" title={label}>
+          <span className="truncate">{label}</span>
+          {required && <span className="ml-1 shrink-0 text-danger">*</span>}
         </span>
         {renderControl(field, placeholder)}
       </label>
-      {props.hint ? <p className="text-xs text-muted-foreground">{props.hint as string}</p> : null}
+      {props.hint ? (
+        <p className="break-words text-xs text-muted-foreground">{props.hint as string}</p>
+      ) : null}
     </div>
   );
 }
@@ -75,18 +77,18 @@ function renderControl(field: Field, placeholder: string): JSX.Element {
     case "input-money":
       return (
         <div className="flex items-center gap-1">
-          <span className="text-sm text-muted-foreground">R$</span>
-          <input className={baseCls} placeholder={placeholder || "0,00"} disabled />
+          <span className="shrink-0 text-sm text-muted-foreground">R$</span>
+          <input className={`${baseCls} min-w-0`} placeholder={placeholder || "0,00"} disabled />
         </div>
       );
     case "input-modal":
     case "input-cep-modal":
       return (
         <div className="flex gap-2">
-          <input className={baseCls} placeholder={placeholder} disabled />
+          <input className={`${baseCls} min-w-0`} placeholder={placeholder} disabled />
           <button
             type="button"
-            className="rounded-lg bg-muted px-3 text-sm text-muted-foreground"
+            className="shrink-0 rounded-lg bg-muted px-3 text-sm text-muted-foreground"
             disabled
           >
             Buscar
@@ -112,8 +114,9 @@ function renderDivider(props: Record<string, unknown>): JSX.Element {
   const fontSize = props.fontSize as string | undefined;
   return (
     <div
-      className={`text-sm font-medium text-foreground ${(props.labelClass as string) || ""}`}
+      className={`truncate text-sm font-medium text-foreground ${(props.labelClass as string) || ""}`}
       style={fontSize ? { fontSize } : undefined}
+      title={label}
     >
       {label}
     </div>

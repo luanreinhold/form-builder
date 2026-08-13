@@ -50,7 +50,7 @@ export const SortableFormItem = memo(function SortableFormItem({
       }}
       className={clsx(
         colSpanClass(field.colSpan),
-        "group relative cursor-pointer rounded-lg border bg-card p-3 shadow-sm transition-colors",
+        "group relative cursor-pointer overflow-hidden rounded-lg border bg-card p-3 shadow-sm transition-colors",
         selected
           ? "border-primary-active ring-2 ring-ring-soft"
           : "border-edge-soft hover:border-edge-hover",
