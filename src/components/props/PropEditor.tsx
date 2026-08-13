@@ -71,8 +71,8 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
     return (
       <div className="space-y-4">
         <EditorHeader type={field.type} onDelete={onDelete} />
-        <DividerSection props={props} onChangeProp={onChangeProp} />
         <WrapperSection field={field} onChangeMeta={onChangeMeta} />
+        <DividerSection props={props} onChangeProp={onChangeProp} />
       </div>
     );
   }
@@ -83,6 +83,7 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
     <div className="space-y-4">
       <EditorHeader type={field.type} onDelete={onDelete} />
       <StringSections props={props} onChangeProp={onChangeProp} />
+      <WrapperSection field={field} onChangeMeta={onChangeMeta} />
       <BehaviorSection props={props} onChangeProp={onChangeProp} />
       <SpecificsSection
         specifics={specifics}
@@ -91,7 +92,6 @@ export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: Prop
         fieldId={field.id}
         fieldType={field.type}
       />
-      <WrapperSection field={field} onChangeMeta={onChangeMeta} />
     </div>
   );
 }
@@ -255,9 +255,9 @@ function SpecificsSection({
 function WrapperSection({ field, onChangeMeta }: { field: Field; onChangeMeta: ChangeMeta }) {
   return (
     <section className="space-y-2">
-      <SectionTitle>Wrapper (BaseControl)</SectionTitle>
+      <SectionTitle>Diretivas Base (BaseControl)</SectionTitle>
       <label className="block">
-        <span className="mb-1 block text-xs font-medium text-muted-foreground">colSpan (1-12)</span>
+        <span className="mb-1 block text-xs font-medium text-muted-foreground">Largura (1-12)</span>
         <select
           value={field.colSpan ?? 12}
           onChange={(e) => onChangeMeta({ colSpan: Number(e.target.value) })}
