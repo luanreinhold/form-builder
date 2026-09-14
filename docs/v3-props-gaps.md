@@ -45,13 +45,14 @@ Builder declara apenas `entity`, `fields`, `filters` (+ base). Não declaradas:
 
 ### `input-modal` (`IInputModalProperties`)
 
-Builder declara `allowFields`, `redirectFields`, `modalProps` (+ base). Não declaradas:
+Builder declara `entity` (obrigatória — export barra vazia, desde 2026-08-12),
+`allowFields`, `redirectFields`, `modalProps` (+ base). Não declaradas:
 
 | Prop v3 | Observação |
 | --- | --- |
 | `components` | **Essencial** — define os filtros do modal |
 | `crudPanel` | Configuração do painel |
-| `entity`, `filters` | Consulta ao backend |
+| `filters` | Consulta ao backend |
 | `item` | Render do item selecionado |
 | `format`, `submit`, `textArea`, `useAutocomplete`, `autocompleteProps` | Diversos |
 
