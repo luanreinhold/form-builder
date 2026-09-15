@@ -3,6 +3,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { REGISTRY } from "@/components/inputs/registry";
 import { type FormPayload, FormSchema } from "@/schemas/form.schema";
 import { type Field, FieldSchema, type FieldType } from "@/schemas/inputs.schema";
+import { formatFormErrors } from "@/utils/formatErrors";
 import { generateId } from "@/utils/id";
 
 const STORAGE_KEY = "form-builder:draft";
@@ -137,10 +138,7 @@ export const useFormStore = create<FormStore>()(
       importJSON: (payload) => {
         const parsed = FormSchema.safeParse(payload);
         if (!parsed.success) {
-          return {
-            ok: false,
-            errors: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`),
-          };
+          return { ok: false, errors: formatFormErrors(parsed.error.issues, payload) };
         }
         set(() =>
           touch({

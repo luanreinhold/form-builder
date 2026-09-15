@@ -1,6 +1,12 @@
 import { type FormPayload, FormSchema } from "@/schemas/form.schema";
 import { FIELD_TYPES, type Field, FieldSchema } from "@/schemas/inputs.schema";
 import type { FormSourceItem } from "@/types/formSourceItem";
+import {
+  formatFieldIssue,
+  formatFieldReference,
+  formatFormErrors,
+  friendlyJsonError,
+} from "@/utils/formatErrors";
 import { generateId } from "@/utils/id";
 
 export type ImportResult = { ok: true; data: FormPayload } | { ok: false; errors: string[] };
@@ -58,19 +64,21 @@ function parseV3List(list: unknown[]): ImportResult {
   const errors: string[] = [];
   list.forEach((raw, i) => {
     if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
-      errors.push(`fields.${i}: item deve ser um objeto`);
+      errors.push(`${formatFieldReference({}, i)}: o conteúdo não descreve um campo do formulário`);
       return;
     }
     const item = raw as FormSourceItem;
     if (!(FIELD_TYPES as readonly string[]).includes(String(item.type))) {
-      errors.push(`fields.${i}.type: tipo desconhecido "${String(item.type)}"`);
+      // referencia sem o tipo: ele e justamente o valor invalido reportado.
+      errors.push(
+        `${formatFieldReference({ props: item.props }, i)}: tipo de campo não reconhecido ` +
+          `("${String(item.type)}")`,
+      );
       return;
     }
     const parsed = FieldSchema.safeParse(fromV3SourceItem(item));
     if (!parsed.success) {
-      errors.push(
-        ...parsed.error.issues.map((iss) => `fields.${i}.${iss.path.join(".")}: ${iss.message}`),
-      );
+      errors.push(...parsed.error.issues.map((iss) => formatFieldIssue(iss, item, i)));
       return;
     }
     fields.push(parsed.data);
@@ -94,19 +102,13 @@ export function parseImport(input: string | unknown): ImportResult {
     try {
       raw = JSON.parse(input);
     } catch (err) {
-      return {
-        ok: false,
-        errors: [`JSON invalido: ${(err as Error).message}`],
-      };
+      return { ok: false, errors: [friendlyJsonError(err, input)] };
     }
   }
   if (Array.isArray(raw)) return parseV3List(raw);
   const parsed = FormSchema.safeParse(raw);
   if (!parsed.success) {
-    return {
-      ok: false,
-      errors: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`),
-    };
+    return { ok: false, errors: formatFormErrors(parsed.error.issues, raw) };
   }
   return { ok: true, data: parsed.data };
 }

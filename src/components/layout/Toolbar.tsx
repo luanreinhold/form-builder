@@ -88,11 +88,12 @@ export function Toolbar() {
       </div>
       <div className="flex items-center gap-2">
         <span
-          className="mr-1 inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground"
+          className="mr-1 inline-flex max-w-[24ch] items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground"
           data-testid="autosave-status"
+          title={status}
         >
           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-success" aria-hidden="true" />
-          {status}
+          <span className="truncate">{status}</span>
         </span>
         <Button variant="secondary" onClick={() => setImportOpen((v) => !v)}>
           <Icon name="download" width={14} height={14} className="text-muted-foreground" />

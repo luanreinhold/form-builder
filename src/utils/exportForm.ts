@@ -1,6 +1,12 @@
 import { type FormPayload, FormSchema } from "@/schemas/form.schema";
 import type { Field } from "@/schemas/inputs.schema";
 import type { FormSourceItem } from "@/types/formSourceItem";
+import {
+  formatFieldReference,
+  formatFieldTypeName,
+  formatFormErrors,
+  formatPropName,
+} from "@/utils/formatErrors";
 
 export interface ExportResult {
   ok: boolean;
@@ -59,26 +65,20 @@ export function toV3SourceList(payload: FormPayload): FormSourceItem[] {
 export function buildExport(payload: FormPayload): ExportResult {
   const parsed = FormSchema.safeParse(payload);
   if (!parsed.success) {
-    return {
-      ok: false,
-      errors: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`),
-    };
+    return { ok: false, errors: formatFormErrors(parsed.error.issues, payload) };
   }
   // dynamic-select e input-modal exigem `entity` preenchido para consultar o
   // backend; barra aqui (e nao no schema) para nao derrubar rascunhos
   // meio-preenchidos na reidratacao.
   const errors: string[] = [];
-  for (const tipo of ["dynamic-select", "input-modal"] as const) {
-    const semEntity = parsed.data.fields
-      .filter(
-        (f) =>
-          f.type === tipo && String((f.props as { entity?: unknown }).entity ?? "").trim() === "",
-      )
-      .map((f) => (f.props as { name?: string }).name ?? f.type);
-    if (semEntity.length > 0) {
-      errors.push(`${tipo} sem entity: ${semEntity.join(", ")}`);
-    }
-  }
+  parsed.data.fields.forEach((field, index) => {
+    if (field.type !== "dynamic-select" && field.type !== "input-modal") return;
+    if (String((field.props as { entity?: unknown }).entity ?? "").trim() !== "") return;
+    errors.push(
+      `${formatFieldReference(field, index)} — ${formatPropName("entity")}: não foi preenchida ` +
+        `(obrigatória em campos do tipo "${formatFieldTypeName(field.type)}" para buscar os dados)`,
+    );
+  });
   if (errors.length > 0) {
     return { ok: false, errors };
   }
