@@ -2,6 +2,21 @@ import { describe, expect, it } from "vitest";
 import { buildExport, serializeForm, toV3SourceList } from "@/utils/exportForm";
 import { parseImport } from "@/utils/importForm";
 
+/** GER-05: nada disso pode aparecer numa mensagem lida por um Consultor. */
+const TECHNICAL_PATTERNS = [
+  /fields\.\d/, // caminho JSON do payload
+  /\bprops\b/, // estrutura interna do campo
+  /\bschemaVersion\b|\bformId\b|\bcolSpan\b/, // nomes internos
+  /\bExpected\b|\breceived\b|\bRequired\b|Unexpected/, // texto cru do Zod / JSON.parse
+];
+
+function expectConsultorFriendly(errors: readonly string[]) {
+  expect(errors.length).toBeGreaterThan(0);
+  for (const error of errors) {
+    for (const pattern of TECHNICAL_PATTERNS) expect(error).not.toMatch(pattern);
+  }
+}
+
 const sample = {
   schemaVersion: 1 as const,
   formId: "f1",
@@ -162,7 +177,10 @@ describe("exportForm", () => {
     };
     const r = buildExport(form);
     expect(r.ok).toBe(false);
-    expect((r.errors ?? []).some((e) => /entity/i.test(e))).toBe(true);
+    expect(r.errors?.[0]).toBe(
+      'Campo "subMabo" (1º) — Entidade: não foi preenchida ' +
+        '(obrigatória em campos do tipo "Select Dinâmico" para buscar os dados)',
+    );
   });
 
   it("falha ao exportar input-modal com entity vazio", () => {
@@ -186,7 +204,10 @@ describe("exportForm", () => {
     };
     const r = buildExport(form);
     expect(r.ok).toBe(false);
-    expect((r.errors ?? []).some((e) => /input-modal sem entity/i.test(e))).toBe(true);
+    expect(r.errors?.[0]).toBe(
+      'Campo "selecao" (1º) — Entidade: não foi preenchida ' +
+        '(obrigatória em campos do tipo "Modal" para buscar os dados)',
+    );
   });
 
   it("exporta input-modal com entity preenchida", () => {
@@ -226,10 +247,12 @@ describe("importForm", () => {
     expect(r.ok).toBe(true);
   });
 
-  it("parseImport rejeita JSON malformado", () => {
+  it("parseImport rejeita JSON malformado com diagnostico em portugues", () => {
     const r = parseImport("{ invalido");
     expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.errors[0]).toMatch(/JSON invalido/);
+    if (r.ok) return;
+    expect(r.errors[0]).toMatch(/^Não foi possível ler o JSON: /);
+    expect(r.errors[0]).not.toMatch(/Unexpected|position|token/i);
   });
 
   it("parseImport rejeita estrutura invalida", () => {
@@ -282,7 +305,7 @@ describe("importForm", () => {
     expect(r.data.fields[0].hide).toBe(false);
   });
 
-  it("parseImport rejeita tipo desconhecido com indice no erro", () => {
+  it("parseImport rejeita tipo desconhecido referenciando o campo pela posicao", () => {
     const r = parseImport(
       JSON.stringify([
         { type: "input-text", props: { name: "ok" } },
@@ -291,14 +314,21 @@ describe("importForm", () => {
     );
     expect(r.ok).toBe(false);
     if (r.ok) return;
-    expect(r.errors[0]).toMatch(/fields\.1\.type: tipo desconhecido "input-foo"/);
+    expect(r.errors[0]).toBe('Campo "x" (2º): tipo de campo não reconhecido ("input-foo")');
   });
 
-  it("parseImport rejeita item v3 sem props.name", () => {
+  it("parseImport rejeita item v3 sem identificador", () => {
     const r = parseImport(JSON.stringify([{ type: "input-text", props: {} }]));
     expect(r.ok).toBe(false);
     if (r.ok) return;
-    expect(r.errors[0]).toMatch(/fields\.0\.props\.name/);
+    expect(r.errors[0]).toBe('Campo do tipo "Texto" (1º) — Identificador: não foi preenchido');
+  });
+
+  it("parseImport rejeita item que nao e um objeto", () => {
+    const r = parseImport(JSON.stringify([{ type: "input-text", props: { name: "ok" } }, 42]));
+    expect(r.ok).toBe(false);
+    if (r.ok) return;
+    expect(r.errors[0]).toBe("Campo (2º): o conteúdo não descreve um campo do formulário");
   });
 
   it("importa dynamic-select v3 com redirectFields e preserva props extras (conditions)", () => {
@@ -377,5 +407,99 @@ describe("importForm", () => {
     expect(props.redirectFields).toEqual({ campo: "atrX" });
     expect(props.allowFields).toEqual(["a", "b"]);
     expect(props.components).toEqual({ search: { entity: "pessoa" } });
+  });
+});
+
+// GER-05 do Plano de Testes: as mensagens precisam ser compreensiveis para
+// Consultores — sem caminho JSON, sem nomes internos e sempre apontando qual
+// campo do formulario esta com problema.
+describe("mensagens de erro (GER-05)", () => {
+  const semNome = {
+    ...sample,
+    fields: [{ ...sample.fields[0], props: {} as Record<string, unknown> }],
+  };
+  const larguraInvalida = {
+    ...sample,
+    fields: [{ ...sample.fields[0], colSpan: 99 }],
+  };
+
+  it("export: erro de validacao referencia o campo pelo rotulo e pela posicao", () => {
+    const form = {
+      ...sample,
+      fields: [
+        sample.fields[0],
+        { ...sample.fields[0], id: "b", props: { label: "Sobrenome" } as Record<string, unknown> },
+      ],
+    };
+    const r = buildExport(form);
+    expect(r.ok).toBe(false);
+    expect(r.errors).toContain('Campo "Sobrenome" (2º) — Identificador: não foi preenchido');
+    expectConsultorFriendly(r.errors ?? []);
+  });
+
+  it("export: traduz limites numericos das diretivas base", () => {
+    const r = buildExport(larguraInvalida);
+    expect(r.ok).toBe(false);
+    expect(r.errors).toContain('Campo "nome" (1º) — Largura: deve ser no máximo 12');
+    expectConsultorFriendly(r.errors ?? []);
+  });
+
+  it("export: erro na raiz do arquivo nao expoe a chave interna", () => {
+    const r = buildExport({ ...sample, schemaVersion: 99 as unknown as 1 });
+    expect(r.ok).toBe(false);
+    expect(r.errors).toContain("Arquivo inválido — Versão do formato: valor não suportado");
+    expectConsultorFriendly(r.errors ?? []);
+  });
+
+  it("export: entity vazia aponta o campo e o tipo em portugues", () => {
+    const form = {
+      ...sample,
+      fields: [
+        sample.fields[0],
+        {
+          id: "ds",
+          type: "dynamic-select" as const,
+          class: "",
+          hide: false,
+          colSpan: 12,
+          props: { name: "sub", label: "Submotivo", entity: "", filters: {} },
+        },
+      ],
+    };
+    const r = buildExport(form);
+    expect(r.ok).toBe(false);
+    expect(r.errors?.[0]).toMatch(/^Campo "Submotivo" \(2º\) — Entidade: não foi preenchida/);
+    expectConsultorFriendly(r.errors ?? []);
+  });
+
+  it("import: lista v3 invalida referencia cada campo pela posicao", () => {
+    const r = parseImport(
+      JSON.stringify([
+        { type: "input-text", props: { name: "ok" } },
+        { type: "input-text", props: {} },
+        { type: "input-foo", props: { label: "Cidade" } },
+      ]),
+    );
+    expect(r.ok).toBe(false);
+    if (r.ok) return;
+    expectConsultorFriendly(r.errors);
+    for (const error of r.errors) expect(error).toMatch(/^Campo .*\(\d+º\)/);
+    expect(r.errors).toHaveLength(2);
+  });
+
+  it("import: payload interno invalido nao expoe o caminho JSON", () => {
+    const r = parseImport(semNome);
+    expect(r.ok).toBe(false);
+    if (r.ok) return;
+    expect(r.errors).toContain('Campo do tipo "Texto" (1º) — Identificador: não foi preenchido');
+    expectConsultorFriendly(r.errors);
+  });
+
+  it("import: JSON malformado vira diagnostico em portugues", () => {
+    const r = parseImport('[{ "type": "input-text", "props": { "name": "x" }]');
+    expect(r.ok).toBe(false);
+    if (r.ok) return;
+    expect(r.errors[0]).toMatch(/^Não foi possível ler o JSON: /);
+    expectConsultorFriendly(r.errors);
   });
 });

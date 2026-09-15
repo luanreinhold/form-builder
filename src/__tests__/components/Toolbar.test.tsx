@@ -93,6 +93,6 @@ describe("Toolbar", () => {
     fireEvent.change(ta, { target: { value: "{bad json" } });
     const importBtns = screen.getAllByText("Importar");
     fireEvent.click(importBtns[importBtns.length - 1]);
-    expect(screen.getByText(/JSON invalido/)).toBeInTheDocument();
+    expect(screen.getByText(/^Não foi possível ler o JSON: /)).toBeInTheDocument();
   });
 });
