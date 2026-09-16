@@ -1,11 +1,14 @@
-﻿import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+﻿import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Toolbar } from "@/components/layout/Toolbar";
 import { AlertDialogHost } from "@/components/ui/AlertDialog";
+import { ToastHost } from "@/components/ui/Toast";
 import { useFormStore } from "@/store/formStore";
+import { DEFAULT_TOAST_DURATION, useToastStore } from "@/store/toastStore";
 
 beforeEach(() => {
   useFormStore.getState().clearAll();
+  useToastStore.getState().clear();
   vi.stubGlobal("URL", {
     createObjectURL: vi.fn(() => "blob:test"),
     revokeObjectURL: vi.fn(),
@@ -49,6 +52,31 @@ describe("Toolbar", () => {
     render(<Toolbar />);
     fireEvent.click(screen.getByText("Exportar JSON"));
     await waitFor(() => expect(createSpy).toHaveBeenCalled());
+  });
+
+  it("toast de falha ao exportar fecha sozinho na duracao padrao", () => {
+    vi.useFakeTimers();
+    try {
+      const id = useFormStore.getState().addField("input-text");
+      useFormStore.getState().updateField(id, { name: "" });
+      render(
+        <>
+          <Toolbar />
+          <ToastHost />
+        </>,
+      );
+      fireEvent.click(screen.getByText("Exportar JSON"));
+      expect(screen.getByTestId("toast")).toHaveTextContent("Falha ao exportar");
+
+      act(() => {
+        vi.advanceTimersByTime(DEFAULT_TOAST_DURATION + 1);
+      });
+      expect(screen.queryByTestId("toast")).not.toBeInTheDocument();
+      // O que impede a exportacao continua visivel no indicador de status.
+      expect(screen.getByText(/^Erro: /)).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("importa JSON valido atraves do textarea", () => {
