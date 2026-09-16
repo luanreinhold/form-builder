@@ -169,7 +169,7 @@ form-builder/
 │   │
 │   ├── schemas/                    # ⭐ Fonte de verdade dos tipos
 │   │   ├── base.schema.ts          # BaseInputPropsSchema (16 props)
-│   │   ├── inputs.schema.ts        # Discriminated union de 27 tipos + wrap() (id/class/hide/colSpan)
+│   │   ├── inputs.schema.ts        # Discriminated union de 28 tipos + wrap() (id/class/hide/colSpan)
 │   │   └── form.schema.ts          # Payload interno do builder (usado como backup/restore)
 │   │
 │   ├── utils/
@@ -226,7 +226,7 @@ form-builder/
                           │
                    ┌──────┴──────┐
                    │  Zod        │  schemas/*.ts
-                   │ (fonte de   │  (BaseInputPropsSchema + 27 tipos)
+                   │ (fonte de   │  (BaseInputPropsSchema + 28 tipos)
                    │  verdade)   │
                    └─────────────┘
 ```
@@ -403,7 +403,7 @@ Os três se comunicam **exclusivamente via Zustand store** — não há props dr
 
 ## Tipos de Input Suportados
 
-**27 tipos** organizados em 8 categorias (fonte única em [categories.ts](src/components/inputs/categories.ts) + [registry.ts](src/components/inputs/registry.ts)):
+**28 tipos** organizados em 8 categorias (fonte única em [categories.ts](src/components/inputs/categories.ts) + [registry.ts](src/components/inputs/registry.ts)):
 
 | Categoria | Tipos |
 |---|---|
@@ -414,7 +414,7 @@ Os três se comunicam **exclusivamente via Zustand store** — não há props dr
 | **Avançado** | `input-mask`, `input-color`, `input-json`, `input-ocr`, `input-report`, `divider-component` |
 | **Upload** | `input-attach` |
 | **Modal/Lookup** | `input-modal`, `input-cep-modal` |
-| **Seleção** | `select-multiple`, `select-search`, `dynamic-select`, `radio-component` |
+| **Seleção** | `select-multiple`, `select-search`, `dynamic-select`, `radio-component`, `checkbox-component` |
 
 ### Props base (herdadas por todos)
 
@@ -422,7 +422,7 @@ Os três se comunicam **exclusivamente via Zustand store** — não há props dr
 
 `class`, `hide` e `colSpan` **não** fazem parte desse schema — vivem no envoltório de cada campo (`wrap()` em [inputs.schema.ts](src/schemas/inputs.schema.ts)), junto com `id` e `type`. `divider-component` é uma exceção: estende `BaseComponent` da v3, não `InputBaseComponent`, então só usa um subconjunto dessas props.
 
-> Cada tipo também tem props específicas — ex: `input-money` tem `minValue`/`maxValue`, `input-mask` tem `mask`/`clearSpecialCharacter`, selects/`radio-component` têm `source: Array<{key, value}>` (ou `{label, value}` para radio), `input-modal`/`dynamic-select` exigem `entity` preenchida para exportar.
+> Cada tipo também tem props específicas — ex: `input-money` tem `minValue`/`maxValue`, `input-mask` tem `mask`/`clearSpecialCharacter`, selects/`radio-component` têm `source: Array<{key, value}>` (ou `{label, value}` para radio), `checkbox-component` tem apenas `checked` (um único booleano, sem `source`), `input-modal`/`dynamic-select` exigem `entity` preenchida para exportar.
 >
 > Para o levantamento detalhado de props da v3 que ainda não têm equivalente no builder (por tipo), veja [`docs/v3-props-gaps.md`](docs/v3-props-gaps.md).
 

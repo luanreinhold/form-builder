@@ -254,6 +254,59 @@ describe("FieldSchema", () => {
     }
   });
 
+  it("aceita checkbox-component com label, checked e name", () => {
+    const r = FieldSchema.safeParse({
+      id: "c",
+      type: "checkbox-component",
+      props: { name: "funcionariosEquipe", label: "Equipe", checked: true },
+    });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect((r.data.props as { checked: unknown }).checked).toBe(true);
+    }
+  });
+
+  it("aceita checkbox-component sem checked (opcional)", () => {
+    const r = FieldSchema.safeParse({
+      id: "c",
+      type: "checkbox-component",
+      props: { name: "equipe", label: "Equipe" },
+    });
+    expect(r.success).toBe(true);
+  });
+
+  it("rejeita checkbox-component com checked nao-boolean", () => {
+    const r = FieldSchema.safeParse({
+      id: "c",
+      type: "checkbox-component",
+      props: { name: "equipe", checked: "sim" },
+    });
+    expect(r.success).toBe(false);
+  });
+
+  it("rejeita checkbox-component sem name (e um input)", () => {
+    const r = FieldSchema.safeParse({
+      id: "c",
+      type: "checkbox-component",
+      props: { label: "Equipe" },
+    });
+    expect(r.success).toBe(false);
+  });
+
+  it("checkbox-component preserva props desconhecidas via passthrough", () => {
+    const r = FieldSchema.safeParse({
+      id: "c",
+      type: "checkbox-component",
+      props: { name: "equipe", conditions: [{ field: "tipo", value: 1 }] },
+    });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect((r.data.props as Record<string, unknown>).conditions).toEqual([
+        { field: "tipo", value: 1 },
+      ]);
+    }
+  });
+
   it("aceita divider-component sem name (nao e um input)", () => {
     const r = FieldSchema.safeParse({
       id: "d",
