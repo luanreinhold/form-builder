@@ -22,6 +22,11 @@ export function InputPreview({ field }: Props) {
   const required = props.required === true;
   const placeholder = (props.placeholder as string) ?? "";
 
+  // checkbox: a caixa vem antes do texto, nao abaixo de um label proprio.
+  if (field.type === "checkbox-component") {
+    return renderCheckbox(props, label, required);
+  }
+
   return (
     <div className="space-y-1">
       {/* biome-ignore lint/a11y/noLabelWithoutControl: o controle e renderizado dentro do label via renderControl() */}
@@ -119,6 +124,33 @@ function renderDivider(props: Record<string, unknown>): JSX.Element {
       title={label}
     >
       {label}
+    </div>
+  );
+}
+
+function renderCheckbox(
+  props: Record<string, unknown>,
+  label: string,
+  required: boolean,
+): JSX.Element {
+  return (
+    <div className="space-y-1">
+      <label className="flex cursor-not-allowed items-center gap-1.5 text-sm font-medium text-foreground">
+        <input
+          type="checkbox"
+          className="h-4 w-4 shrink-0"
+          checked={props.checked === true}
+          readOnly
+          disabled
+        />
+        <span className="truncate" title={label}>
+          {label}
+        </span>
+        {required && <span className="shrink-0 text-danger">*</span>}
+      </label>
+      {props.hint ? (
+        <p className="break-words text-xs text-muted-foreground">{props.hint as string}</p>
+      ) : null}
     </div>
   );
 }

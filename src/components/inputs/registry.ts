@@ -177,6 +177,12 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
       vertical: false,
     },
   },
+  "checkbox-component": {
+    type: "checkbox-component",
+    label: "Checkbox",
+    category: "selecao",
+    defaultProps: { ...baseDefaults("checkbox"), checked: false },
+  },
   "divider-component": {
     type: "divider-component",
     label: "Divisória",

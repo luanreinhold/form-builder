@@ -129,6 +129,14 @@ const RadioProps = BaseInputPropsSchema.extend({
 });
 const Radio = wrap("radio-component", RadioProps);
 
+// checkbox-component estende InputBaseComponent (tem `name`), ao contrario do
+// divider. `checked` e o estado inicial da caixa (ICheckboxProperties da v3);
+// `readonly` ja vem da base. Nao ha `source`: e um unico booleano.
+const CheckboxProps = BaseInputPropsSchema.extend({
+  checked: z.boolean().optional(),
+});
+const Checkbox = wrap("checkbox-component", CheckboxProps);
+
 // divider-component estende BaseComponent (nao InputBaseComponent) na v3 —
 // nao e um input: nada de placeholder/required/value, e `name` e opcional
 // (usado apenas como alvo de acoes hideById do form-panel). transformDivider
@@ -188,6 +196,7 @@ export const FieldSchema = z.discriminatedUnion("type", [
   SelectSearch,
   DynamicSelect,
   Radio,
+  Checkbox,
   Divider,
 ]);
 
@@ -221,5 +230,6 @@ export const FIELD_TYPES = [
   "select-search",
   "dynamic-select",
   "radio-component",
+  "checkbox-component",
   "divider-component",
 ] as const satisfies readonly FieldType[];

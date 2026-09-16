@@ -53,6 +53,7 @@ const PROP_NAMES: Record<string, string> = {
   // selecao / busca
   source: "Lista de opções",
   selected: "Opção selecionada",
+  checked: "Marcado",
   vertical: "Exibição vertical",
   expand: "Expandir",
   optionLabel: "Rótulo da opção",
