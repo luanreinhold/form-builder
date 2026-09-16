@@ -80,9 +80,16 @@ export default {
           from: { opacity: "0", transform: "translateY(0.5rem) scale(0.98)" },
           to: { opacity: "1", transform: "translateY(0) scale(1)" },
         },
+        "toast-out": {
+          from: { opacity: "1", transform: "translateY(0) scale(1)" },
+          to: { opacity: "0", transform: "translateY(0.5rem) scale(0.98)" },
+        },
       },
       animation: {
+        // Entrada acelera e desacelera no fim (ease-out); saida faz o inverso
+        // (ease-in), entao o card "assenta" ao aparecer e some ganhando ritmo.
         "toast-in": "toast-in 150ms ease-out",
+        "toast-out": "toast-out 150ms ease-in forwards",
       },
     },
   },

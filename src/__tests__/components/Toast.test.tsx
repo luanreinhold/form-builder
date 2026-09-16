@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { StrictMode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { ToastHost } from "@/components/ui/Toast";
+import { TOAST_EXIT_DURATION, ToastHost } from "@/components/ui/Toast";
 import { DEFAULT_TOAST_DURATION, toast, useToastStore } from "@/store/toastStore";
 
 /** Avanca os timers falsos dentro de act para o React processar o dismiss. */
@@ -9,6 +9,11 @@ function advance(ms: number) {
   act(() => {
     vi.advanceTimersByTime(ms);
   });
+}
+
+/** Roda a animacao de saida, apos a qual o toast sai da store. */
+function flushExit() {
+  advance(TOAST_EXIT_DURATION);
 }
 
 /** Dispara um toast fora do render, como faria um handler de botao. */
@@ -80,10 +85,31 @@ describe("ToastHost", () => {
     expect(screen.getByTestId("toast")).toHaveAttribute("data-variant", "info");
   });
 
+  it("anima a entrada e, ao fechar, a saida antes de sumir", () => {
+    render(<ToastHost />);
+    push({ description: "Mensagem", duration: 0 });
+    const item = screen.getByTestId("toast");
+    expect(item).toHaveAttribute("data-state", "open");
+    expect(item).toHaveClass("animate-toast-in");
+
+    fireEvent.click(screen.getByRole("button", { name: "Fechar notificação" }));
+    // Ainda no DOM enquanto a animacao de saida roda.
+    const leaving = screen.getByTestId("toast");
+    expect(leaving).toHaveAttribute("data-state", "leaving");
+    expect(leaving).toHaveClass("animate-toast-out");
+    expect(leaving).not.toHaveClass("animate-toast-in");
+
+    advance(TOAST_EXIT_DURATION - 1);
+    expect(screen.getByTestId("toast")).toBeInTheDocument();
+    advance(2);
+    expect(screen.queryByTestId("toast")).not.toBeInTheDocument();
+  });
+
   it("fecha ao clicar no botao fechar", () => {
     render(<ToastHost />);
     push({ description: "Mensagem" });
     fireEvent.click(screen.getByRole("button", { name: "Fechar notificação" }));
+    flushExit();
     expect(screen.queryByTestId("toast")).not.toBeInTheDocument();
   });
 
@@ -93,6 +119,9 @@ describe("ToastHost", () => {
     advance(DEFAULT_TOAST_DURATION - 1);
     expect(screen.getByTestId("toast")).toBeInTheDocument();
     advance(2);
+    // O timer inicia a saida; a remocao acontece no fim da animacao.
+    expect(screen.getByTestId("toast")).toHaveAttribute("data-state", "leaving");
+    flushExit();
     expect(screen.queryByTestId("toast")).not.toBeInTheDocument();
   });
 
@@ -102,6 +131,7 @@ describe("ToastHost", () => {
     advance(999);
     expect(screen.getByTestId("toast")).toBeInTheDocument();
     advance(2);
+    flushExit();
     expect(screen.queryByTestId("toast")).not.toBeInTheDocument();
   });
 
@@ -111,6 +141,7 @@ describe("ToastHost", () => {
     advance(DEFAULT_TOAST_DURATION * 4);
     expect(screen.getByTestId("toast")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Fechar notificação" }));
+    flushExit();
     expect(screen.queryByTestId("toast")).not.toBeInTheDocument();
   });
 
@@ -126,8 +157,9 @@ describe("ToastHost", () => {
 
     fireEvent.mouseLeave(item);
     advance(400);
-    expect(screen.getByTestId("toast")).toBeInTheDocument();
+    expect(screen.getByTestId("toast")).toHaveAttribute("data-state", "open");
     advance(200);
+    flushExit();
     expect(screen.queryByTestId("toast")).not.toBeInTheDocument();
   });
 
@@ -142,6 +174,7 @@ describe("ToastHost", () => {
 
     fireEvent.blur(closeBtn);
     advance(1001);
+    flushExit();
     expect(screen.queryByTestId("toast")).not.toBeInTheDocument();
   });
 
@@ -150,6 +183,7 @@ describe("ToastHost", () => {
     push({ description: "Primeiro", duration: 0 });
     push({ description: "Segundo", duration: 0 });
     fireEvent.click(screen.getAllByRole("button", { name: "Fechar notificação" })[0]);
+    flushExit();
     expect(screen.getAllByTestId("toast")).toHaveLength(1);
     expect(screen.getByText("Segundo")).toBeInTheDocument();
   });
@@ -164,6 +198,7 @@ describe("ToastHost", () => {
     advance(999);
     expect(screen.getByTestId("toast")).toBeInTheDocument();
     advance(2);
+    flushExit();
     expect(screen.queryByTestId("toast")).not.toBeInTheDocument();
   });
 });

@@ -2,7 +2,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Toolbar } from "@/components/layout/Toolbar";
 import { AlertDialogHost } from "@/components/ui/AlertDialog";
-import { ToastHost } from "@/components/ui/Toast";
+import { TOAST_EXIT_DURATION, ToastHost } from "@/components/ui/Toast";
 import { useFormStore } from "@/store/formStore";
 import { DEFAULT_TOAST_DURATION, useToastStore } from "@/store/toastStore";
 
@@ -69,7 +69,8 @@ describe("Toolbar", () => {
       expect(screen.getByTestId("toast")).toHaveTextContent("Falha ao exportar");
 
       act(() => {
-        vi.advanceTimersByTime(DEFAULT_TOAST_DURATION + 1);
+        // Duracao + animacao de saida, que so entao remove o toast da fila.
+        vi.advanceTimersByTime(DEFAULT_TOAST_DURATION + TOAST_EXIT_DURATION + 1);
       });
       expect(screen.queryByTestId("toast")).not.toBeInTheDocument();
       // O que impede a exportacao continua visivel no indicador de status.

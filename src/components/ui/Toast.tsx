@@ -12,23 +12,33 @@ import {
 
 interface VariantStyle {
   icon: IconName;
-  /** Cor do icone + borda de acento a esquerda. */
+  /** Cor do icone — unico sinal visual da variante. */
   accent: string;
   /** Urgencia da live region: danger/warning interrompem o leitor de tela. */
   assertive: boolean;
 }
 
 const VARIANTS: Record<ToastVariant, VariantStyle> = {
-  info: { icon: "info", accent: "border-l-info text-info", assertive: false },
-  success: { icon: "check-circle", accent: "border-l-success text-success", assertive: false },
-  warning: { icon: "alert-triangle", accent: "border-l-warning text-warning", assertive: true },
-  danger: { icon: "alert-circle", accent: "border-l-danger text-danger", assertive: true },
+  info: { icon: "info", accent: "text-info", assertive: false },
+  success: { icon: "check-circle", accent: "text-success", assertive: false },
+  warning: { icon: "alert-triangle", accent: "text-warning", assertive: true },
+  danger: { icon: "alert-circle", accent: "text-danger", assertive: true },
 };
+
+/**
+ * Duracao (ms) da animacao de saida. Espelha o `animate-toast-out` do
+ * tailwind.config — se um mudar, o outro muda junto.
+ */
+export const TOAST_EXIT_DURATION = 150;
 
 /**
  * ToastItem — um card da fila. Cuida do proprio timer de auto-dismiss: pausa
  * no hover/foco e retoma do tempo restante, para que a notificacao nao suma
  * enquanto o usuario ainda esta lendo ou indo clicar no fechar.
+ *
+ * O fechamento e em duas etapas: `leaving` troca a animacao de entrada pela de
+ * saida e so depois dela o item sai da store, senao o card desmontaria antes de
+ * a animacao rodar.
  */
 function ToastItem({ toast }: { toast: Toast }) {
   const dismiss = useToastStore((s) => s.dismiss);
@@ -36,19 +46,26 @@ function ToastItem({ toast }: { toast: Toast }) {
   const style = VARIANTS[variant];
 
   const [paused, setPaused] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const remaining = useRef(duration);
   const startedAt = useRef(0);
 
   useEffect(() => {
     // duration <= 0 = toast persistente (so fecha no clique do usuario).
-    if (duration <= 0 || paused) return;
+    if (duration <= 0 || paused || leaving) return;
     startedAt.current = Date.now();
-    const timer = setTimeout(() => dismiss(id), remaining.current);
+    const timer = setTimeout(() => setLeaving(true), remaining.current);
     return () => {
       clearTimeout(timer);
       remaining.current = Math.max(0, remaining.current - (Date.now() - startedAt.current));
     };
-  }, [duration, paused, id, dismiss]);
+  }, [duration, paused, leaving]);
+
+  useEffect(() => {
+    if (!leaving) return;
+    const timer = setTimeout(() => dismiss(id), TOAST_EXIT_DURATION);
+    return () => clearTimeout(timer);
+  }, [leaving, id, dismiss]);
 
   return (
     // Hover/foco aqui so pausam o timer — nao sao afordancia clicavel; o unico
@@ -66,12 +83,18 @@ function ToastItem({ toast }: { toast: Toast }) {
       onBlur={() => setPaused(false)}
       data-testid="toast"
       data-variant={variant}
+      data-state={leaving ? "leaving" : "open"}
       className={clsx(
-        "pointer-events-auto flex w-80 max-w-[calc(100vw-2rem)] items-start gap-3 rounded-xl border border-l-4 border-edge-soft bg-popover p-3.5 shadow-xl animate-toast-in motion-reduce:animate-none",
-        style.accent,
+        "pointer-events-auto flex w-80 max-w-[calc(100vw-2rem)] items-start gap-3 rounded-xl border border-edge-soft bg-popover p-3.5 shadow-xl motion-reduce:animate-none",
+        leaving ? "animate-toast-out" : "animate-toast-in",
       )}
     >
-      <Icon name={style.icon} width={18} height={18} className="mt-0.5 shrink-0" />
+      <Icon
+        name={style.icon}
+        width={18}
+        height={18}
+        className={clsx("mt-0.5 shrink-0", style.accent)}
+      />
       <div className="min-w-0 flex-1">
         {title && <p className="text-sm font-semibold text-foreground">{title}</p>}
         <p
@@ -87,7 +110,7 @@ function ToastItem({ toast }: { toast: Toast }) {
         variant="ghost"
         size="icon"
         aria-label="Fechar notificação"
-        onClick={() => dismiss(id)}
+        onClick={() => setLeaving(true)}
         className="-mr-1 -mt-1 h-7 w-7 focus-visible:ring-offset-popover"
       >
         <Icon name="x" width={14} height={14} />
