@@ -2,6 +2,7 @@ import { Fragment, type ReactNode } from "react";
 import { Button } from "@/components/ui/Button";
 import type { Field } from "@/schemas/inputs.schema";
 import { confirm } from "@/store/dialogStore";
+import { toast } from "@/store/toastStore";
 import { BooleanEditor } from "./editors/BooleanEditor";
 import { StringEditor } from "./editors/StringEditor";
 import { renderSpecificEditor, type Specific } from "./specificEditors";
@@ -115,13 +116,16 @@ function EditorHeader({ type, onDelete }: { type: string; onDelete: () => void }
         variant="danger-solid"
         size="sm"
         onClick={async () => {
-          const ok = await confirm({
+          const shouldRemove = await confirm({
             title: "Remover este campo?",
             description: "Esta ação não pode ser desfeita.",
             confirmLabel: "Excluir",
             variant: "danger",
           });
-          if (ok) onDelete();
+          if (shouldRemove) {
+            onDelete();
+            toast({ description: "Campo removido.", variant: "success" });
+          }
         }}
       >
         Excluir

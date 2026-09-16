@@ -69,8 +69,12 @@ describe("Toolbar", () => {
       expect(screen.getByTestId("toast")).toHaveTextContent("Falha ao exportar");
 
       act(() => {
-        // Duracao + animacao de saida, que so entao remove o toast da fila.
-        vi.advanceTimersByTime(DEFAULT_TOAST_DURATION + TOAST_EXIT_DURATION + 1);
+        vi.advanceTimersByTime(DEFAULT_TOAST_DURATION + 1);
+      });
+      // A saida so e agendada apos o render com `data-state="leaving"`, entao
+      // precisa de um segundo avanco para o toast deixar a fila.
+      act(() => {
+        vi.advanceTimersByTime(TOAST_EXIT_DURATION);
       });
       expect(screen.queryByTestId("toast")).not.toBeInTheDocument();
       // O que impede a exportacao continua visivel no indicador de status.

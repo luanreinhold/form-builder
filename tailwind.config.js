@@ -77,12 +77,12 @@ export default {
       },
       keyframes: {
         "toast-in": {
-          from: { opacity: "0", transform: "translateY(0.5rem) scale(0.98)" },
-          to: { opacity: "1", transform: "translateY(0) scale(1)" },
+          from: { opacity: "0", transform: "translateX(calc(100% + 1rem))" },
+          to: { opacity: "1", transform: "translateX(0)" },
         },
         "toast-out": {
-          from: { opacity: "1", transform: "translateY(0) scale(1)" },
-          to: { opacity: "0", transform: "translateY(0.5rem) scale(0.98)" },
+          from: { opacity: "1", transform: "translateX(0)" },
+          to: { opacity: "0", transform: "translateX(calc(100% + 1rem))" },
         },
       },
       animation: {

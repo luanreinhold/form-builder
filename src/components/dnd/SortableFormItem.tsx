@@ -6,6 +6,7 @@ import { Icon } from "@/components/icons/Icon";
 import { InputPreview } from "@/components/inputs/InputPreview";
 import type { Field } from "@/schemas/inputs.schema";
 import { confirm } from "@/store/dialogStore";
+import { toast } from "@/store/toastStore";
 import { colSpanClass } from "@/utils/gridClass";
 
 interface Props {
@@ -82,6 +83,7 @@ export const SortableFormItem = memo(function SortableFormItem({
             e.stopPropagation();
             if (shouldRemove) {
               onRemove(field.id);
+              toast({ description: "Campo removido.", variant: "success" });
             }
           }}
           className="-m-1 rounded p-1 text-danger opacity-0 transition-opacity hover:text-danger-hover focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger group-hover:opacity-100"
