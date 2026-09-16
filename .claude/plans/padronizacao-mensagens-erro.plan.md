@@ -134,15 +134,20 @@ npm run lint
 
 ## Acceptance Criteria
 
-- [ ] `formatErrors.ts` criado com 5 helpers
-- [ ] Testes 100% passing
-- [ ] Nenhuma mensagem contém `fields.N.props`
-- [ ] Nenhuma mensagem contém nomes internos
-- [ ] Todas mencionam rótulo + posição
-- [ ] JSON errors em português
-- [ ] Sem quebra v3
-- [ ] GER-05 validável
+- [x] `formatErrors.ts` criado com 5 helpers
+- [x] Testes 100% passing
+- [x] Nenhuma mensagem contém `fields.N.props`
+- [x] Nenhuma mensagem contém nomes internos
+- [x] Todas mencionam rótulo + posição
+- [x] JSON errors em português
+- [x] Sem quebra v3
+- [x] GER-05 validável
 
 ---
 
-**Status**: ✅ Plano aprovado
+**Status**: ✅ Implementado
+
+Fora do escopo original, mas alterados pelo mesmo motivo:
+- `src/store/formStore.ts` — `importJSON` emitia o mesmo caminho JSON no painel de import.
+- `src/components/layout/Toolbar.tsx` — chip de status truncado (mensagens ficaram mais longas).
+- `src/__tests__/components/Toolbar.test.tsx` — asserção da mensagem de JSON inválido.
