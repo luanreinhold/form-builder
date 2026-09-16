@@ -31,7 +31,10 @@ export function InputPreview({ field }: Props) {
     <div className="space-y-1">
       {/* biome-ignore lint/a11y/noLabelWithoutControl: o controle e renderizado dentro do label via renderControl() */}
       <label className="block">
-        <span className="mb-1 flex items-baseline text-sm font-medium text-foreground" title={label}>
+        <span
+          className="mb-1 flex items-baseline text-sm font-medium text-foreground"
+          title={label}
+        >
           <span className="truncate">{label}</span>
           {required && <span className="ml-1 shrink-0 text-danger">*</span>}
         </span>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { useTheme } from "@/hooks/useTheme";
 import { confirm } from "@/store/dialogStore";
 import { useFormStore } from "@/store/formStore";
+import { toast } from "@/store/toastStore";
 import { buildExport, copyFormToClipboard, downloadForm } from "@/utils/exportForm";
 import { parseImport } from "@/utils/importForm";
 
@@ -22,12 +23,27 @@ export function Toolbar() {
   function handleExport() {
     const result = buildExport(exportJSON());
     if (!result.ok || !result.data) {
-      setStatus(`Erro: ${result.errors?.[0] ?? "invalido"}`);
+      const detail = result.errors?.[0] ?? "invalido";
+      setStatus(`Erro: ${detail}`);
+      // Some sozinho como qualquer toast: o que falta corrigir continua visivel
+      // no indicador de status da toolbar, entao a notificacao nao precisa ficar.
+      toast({
+        title: "Falha ao exportar",
+        description: detail,
+        variant: "danger",
+      });
       return;
     }
     downloadForm(result.data);
     void copyFormToClipboard(result.data).then((ok) => {
       setStatus(ok ? "Exportado (clipboard + download)" : "Exportado (download)");
+      toast({
+        title: "Formulário exportado",
+        description: ok
+          ? "JSON baixado e copiado para a área de transferência."
+          : "JSON baixado. Não foi possível copiar para a área de transferência.",
+        variant: ok ? "success" : "warning",
+      });
     });
   }
 
@@ -56,6 +72,13 @@ export function Toolbar() {
     setImportOpen(false);
     setImportText("");
     setStatus("Importado");
+    // Erros de import seguem inline no painel (é onde o usuário está olhando);
+    // o toast cobre só o sucesso, que fecha o painel e some da vista.
+    toast({
+      title: "Formulário importado",
+      description: "O rascunho foi substituído pelo conteúdo do JSON.",
+      variant: "success",
+    });
   }
 
   async function handleClear() {
@@ -68,6 +91,11 @@ export function Toolbar() {
     if (!ok) return;
     clearAll();
     setStatus("Limpado");
+    toast({
+      title: "Formulário limpo",
+      description: "Todos os campos foram removidos e o rascunho salvo foi apagado.",
+      variant: "success",
+    });
   }
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
