@@ -37,7 +37,7 @@ export function CanvasPanel() {
           </div>
         ) : (
           <SortableContext items={fields.map((f) => f.id)} strategy={noProjectionStrategy}>
-            <div data-testid="canvas-grid" className="grid grid-cols-12 gap-3">
+            <div data-testid="canvas-grid" className="canvas-grid grid grid-cols-12 gap-3">
               {fields.map((f) => (
                 <SortableFormItem
                   key={f.id}
