@@ -134,6 +134,37 @@ describe("exportForm", () => {
     expect(props).not.toHaveProperty("source");
   });
 
+  it("round-trip de filters do dynamic-select preserva chaves e tipos", () => {
+    const filters = { nuwRowsPerPage: -1, atrIdPessoa: 15322, atrCodigo: "0015", flgAtivo: false };
+    const form = {
+      ...sample,
+      fields: [
+        {
+          id: "ds",
+          type: "dynamic-select" as const,
+          class: "",
+          hide: false,
+          colSpan: 12,
+          props: {
+            name: "pessoa",
+            label: "Pessoa",
+            entity: "pessoa",
+            filters,
+            fields: { key: "atrNomePessoa", value: "atrIdPessoa" },
+          },
+        },
+      ],
+    };
+    const exported = buildExport(form);
+    expect(exported.ok).toBe(true);
+    expect((exported.data?.[0]?.props as Record<string, unknown>).filters).toEqual(filters);
+
+    const imported = parseImport(serializeForm(exported.data ?? []));
+    expect(imported.ok).toBe(true);
+    const field = imported.ok ? imported.data.fields[0] : undefined;
+    expect((field?.props as Record<string, unknown>).filters).toEqual(filters);
+  });
+
   it("exporta divider-component sem exigir name (nao e um input)", () => {
     const form = {
       ...sample,

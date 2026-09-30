@@ -42,23 +42,46 @@ describe("PropsPanel", () => {
     expect(props.required).toBe(true);
   });
 
-  it("marca entity como obrigatorio no dynamic-select quando vazio", () => {
+  it("marca Entidade como obrigatorio no dynamic-select quando vazio", () => {
     useFormStore.getState().addField("dynamic-select");
     render(<PropsPanel />);
-    expect(screen.getByLabelText(/entity/)).toBeInvalid();
+    expect(screen.getByLabelText(/Entidade/)).toBeInvalid();
   });
 
-  it("marca entity como obrigatorio no input-modal quando vazio", () => {
+  it("marca Entidade como obrigatorio no input-modal quando vazio", () => {
     useFormStore.getState().addField("input-modal");
     render(<PropsPanel />);
-    expect(screen.getByLabelText(/entity/)).toBeInvalid();
+    expect(screen.getByLabelText(/Entidade/)).toBeInvalid();
   });
 
-  it("remove o erro de entity ao preencher", async () => {
+  it("edita filters do dynamic-select e grava number no store", async () => {
+    const id = useFormStore.getState().addField("dynamic-select");
+    render(<PropsPanel />);
+    fireEvent.click(screen.getByRole("button", { name: "Adicionar filtro" }));
+    fireEvent.change(screen.getByLabelText("Identificador do filtro 1"), {
+      target: { value: "nuwRowsPerPage" },
+    });
+    fireEvent.change(screen.getByLabelText("Valor do filtro 1"), { target: { value: "-1" } });
+    const props = useFormStore.getState().fields.find((f) => f.id === id)?.props as Record<
+      string,
+      unknown
+    >;
+    expect(props.filters).toEqual({ nuwRowsPerPage: -1 });
+  });
+
+  it("usa JsonEditor para filters com valores aninhados", () => {
+    const id = useFormStore.getState().addField("dynamic-select");
+    useFormStore.getState().updateField(id, { filters: { range: { min: 1 } } });
+    render(<PropsPanel />);
+    expect(screen.queryByRole("button", { name: "Adicionar filtro" })).not.toBeInTheDocument();
+    expect(screen.getByDisplayValue(/"min": 1/)).toBeInTheDocument();
+  });
+
+  it("remove o erro de Entidade ao preencher", async () => {
     useFormStore.getState().addField("dynamic-select");
     render(<PropsPanel />);
     const entityInput = screen.getByPlaceholderText(/entidade/i) as HTMLInputElement;
     await userEvent.type(entityInput, "submabo");
-    expect(screen.getByLabelText(/entity/)).toBeValid();
+    expect(screen.getByLabelText(/Entidade/)).toBeValid();
   });
 });

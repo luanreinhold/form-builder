@@ -117,7 +117,36 @@ describe("FieldSchema", () => {
     expect(r.success).toBe(true);
   });
 
-  it("aplica defaults de entity, filters e fields no dynamic-select", () => {
+  it("aceita dynamic-select com filters de n itens preservando os tipos", () => {
+    const filters = { nuwRowsPerPage: -1, atrIdPessoa: 15322, atrNome: "ana", flgAtivo: true };
+    const r = FieldSchema.safeParse({
+      id: "ds",
+      type: "dynamic-select",
+      props: { name: "pessoa", entity: "pessoa", filters },
+    });
+    expect(r.success).toBe(true);
+    if (r.success) expect((r.data.props as { filters: unknown }).filters).toEqual(filters);
+  });
+
+  it("aceita filters v3 com valores aninhados", () => {
+    const r = FieldSchema.safeParse({
+      id: "ds",
+      type: "dynamic-select",
+      props: { name: "pessoa", filters: { range: { min: 1 }, ids: [1, 2], vazio: null } },
+    });
+    expect(r.success).toBe(true);
+  });
+
+  it("rejeita filters que nao sao objeto", () => {
+    const r = FieldSchema.safeParse({
+      id: "ds",
+      type: "dynamic-select",
+      props: { name: "pessoa", filters: [1, 2] },
+    });
+    expect(r.success).toBe(false);
+  });
+
+  it("aplica defaults de entity e fields no dynamic-select", () => {
     const r = FieldSchema.safeParse({
       id: "ds",
       type: "dynamic-select",
@@ -127,12 +156,13 @@ describe("FieldSchema", () => {
     if (r.success) {
       const props = r.data.props as {
         entity: string;
-        filters: unknown;
         fields: unknown;
+        filters?: unknown;
       };
       expect(props.entity).toBe("");
-      expect(props.filters).toEqual({});
       expect(props.fields).toEqual({ key: "", value: "" });
+      // filters nao tem default no schema: campos novos ganham {} pelo registry
+      expect(props.filters).toBeUndefined();
     }
   });
 
