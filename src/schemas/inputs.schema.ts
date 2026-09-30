@@ -155,6 +155,12 @@ const Divider = wrap("divider-component", DividerProps);
 // dynamic-select busca opcoes no backend via `entity` e mapeia a resposta com
 // `fields` (objeto chave/valor) — nao usa `source` (lista estatica).
 // Espelha IDynamicSelectProperties da populis-v3-core.
+//
+// `filters` e o dicionario `{ atributo: valor }` enviado na consulta (editado
+// pelo FiltersEditor). `z.unknown()` nos valores para nao recusar filtros v3
+// aninhados — esses caem no JsonEditor. Sem default no schema: campos novos
+// ganham `{}` pelo registry. `redirectFields` segue nao declarada e atravessa
+// pelo `.passthrough()` do wrap().
 const DynamicSelectProps = BaseInputPropsSchema.extend({
   entity: z.string().optional().default(""),
   fields: z
@@ -164,8 +170,7 @@ const DynamicSelectProps = BaseInputPropsSchema.extend({
     })
     .optional()
     .default({ key: "", value: "" }),
-  filters: z.record(z.unknown()).optional().default({}),
-  redirectFields: z.record(z.string()).optional(),
+  filters: z.record(z.unknown()).optional(),
 });
 const DynamicSelect = wrap("dynamic-select", DynamicSelectProps);
 

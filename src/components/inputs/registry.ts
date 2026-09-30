@@ -163,7 +163,6 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
       entity: "",
       filters: {},
       fields: { key: "", value: "" },
-      redirectFields: {},
     },
   },
   "radio-component": {
