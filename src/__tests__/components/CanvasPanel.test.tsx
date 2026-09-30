@@ -43,6 +43,15 @@ describe("CanvasPanel", () => {
     expect(grid?.className).toMatch(/grid-cols-12/);
   });
 
+  it("grid expoe a classe de container query do canvas responsivo", () => {
+    useFormStore.getState().addField("input-text");
+    const { container } = renderWithDnd(<CanvasPanel />);
+    const grid = container.querySelector('[data-testid="canvas-grid"]');
+    // .canvas-grid e o container consultado em index.css para empilhar os
+    // campos quando o canvas fica estreito (jsdom nao avalia @container).
+    expect(grid?.className).toMatch(/\bcanvas-grid\b/);
+  });
+
   it("item aplica col-span da field", () => {
     const id = useFormStore.getState().addField("input-text");
     useFormStore.getState().updateFieldMeta(id, { colSpan: 4 });

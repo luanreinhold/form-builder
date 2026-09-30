@@ -35,7 +35,7 @@ Editor visual de formulários em **React + TypeScript**. Arraste inputs da palet
 | Renderização | CSR via Vite + React 18 |
 | Linguagem | TypeScript (`strict: true`) |
 | Estilização | Tailwind CSS + tokens CSS (suporte a tema claro/escuro) |
-| Estado | Zustand (`formStore` com `persist`, `dialogStore`, `fieldPickerStore`) |
+| Estado | Zustand (`formStore` com `persist`, `dialogStore`, `fieldPickerStore`, `toastStore`) |
 | Validação | Zod (schemas como fonte única de verdade) |
 | DnD | `@dnd-kit/core` + `@dnd-kit/sortable`, com colisão e reorder customizados |
 | Cobertura mínima | 80% statements/branches/functions/lines |
@@ -147,7 +147,8 @@ form-builder/
 │   │   ├── ui/
 │   │   │   ├── Button.tsx             # Variantes primary/secondary/danger/ghost/icon
 │   │   │   ├── AlertDialog.tsx        # Host do confirm() imperativo (dialogStore)
-│   │   │   └── FieldPickerDialog.tsx  # Host do pickField() imperativo (fieldPickerStore)
+│   │   │   ├── FieldPickerDialog.tsx  # Host do pickField() imperativo (fieldPickerStore)
+│   │   │   └── Toast.tsx              # Host do toast() imperativo (toastStore)
 │   │   └── props/
 │   │       ├── PropEditor.tsx         # Orquestra as seções do editor por campo
 │   │       ├── specificEditors.tsx    # Escolhe editor por nome de prop, depois por tipo de valor
@@ -165,11 +166,12 @@ form-builder/
 │   ├── store/
 │   │   ├── formStore.ts            # Zustand + persist (versão 2)
 │   │   ├── dialogStore.ts          # confirm() imperativo — substitui window.confirm
-│   │   └── fieldPickerStore.ts     # pickField() imperativo
+│   │   ├── fieldPickerStore.ts     # pickField() imperativo
+│   │   └── toastStore.ts           # toast() imperativo — fila de notificações
 │   │
 │   ├── schemas/                    # ⭐ Fonte de verdade dos tipos
 │   │   ├── base.schema.ts          # BaseInputPropsSchema (16 props)
-│   │   ├── inputs.schema.ts        # Discriminated union de 27 tipos + wrap() (id/class/hide/colSpan)
+│   │   ├── inputs.schema.ts        # Discriminated union de 28 tipos + wrap() (id/class/hide/colSpan)
 │   │   └── form.schema.ts          # Payload interno do builder (usado como backup/restore)
 │   │
 │   ├── utils/
@@ -226,7 +228,7 @@ form-builder/
                           │
                    ┌──────┴──────┐
                    │  Zod        │  schemas/*.ts
-                   │ (fonte de   │  (BaseInputPropsSchema + 27 tipos)
+                   │ (fonte de   │  (BaseInputPropsSchema + 28 tipos)
                    │  verdade)   │
                    └─────────────┘
 ```
@@ -250,7 +252,7 @@ addField(type)    selectField(id) ──► [PropsPanel] ──► updateField(i
 
 1. **`schemas/`** — Fonte de verdade. Cada tipo de input tem um Zod schema; tipos TS são inferidos via `z.infer`. Validação acontece em vários pontos: edição de props, export, import, rehidratação do storage e ao adicionar campo.
 
-2. **`store/formStore.ts`** — Zustand com middleware `persist`. Persiste apenas `{ formId, createdAt, updatedAt, fields }` (sem flags de UI). `version: 2`, com migration de v1 (backfill de `colSpan: 12` em fields antigos sem a prop). No `merge`, cada field é validado individualmente — se algum falha, descarta tudo e reseta. `dialogStore` e `fieldPickerStore` são stores Zustand independentes, sem `persist`, que expõem APIs imperativas (`confirm()`, `pickField()`) resolvidas por Promise.
+2. **`store/formStore.ts`** — Zustand com middleware `persist`. Persiste apenas `{ formId, createdAt, updatedAt, fields }` (sem flags de UI). `version: 2`, com migration de v1 (backfill de `colSpan: 12` em fields antigos sem a prop). No `merge`, cada field é validado individualmente — se algum falha, descarta tudo e reseta. `dialogStore` e `fieldPickerStore` são stores Zustand independentes, sem `persist`, que expõem APIs imperativas (`confirm()`, `pickField()`) resolvidas por Promise. `toastStore` segue o mesmo padrão imperativo (`toast()`), mas sem Promise: é fire-and-forget e mantém uma fila de notificações.
 
 3. **`components/`** — Camada visual. Componentes consomem **slices** via seletores Zustand (`useFormStore((s) => s.fields)`) para minimizar re-renders.
 
@@ -397,13 +399,32 @@ Os três se comunicam **exclusivamente via Zustand store** — não há props dr
 - [`ui/Button.tsx`](src/components/ui/Button.tsx) — variantes (`primary`/`secondary`/`danger`/`danger-solid`/`ghost`) e tamanhos (`sm`/`icon`/default), usado em toda a aplicação.
 - [`ui/AlertDialog.tsx`](src/components/ui/AlertDialog.tsx) + [`store/dialogStore.ts`](src/store/dialogStore.ts) — substitui `window.confirm`. `confirm({ title, description, variant })` retorna uma `Promise<boolean>`; o diálogo é montado uma única vez (portal), com focus-trap, `role="dialog"`/`aria-modal`, `Esc` cancela e o foco é restaurado ao fechar. Usado ao excluir um campo, importar sobre um rascunho não vazio e limpar o formulário.
 - [`ui/FieldPickerDialog.tsx`](src/components/ui/FieldPickerDialog.tsx) + [`store/fieldPickerStore.ts`](src/store/fieldPickerStore.ts) — modal de busca (`pickField()`, mesmo padrão de Promise e acessibilidade) para escolher outro campo do formulário por `name`/`label`/tipo; usado pelo `RedirectFieldsEditor` ao montar `redirectFields` sem digitar o `name` manualmente.
+- [`ui/Toast.tsx`](src/components/ui/Toast.tsx) + [`store/toastStore.ts`](src/store/toastStore.ts) — notificações flutuantes (canto inferior direito). `toast({ title, description, variant, duration })` empilha um card e não retorna Promise (fire-and-forget). Usado na Toolbar ao exportar, importar e limpar o formulário.
 - [`icons/Icon.tsx`](src/components/icons/Icon.tsx) — ícones SVG vendorizados a partir do catálogo Lucide (licença ISC), sem dependência de `lucide-react`.
+
+### Toast — parâmetros
+
+| Parâmetro | Tipo | Padrão | Descrição |
+|---|---|---|---|
+| `description` | `string` | — | **Obrigatório.** Conteúdo do texto da notificação. |
+| `title` | `string?` | — | Título curto. Omitido, o toast exibe só a descrição. |
+| `variant` | `"info" \| "success" \| "warning" \| "danger"` | `"info"` | Cor, ícone e urgência: `warning`/`danger` usam `role="alert"` + `aria-live="assertive"`; `info`/`success` usam `role="status"` + `aria-live="polite"`. |
+| `duration` | `number?` (ms) | `5000` | Tempo de exibição. Todo toast da aplicação usa o padrão; informe um valor só para casos específicos. `0` desativa o auto-dismiss — o toast só fecha no clique. |
+
+```ts
+import { toast } from "@/store/toastStore";
+
+toast({ title: "Formulário exportado", description: "JSON copiado.", variant: "success" });
+toast({ title: "Falha ao exportar", description: "O campo 'cpf' está sem nome.", variant: "danger" });
+```
+
+Comportamento: máximo de 4 toasts simultâneos (`MAX_TOASTS`, o mais antigo sai), timer pausa no hover/foco e retoma do tempo restante, host não-modal (`pointer-events-none` no container, sem focus-trap) montado uma única vez em [`App.tsx`](src/App.tsx). As cores vêm dos tokens `--info`, `--success`, `--warning` e `--danger`, então claro/escuro é automático.
 
 ---
 
 ## Tipos de Input Suportados
 
-**27 tipos** organizados em 8 categorias (fonte única em [categories.ts](src/components/inputs/categories.ts) + [registry.ts](src/components/inputs/registry.ts)):
+**28 tipos** organizados em 8 categorias (fonte única em [categories.ts](src/components/inputs/categories.ts) + [registry.ts](src/components/inputs/registry.ts)):
 
 | Categoria | Tipos |
 |---|---|
@@ -414,7 +435,7 @@ Os três se comunicam **exclusivamente via Zustand store** — não há props dr
 | **Avançado** | `input-mask`, `input-color`, `input-json`, `input-ocr`, `input-report`, `divider-component` |
 | **Upload** | `input-attach` |
 | **Modal/Lookup** | `input-modal`, `input-cep-modal` |
-| **Seleção** | `select-multiple`, `select-search`, `dynamic-select`, `radio-component` |
+| **Seleção** | `select-multiple`, `select-search`, `dynamic-select`, `radio-component`, `checkbox-component` |
 
 ### Props base (herdadas por todos)
 
@@ -422,7 +443,7 @@ Os três se comunicam **exclusivamente via Zustand store** — não há props dr
 
 `class`, `hide` e `colSpan` **não** fazem parte desse schema — vivem no envoltório de cada campo (`wrap()` em [inputs.schema.ts](src/schemas/inputs.schema.ts)), junto com `id` e `type`. `divider-component` é uma exceção: estende `BaseComponent` da v3, não `InputBaseComponent`, então só usa um subconjunto dessas props.
 
-> Cada tipo também tem props específicas — ex: `input-money` tem `minValue`/`maxValue`, `input-mask` tem `mask`/`clearSpecialCharacter`, selects/`radio-component` têm `source: Array<{key, value}>` (ou `{label, value}` para radio), `input-modal`/`dynamic-select` exigem `entity` preenchida para exportar.
+> Cada tipo também tem props específicas — ex: `input-money` tem `minValue`/`maxValue`, `input-mask` tem `mask`/`clearSpecialCharacter`, selects/`radio-component` têm `source: Array<{key, value}>` (ou `{label, value}` para radio), `checkbox-component` tem apenas `checked` (um único booleano, sem `source`), `input-modal`/`dynamic-select` exigem `entity` preenchida para exportar.
 >
 > Para o levantamento detalhado de props da v3 que ainda não têm equivalente no builder (por tipo), veja [`docs/v3-props-gaps.md`](docs/v3-props-gaps.md).
 
@@ -530,26 +551,26 @@ pnpm test:coverage       # Gera relatório em coverage/
 | Camada | Tipo | Exemplos |
 |---|---|---|
 | Schemas Zod | Unit | `schemas/inputs.test.ts`, `schemas/registry.test.ts` |
-| Store | Unit | `store/formStore.test.ts`, `store/persist.test.ts` |
+| Store | Unit | `store/formStore.test.ts`, `store/persist.test.ts`, `store/toastStore.test.ts` |
 | Utils | Unit | `utils/exportImport.test.ts`, `utils/gridClass.test.ts`, `utils/id.test.ts` |
 | Categorias | Unit | `components/categories.test.ts` |
 | DnD | Unit | `components/canvasCollision.test.ts` |
-| UI Kit | Integration | `components/Button.test.tsx`, `components/AlertDialog.test.tsx`, `components/FieldPickerDialog.test.tsx` |
+| UI Kit | Integration | `components/Button.test.tsx`, `components/AlertDialog.test.tsx`, `components/FieldPickerDialog.test.tsx`, `components/Toast.test.tsx` |
 | Editores | Integration | `components/StringEditor.test.tsx`, `components/JsonEditor.test.tsx`, `components/SourceEditor.test.tsx`, `components/FieldsEditor.test.tsx`, `components/RedirectFieldsEditor.test.tsx` |
 | Componentes de layout | Integration | `components/LeftPanel.test.tsx`, `components/CanvasPanel.test.tsx`, `components/PropsPanel.test.tsx`, `components/Toolbar.test.tsx`, `components/InputPreview.test.tsx` |
 
 **Thresholds** (config embutida em `vite.config.ts`, seção `test.coverage`): statements 80% / branches 80% / functions 80% / lines 80%. **CI** roda `pnpm test` (sem coverage) em cada push/PR para `main`.
 
-**Cobertura real atual** (`pnpm test:coverage`, medido em 2026-08-14): **89.95%** statements, **85.32%** branches, **83.33%** functions, **89.95%** lines — folga confortável acima do threshold de 80% em todas as métricas. Alguns pontos concentram a diferença:
+**Cobertura real atual** (`pnpm test:coverage`, medido em 2026-09-16): **90.95%** statements, **87.40%** branches, **83.33%** functions, **90.95%** lines — folga confortável acima do threshold de 80% em todas as métricas. Alguns pontos concentram a diferença:
 
 | Área | Statements | Observação |
 |---|---|---|
 | `src/schemas/` | 100% | Zod schemas totalmente cobertos |
 | `src/components/inputs/` | 100% | registry + categories + preview |
-| `src/utils/` | 97.47% | export/import/gridClass/id |
-| `src/components/ui/` | 93.69% | Button/AlertDialog/FieldPickerDialog |
-| `src/store/` | 85.77% | `formStore.ts` tem trechos de `migrate`/`merge` não exercitados |
-| `src/components/layout/` | 68.45% | `AppShell.tsx` está em **0%** — a orquestração do `DndContext` (drag start/over/end) não tem teste direto hoje |
+| `src/utils/` | 98.34% | export/import/gridClass/id |
+| `src/components/ui/` | 95.17% | Button/AlertDialog/FieldPickerDialog/Toast |
+| `src/store/` | 86.58% | `formStore.ts` tem trechos de `migrate`/`merge` não exercitados |
+| `src/components/layout/` | 68.42% | `AppShell.tsx` está em **0%** — a orquestração do `DndContext` (drag start/over/end) não tem teste direto hoje |
 
 > `App.tsx` e `AppShell.tsx` aparecem com 0% de cobertura direta: a suíte testa `CanvasPanel`/`LeftPanel`/`PropsPanel`/`Toolbar` isoladamente via store, mas não monta o `DndContext` completo em um teste de integração ponta a ponta.
 

@@ -34,9 +34,9 @@ export function FieldsEditor({ label, value, onChange }: Props) {
     <div className="space-y-1.5">
       <span className="block text-xs font-medium text-muted-foreground">{label}</span>
       <label className="block">
-        <span className="mb-1 block text-[11px] text-faint">key</span>
+        <span className="mb-1 block text-[11px] text-faint">Identificador</span>
         <input
-          aria-label="key"
+          aria-label="Identificador"
           value={fields.key}
           onChange={(e) => onChange({ ...fields, key: e.target.value })}
           placeholder="Atributo exibido (ex.: atrNomeSubMotivoAbono)"
@@ -44,9 +44,9 @@ export function FieldsEditor({ label, value, onChange }: Props) {
         />
       </label>
       <label className="block">
-        <span className="mb-1 block text-[11px] text-faint">value</span>
+        <span className="mb-1 block text-[11px] text-faint">Valor</span>
         <input
-          aria-label="value"
+          aria-label="Valor"
           value={fields.value}
           onChange={(e) => onChange({ ...fields, value: e.target.value })}
           placeholder="Atributo armazenado (ex.: atrIdSubMotivoAbono)"

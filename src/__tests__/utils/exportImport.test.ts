@@ -134,6 +134,37 @@ describe("exportForm", () => {
     expect(props).not.toHaveProperty("source");
   });
 
+  it("round-trip de filters do dynamic-select preserva chaves e tipos", () => {
+    const filters = { nuwRowsPerPage: -1, atrIdPessoa: 15322, atrCodigo: "0015", flgAtivo: false };
+    const form = {
+      ...sample,
+      fields: [
+        {
+          id: "ds",
+          type: "dynamic-select" as const,
+          class: "",
+          hide: false,
+          colSpan: 12,
+          props: {
+            name: "pessoa",
+            label: "Pessoa",
+            entity: "pessoa",
+            filters,
+            fields: { key: "atrNomePessoa", value: "atrIdPessoa" },
+          },
+        },
+      ],
+    };
+    const exported = buildExport(form);
+    expect(exported.ok).toBe(true);
+    expect((exported.data?.[0]?.props as Record<string, unknown>).filters).toEqual(filters);
+
+    const imported = parseImport(serializeForm(exported.data ?? []));
+    expect(imported.ok).toBe(true);
+    const field = imported.ok ? imported.data.fields[0] : undefined;
+    expect((field?.props as Record<string, unknown>).filters).toEqual(filters);
+  });
+
   it("exporta divider-component sem exigir name (nao e um input)", () => {
     const form = {
       ...sample,
@@ -386,6 +417,32 @@ describe("importForm", () => {
     const back = buildExport(r.data);
     expect(back.ok).toBe(true);
     expect(back.data?.[0]?.props).toEqual(v3[0].props);
+  });
+
+  it("importa checkbox-component v3 e mantem round-trip fiel", () => {
+    const v3 = [
+      {
+        type: "checkbox-component",
+        class: "d-block col-sm-2 mb-2",
+        props: { label: "Equipe", checked: true, name: "funcionariosEquipe" },
+      },
+    ];
+    const r = parseImport(JSON.stringify(v3));
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    const f = r.data.fields[0];
+    expect(f.type).toBe("checkbox-component");
+    const props = f.props as Record<string, unknown>;
+    expect(props.name).toBe("funcionariosEquipe");
+    expect(props.label).toBe("Equipe");
+    expect(props.checked).toBe(true);
+
+    const back = buildExport(r.data);
+    expect(back.ok).toBe(true);
+    expect(back.data?.[0]?.props).toEqual(v3[0].props);
+    // `col-sm-2` nao e reconhecido pelo import (so `col-md-N`): a classe e
+    // preservada como customizada e recebe o col-md do colSpan padrao (12).
+    expect(back.data?.[0]?.class).toBe("d-block col-sm-2 mb-2 col-md-12");
   });
 
   it("importa input-modal v3 com redirectFields e components (passthrough)", () => {

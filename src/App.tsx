@@ -1,6 +1,7 @@
 ﻿import { AppShell } from "./components/layout/AppShell";
 import { AlertDialogHost } from "./components/ui/AlertDialog";
 import { FieldPickerHost } from "./components/ui/FieldPickerDialog";
+import { ToastHost } from "./components/ui/Toast";
 
 export default function App() {
   return (
@@ -8,6 +9,7 @@ export default function App() {
       <AppShell />
       <AlertDialogHost />
       <FieldPickerHost />
+      <ToastHost />
     </>
   );
 }

@@ -163,7 +163,6 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
       entity: "",
       filters: {},
       fields: { key: "", value: "" },
-      redirectFields: {},
     },
   },
   "radio-component": {
@@ -176,6 +175,12 @@ export const REGISTRY: Record<FieldType, RegistryEntry> = {
       selected: "",
       vertical: false,
     },
+  },
+  "checkbox-component": {
+    type: "checkbox-component",
+    label: "Checkbox",
+    category: "selecao",
+    defaultProps: { ...baseDefaults("checkbox"), checked: false },
   },
   "divider-component": {
     type: "divider-component",

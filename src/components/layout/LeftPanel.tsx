@@ -11,7 +11,7 @@ export function LeftPanel() {
   );
 
   return (
-    <aside className="w-56 shrink-0 overflow-y-auto border-r border-edge bg-surface p-4 xl:w-64">
+    <aside className="w-48 shrink-0 overflow-y-auto border-r border-edge bg-surface p-4 lg:w-56 xl:w-64">
       <div className="mb-4">
         <h2 className="text-sm font-semibold text-foreground">Paleta</h2>
         <p className="mt-0.5 text-xs text-muted-foreground">Arraste um campo para o formulário</p>
@@ -34,7 +34,7 @@ export function LeftPanel() {
               />
             </button>
             {open[g.category] && (
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
                 {g.items.map((it) => (
                   <DraggableInput key={it.type} entry={it} />
                 ))}

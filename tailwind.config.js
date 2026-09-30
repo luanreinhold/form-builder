@@ -59,7 +59,37 @@ export default {
           active: token("danger-active"),
           soft: fixedToken("danger-soft"),
         },
-        success: token("success"),
+        success: {
+          DEFAULT: token("success"),
+          surface: fixedToken("success-surface"),
+          edge: token("success-edge"),
+        },
+        warning: {
+          DEFAULT: token("warning"),
+          surface: fixedToken("warning-surface"),
+          edge: token("warning-edge"),
+        },
+        info: {
+          DEFAULT: token("info"),
+          surface: fixedToken("info-surface"),
+          edge: token("info-edge"),
+        },
+      },
+      keyframes: {
+        "toast-in": {
+          from: { opacity: "0", transform: "translateX(calc(100% + 1rem))" },
+          to: { opacity: "1", transform: "translateX(0)" },
+        },
+        "toast-out": {
+          from: { opacity: "1", transform: "translateX(0)" },
+          to: { opacity: "0", transform: "translateX(calc(100% + 1rem))" },
+        },
+      },
+      animation: {
+        // Entrada acelera e desacelera no fim (ease-out); saida faz o inverso
+        // (ease-in), entao o card "assenta" ao aparecer e some ganhando ritmo.
+        "toast-in": "toast-in 150ms ease-out",
+        "toast-out": "toast-out 150ms ease-in forwards",
       },
     },
   },

@@ -7,20 +7,20 @@ describe("FieldsEditor", () => {
     render(
       <FieldsEditor label="fields" value={{ key: "atrNome", value: "atrId" }} onChange={vi.fn()} />,
     );
-    expect(screen.getByLabelText("key")).toHaveValue("atrNome");
-    expect(screen.getByLabelText("value")).toHaveValue("atrId");
+    expect(screen.getByLabelText("Identificador")).toHaveValue("atrNome");
+    expect(screen.getByLabelText("Valor")).toHaveValue("atrId");
   });
 
   it("trata value undefined sem quebrar (inputs vazios)", () => {
     render(<FieldsEditor label="fields" value={undefined} onChange={vi.fn()} />);
-    expect(screen.getByLabelText("key")).toHaveValue("");
-    expect(screen.getByLabelText("value")).toHaveValue("");
+    expect(screen.getByLabelText("Identificador")).toHaveValue("");
+    expect(screen.getByLabelText("Valor")).toHaveValue("");
   });
 
   it("emite objeto { key, value } ao editar key", () => {
     const onChange = vi.fn();
     render(<FieldsEditor label="fields" value={{ key: "", value: "atrId" }} onChange={onChange} />);
-    fireEvent.change(screen.getByLabelText("key"), { target: { value: "atrNome" } });
+    fireEvent.change(screen.getByLabelText("Identificador"), { target: { value: "atrNome" } });
     expect(onChange).toHaveBeenLastCalledWith({ key: "atrNome", value: "atrId" });
   });
 
@@ -29,7 +29,7 @@ describe("FieldsEditor", () => {
     render(
       <FieldsEditor label="fields" value={{ key: "atrNome", value: "" }} onChange={onChange} />,
     );
-    fireEvent.change(screen.getByLabelText("value"), { target: { value: "atrId" } });
+    fireEvent.change(screen.getByLabelText("Valor"), { target: { value: "atrId" } });
     expect(onChange).toHaveBeenLastCalledWith({ key: "atrNome", value: "atrId" });
   });
 });

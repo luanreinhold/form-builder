@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
 import type { FieldType } from "@/types";
+import { formatPropName } from "@/utils/formatErrors";
 import { BooleanEditor } from "./editors/BooleanEditor";
 import { FieldsEditor } from "./editors/FieldsEditor";
+import { FiltersEditor, isPrimitiveRecord } from "./editors/FiltersEditor";
 import { JsonEditor } from "./editors/JsonEditor";
 import { RedirectFieldsEditor } from "./editors/RedirectFieldsEditor";
 import { SourceEditor } from "./editors/SourceEditor";
@@ -35,8 +37,15 @@ const KEY_EDITORS: Record<string, EditorFactory> = {
     />
   ),
   fields: ({ key, value, onChange }) => (
-    <FieldsEditor label={key} value={value} onChange={onChange} />
+    <FieldsEditor label={formatPropName(key)} value={value} onChange={onChange} />
   ),
+  // Filtros v3 importados com valores aninhados/null seguem no JsonEditor.
+  filters: ({ key, value, onChange }) =>
+    isPrimitiveRecord(value) ? (
+      <FiltersEditor label={formatPropName(key)} value={value} onChange={onChange} />
+    ) : (
+      <JsonEditor label={formatPropName(key)} value={value} onChange={onChange} />
+    ),
   redirectFields: ({ key, value, onChange, fieldId }) => (
     <RedirectFieldsEditor label={key} value={value} onChange={onChange} fieldId={fieldId} />
   ),
@@ -44,12 +53,12 @@ const KEY_EDITORS: Record<string, EditorFactory> = {
     const entityValue = (value as string) ?? "";
     return (
       <StringEditor
-        label="entity"
+        label={formatPropName("entity")}
         value={entityValue}
         onChange={onChange}
         required
         placeholder="Nome da entidade (ex.: submabo)"
-        error={entityValue.trim() === "" ? "entity é obrigatória" : undefined}
+        error={entityValue.trim() === "" ? "Entidade é obrigatória" : undefined}
       />
     );
   },

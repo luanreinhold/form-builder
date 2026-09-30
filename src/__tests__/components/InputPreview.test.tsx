@@ -306,4 +306,48 @@ describe("InputPreview", () => {
       expect(container.querySelector(".flex-col")).toBeNull();
     });
   });
+
+  describe("checkbox-component", () => {
+    it("renderiza a caixa desmarcada por padrao", () => {
+      render(<InputPreview field={makeField("checkbox-component", { label: "Equipe" })} />);
+      expect(screen.getByRole("checkbox")).not.toBeChecked();
+    });
+
+    it("renderiza a caixa marcada quando checked=true", () => {
+      render(
+        <InputPreview
+          field={makeField("checkbox-component", { label: "Equipe", checked: true })}
+        />,
+      );
+      expect(screen.getByRole("checkbox")).toBeChecked();
+    });
+
+    it("exibe o label ao lado da caixa", () => {
+      render(<InputPreview field={makeField("checkbox-component", { label: "Equipe" })} />);
+      expect(screen.getByText("Equipe")).toBeInTheDocument();
+    });
+
+    it("cai para o label do registry quando label e name estao vazios", () => {
+      render(<InputPreview field={makeField("checkbox-component", { label: "", name: "" })} />);
+      expect(screen.getByText("Checkbox")).toBeInTheDocument();
+    });
+
+    it("exibe asterisco quando required=true", () => {
+      render(
+        <InputPreview
+          field={makeField("checkbox-component", { label: "Equipe", required: true })}
+        />,
+      );
+      expect(screen.getByText("*")).toBeInTheDocument();
+    });
+
+    it("exibe hint quando presente", () => {
+      render(
+        <InputPreview
+          field={makeField("checkbox-component", { label: "Equipe", hint: "Marque se aplicável" })}
+        />,
+      );
+      expect(screen.getByText("Marque se aplicável")).toBeInTheDocument();
+    });
+  });
 });

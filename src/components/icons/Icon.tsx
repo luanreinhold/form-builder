@@ -6,6 +6,20 @@ import type { SVGProps } from "react";
  * catálogo, basta substituir os paths deste mapa.
  */
 const paths = {
+  "alert-circle": (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" x2="12" y1="8" y2="12" />
+      <line x1="12" x2="12.01" y1="16" y2="16" />
+    </>
+  ),
+  "alert-triangle": (
+    <>
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+      <path d="M12 9v4" />
+      <path d="M12 17h.01" />
+    </>
+  ),
   "app-window": (
     <>
       <rect x="2" y="4" width="20" height="16" rx="2" />
@@ -20,6 +34,12 @@ const paths = {
       <path d="M16 2v4" />
       <rect width="18" height="18" x="3" y="4" rx="2" />
       <path d="M3 10h18" />
+    </>
+  ),
+  "check-circle": (
+    <>
+      <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+      <path d="m9 11 3 3L22 4" />
     </>
   ),
   "chevron-down": <path d="m6 9 6 6 6-6" />,
@@ -67,6 +87,13 @@ const paths = {
       <path d="M6.17 15a3 3 0 0 1 5.66 0" />
       <circle cx="9" cy="11" r="2" />
       <rect x="2" y="5" width="20" height="14" rx="2" />
+    </>
+  ),
+  info: (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 16v-4" />
+      <path d="M12 8h.01" />
     </>
   ),
   list: (
