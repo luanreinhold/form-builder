@@ -79,7 +79,8 @@ export function RedirectFieldsEditor({ label, value, onChange, fieldId }: Props)
       <span className="block text-xs font-medium text-muted-foreground">{label}</span>
       {entries.length === 0 && (
         <p className="rounded-lg border border-dashed border-edge-input px-3 py-3 text-xs text-faint">
-          Selecione aqui os campos do formulário que receberão os valores do item selecionado no modal.
+          Selecione aqui os campos do formulário que receberão os valores do item selecionado no
+          modal.
         </p>
       )}
       {entries.map(([key, val]) => {
@@ -121,7 +122,7 @@ export function RedirectFieldsEditor({ label, value, onChange, fieldId }: Props)
                 aria-label={`Propriedade do item para ${key}`}
                 value={val}
                 onChange={(e) => changeValue(key, e.target.value)}
-                placeholder="ex.: atrNomePessoa"
+                placeholder="ex.: nomeCliente"
                 className={inputClass}
               />
             </label>

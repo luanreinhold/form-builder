@@ -93,7 +93,7 @@ function parseV3List(list: unknown[]): ImportResult {
 
 /**
  * Aceita dois formatos:
- * - array  → lista v3 (IFormSourceItem[]), o mesmo shape que o export gera;
+ * - array  → lista v3 (FormSourceItem[]), o mesmo shape que o export gera;
  * - objeto → payload interno do builder (FormPayload), backup/restore.
  */
 export function parseImport(input: string | unknown): ImportResult {

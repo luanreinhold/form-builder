@@ -107,18 +107,18 @@ describe("FieldSchema", () => {
       id: "ds",
       type: "dynamic-select",
       props: {
-        name: "subMabo",
-        label: "Submotivo de Abono",
-        entity: "submabo",
+        name: "categoria",
+        label: "Categoria",
+        entity: "categoria",
         filters: {},
-        fields: { key: "atrNomeSubMotivoAbono", value: "atrIdSubMotivoAbono" },
+        fields: { key: "nomeCategoria", value: "idCategoria" },
       },
     });
     expect(r.success).toBe(true);
   });
 
   it("aceita dynamic-select com filters de n itens preservando os tipos", () => {
-    const filters = { nuwRowsPerPage: -1, atrIdPessoa: 15322, atrNome: "ana", flgAtivo: true };
+    const filters = { rowsPerPage: -1, idCliente: 123, nome: "ana", ativo: true };
     const r = FieldSchema.safeParse({
       id: "ds",
       type: "dynamic-select",
@@ -150,7 +150,7 @@ describe("FieldSchema", () => {
     const r = FieldSchema.safeParse({
       id: "ds",
       type: "dynamic-select",
-      props: { name: "subMabo" },
+      props: { name: "categoria" },
     });
     expect(r.success).toBe(true);
     if (r.success) {
@@ -171,15 +171,15 @@ describe("FieldSchema", () => {
       id: "ds",
       type: "dynamic-select",
       props: {
-        name: "subMabo",
-        entity: "submabo",
-        redirectFields: { destino: "atrNomePessoa" },
+        name: "categoria",
+        entity: "categoria",
+        redirectFields: { destino: "nomeCliente" },
       },
     });
     expect(r.success).toBe(true);
     if (r.success) {
       expect((r.data.props as { redirectFields?: unknown }).redirectFields).toEqual({
-        destino: "atrNomePessoa",
+        destino: "nomeCliente",
       });
     }
   });
@@ -189,8 +189,8 @@ describe("FieldSchema", () => {
       id: "ds",
       type: "dynamic-select",
       props: {
-        name: "subMabo",
-        entity: "submabo",
+        name: "categoria",
+        entity: "categoria",
         conditions: [{ field: "tipo", value: 1, operator: "===" }],
         forceSelection: true,
       },
@@ -208,8 +208,8 @@ describe("FieldSchema", () => {
       id: "ds",
       type: "dynamic-select",
       props: {
-        name: "subMabo",
-        entity: "submabo",
+        name: "categoria",
+        entity: "categoria",
         fields: [{ key: "k", value: "v" }],
       },
     });

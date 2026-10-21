@@ -7,9 +7,9 @@ import { initialState, useFormStore } from "@/store/formStore";
 function seedFields() {
   const store = useFormStore.getState();
   const idA = store.addField("input-text");
-  store.updateField(idA, { name: "atrNomePessoa", label: "Nome" });
+  store.updateField(idA, { name: "nomeCliente", label: "Nome" });
   const idB = store.addField("input-number");
-  store.updateField(idB, { name: "atrIdPessoa", label: "Id" });
+  store.updateField(idB, { name: "idCliente", label: "Id" });
   const idC = store.addField("input-modal");
   store.updateField(idC, { name: "selecaoPessoa", label: "Pessoa" });
   return { idA, idB, idC };
@@ -37,8 +37,8 @@ describe("FieldPickerHost", () => {
     const dialog = screen.getByRole("dialog");
     expect(dialog).toHaveAttribute("aria-modal", "true");
     expect(within(dialog).getByText("Selecionar campo")).toBeInTheDocument();
-    expect(within(dialog).getByText("atrNomePessoa")).toBeInTheDocument();
-    expect(within(dialog).getByText("atrIdPessoa")).toBeInTheDocument();
+    expect(within(dialog).getByText("nomeCliente")).toBeInTheDocument();
+    expect(within(dialog).getByText("idCliente")).toBeInTheDocument();
     expect(within(dialog).getByText("selecaoPessoa")).toBeInTheDocument();
   });
 
@@ -49,7 +49,7 @@ describe("FieldPickerHost", () => {
       void pickField({ excludeFieldId: idC });
     });
     const dialog = screen.getByRole("dialog");
-    expect(within(dialog).getByText("atrNomePessoa")).toBeInTheDocument();
+    expect(within(dialog).getByText("nomeCliente")).toBeInTheDocument();
     expect(within(dialog).queryByText("selecaoPessoa")).not.toBeInTheDocument();
   });
 
@@ -60,8 +60,8 @@ describe("FieldPickerHost", () => {
     act(() => {
       result = pickField();
     });
-    fireEvent.click(screen.getByText("atrNomePessoa"));
-    await expect(result).resolves.toBe("atrNomePessoa");
+    fireEvent.click(screen.getByText("nomeCliente"));
+    await expect(result).resolves.toBe("nomeCliente");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
@@ -69,9 +69,9 @@ describe("FieldPickerHost", () => {
     seedFields();
     render(<FieldPickerHost />);
     act(() => {
-      void pickField({ disabledNames: ["atrIdPessoa"] });
+      void pickField({ disabledNames: ["idCliente"] });
     });
-    const button = screen.getByText("atrIdPessoa").closest("button");
+    const button = screen.getByText("idCliente").closest("button");
     expect(button).toBeDisabled();
   });
 
@@ -103,10 +103,10 @@ describe("FieldPickerHost", () => {
     act(() => {
       void pickField();
     });
-    fireEvent.change(screen.getByLabelText("Buscar campo"), { target: { value: "atrId" } });
+    fireEvent.change(screen.getByLabelText("Buscar campo"), { target: { value: "idCli" } });
     const dialog = screen.getByRole("dialog");
-    expect(within(dialog).getByText("atrIdPessoa")).toBeInTheDocument();
-    expect(within(dialog).queryByText("atrNomePessoa")).not.toBeInTheDocument();
+    expect(within(dialog).getByText("idCliente")).toBeInTheDocument();
+    expect(within(dialog).queryByText("nomeCliente")).not.toBeInTheDocument();
   });
 
   it("mostra estado vazio quando o formulario nao tem outros campos", () => {

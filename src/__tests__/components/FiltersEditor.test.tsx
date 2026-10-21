@@ -23,15 +23,11 @@ describe("FiltersEditor", () => {
 
   it("renderiza pares existentes com um input para chave e outro para valor", () => {
     render(
-      <FiltersEditor
-        label="filters"
-        value={{ nuwRowsPerPage: -1, atrNome: "ana" }}
-        onChange={vi.fn()}
-      />,
+      <FiltersEditor label="filters" value={{ rowsPerPage: -1, nome: "ana" }} onChange={vi.fn()} />,
     );
-    expect(screen.getByLabelText("Identificador do filtro 1")).toHaveValue("nuwRowsPerPage");
+    expect(screen.getByLabelText("Identificador do filtro 1")).toHaveValue("rowsPerPage");
     expect(screen.getByLabelText("Valor do filtro 1")).toHaveValue("-1");
-    expect(screen.getByLabelText("Identificador do filtro 2")).toHaveValue("atrNome");
+    expect(screen.getByLabelText("Identificador do filtro 2")).toHaveValue("nome");
     expect(screen.getByLabelText("Valor do filtro 2")).toHaveValue("ana");
     expect(screen.queryByLabelText(/Tipo do filtro/)).not.toBeInTheDocument();
   });
@@ -49,10 +45,10 @@ describe("FiltersEditor", () => {
     render(<FiltersEditor label="filters" value={{}} onChange={onChange} />);
     fireEvent.click(screen.getByRole("button", { name: "Adicionar filtro" }));
     fireEvent.change(screen.getByLabelText("Identificador do filtro 1"), {
-      target: { value: "nuwRowsPerPage" },
+      target: { value: "rowsPerPage" },
     });
     fireEvent.change(screen.getByLabelText("Valor do filtro 1"), { target: { value: "-1" } });
-    expect(lastCall(onChange)).toEqual({ nuwRowsPerPage: -1 });
+    expect(lastCall(onChange)).toEqual({ rowsPerPage: -1 });
   });
 
   it("valor nao numerico sai como string", () => {
@@ -64,19 +60,21 @@ describe("FiltersEditor", () => {
 
   it("monta o dicionario com n itens", () => {
     const onChange = vi.fn();
-    render(<FiltersEditor label="filters" value={{ nuwRowsPerPage: -1 }} onChange={onChange} />);
+    render(<FiltersEditor label="filters" value={{ rowsPerPage: -1 }} onChange={onChange} />);
     fireEvent.click(screen.getByRole("button", { name: "Adicionar filtro" }));
     fireEvent.change(screen.getByLabelText("Identificador do filtro 2"), {
-      target: { value: "atrIdPessoa" },
+      target: { value: "idCliente" },
     });
-    fireEvent.change(screen.getByLabelText("Valor do filtro 2"), { target: { value: "15322" } });
-    expect(lastCall(onChange)).toEqual({ nuwRowsPerPage: -1, atrIdPessoa: 15322 });
+    fireEvent.change(screen.getByLabelText("Valor do filtro 2"), { target: { value: "123" } });
+    expect(lastCall(onChange)).toEqual({ rowsPerPage: -1, idCliente: 123 });
   });
 
   it("renomeia a chave preservando o valor", () => {
     const onChange = vi.fn();
     render(<FiltersEditor label="filters" value={{ a: 1 }} onChange={onChange} />);
-    fireEvent.change(screen.getByLabelText("Identificador do filtro 1"), { target: { value: "b" } });
+    fireEvent.change(screen.getByLabelText("Identificador do filtro 1"), {
+      target: { value: "b" },
+    });
     expect(lastCall(onChange)).toEqual({ b: 1 });
   });
 
@@ -90,7 +88,9 @@ describe("FiltersEditor", () => {
   it("identificador duplicado mostra aviso e so a primeira vale", () => {
     const onChange = vi.fn();
     render(<FiltersEditor label="filters" value={{ a: 1, b: 2 }} onChange={onChange} />);
-    fireEvent.change(screen.getByLabelText("Identificador do filtro 2"), { target: { value: "a" } });
+    fireEvent.change(screen.getByLabelText("Identificador do filtro 2"), {
+      target: { value: "a" },
+    });
     expect(screen.getByRole("alert")).toHaveTextContent(/duplicado/);
     expect(lastCall(onChange)).toEqual({ a: 1 });
   });
@@ -126,7 +126,7 @@ describe("FiltersEditor", () => {
 describe("parseFilterValue", () => {
   it("converte texto numerico em number", () => {
     expect(parseFilterValue("-1")).toBe(-1);
-    expect(parseFilterValue("15322")).toBe(15322);
+    expect(parseFilterValue("123")).toBe(123);
     expect(parseFilterValue(" 2.5 ")).toBe(2.5);
   });
 

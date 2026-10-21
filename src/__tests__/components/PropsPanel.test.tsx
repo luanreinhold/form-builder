@@ -59,14 +59,14 @@ describe("PropsPanel", () => {
     render(<PropsPanel />);
     fireEvent.click(screen.getByRole("button", { name: "Adicionar filtro" }));
     fireEvent.change(screen.getByLabelText("Identificador do filtro 1"), {
-      target: { value: "nuwRowsPerPage" },
+      target: { value: "rowsPerPage" },
     });
     fireEvent.change(screen.getByLabelText("Valor do filtro 1"), { target: { value: "-1" } });
     const props = useFormStore.getState().fields.find((f) => f.id === id)?.props as Record<
       string,
       unknown
     >;
-    expect(props.filters).toEqual({ nuwRowsPerPage: -1 });
+    expect(props.filters).toEqual({ rowsPerPage: -1 });
   });
 
   it("usa JsonEditor para filters com valores aninhados", () => {
@@ -81,7 +81,7 @@ describe("PropsPanel", () => {
     useFormStore.getState().addField("dynamic-select");
     render(<PropsPanel />);
     const entityInput = screen.getByPlaceholderText(/entidade/i) as HTMLInputElement;
-    await userEvent.type(entityInput, "submabo");
+    await userEvent.type(entityInput, "categoria");
     expect(screen.getByLabelText(/Entidade/)).toBeValid();
   });
 });

@@ -4,7 +4,6 @@ import { BaseInputPropsSchema } from "./base.schema";
 // `.passthrough()` preserva props da v3 que o builder (ainda) nao declara —
 // ex.: conditions, components, crudPanel. Sem isso o Zod as descartaria em
 // silencio no import/persist e o re-export sairia sem elas.
-// Lacunas conhecidas mapeadas em docs/v3-props-gaps.md.
 const wrap = <T extends z.AnyZodObject>(typeLiteral: string, propsSchema: T) =>
   z.object({
     id: z.string().min(1),
@@ -63,7 +62,7 @@ const Attach = wrap(
     multiple: z.boolean().optional(),
   }),
 );
-// entity/allowFields/redirectFields espelham IInputModalProperties da populis-v3-core:
+// entity/allowFields/redirectFields espelham as props do input-modal da v3:
 // redirectFields mapeia { nomeDoCampoDoFormulario: propriedadeDoItemSelecionado }.
 // entity e obrigatoria na v3 (consulta ao backend) — default "" aqui para nao
 // derrubar rascunhos na reidratacao; o export barra quando vazia (buildExport).
@@ -129,7 +128,7 @@ const RadioProps = BaseInputPropsSchema.extend({
 });
 const Radio = wrap("radio-component", RadioProps);
 
-// checkbox-component estende InputBaseComponent (tem `name`), ao contrario do
+// checkbox-component e um input na v3 (tem `name`), ao contrario do
 // divider. `checked` e o estado inicial da caixa (ICheckboxProperties da v3);
 // `readonly` ja vem da base. Nao ha `source`: e um unico booleano.
 const CheckboxProps = BaseInputPropsSchema.extend({
@@ -137,7 +136,7 @@ const CheckboxProps = BaseInputPropsSchema.extend({
 });
 const Checkbox = wrap("checkbox-component", CheckboxProps);
 
-// divider-component estende BaseComponent (nao InputBaseComponent) na v3 —
+// divider-component nao e um input na v3 —
 // nao e um input: nada de placeholder/required/value, e `name` e opcional
 // (usado apenas como alvo de acoes hideById do form-panel). transformDivider
 // preenchido troca o label por um <hr> com essa classe ('medium' 2px,
@@ -154,7 +153,7 @@ const Divider = wrap("divider-component", DividerProps);
 
 // dynamic-select busca opcoes no backend via `entity` e mapeia a resposta com
 // `fields` (objeto chave/valor) — nao usa `source` (lista estatica).
-// Espelha IDynamicSelectProperties da populis-v3-core.
+// Espelha as props do dynamic-select da v3.
 //
 // `filters` e o dicionario `{ atributo: valor }` enviado na consulta (editado
 // pelo FiltersEditor). `z.unknown()` nos valores para nao recusar filtros v3
