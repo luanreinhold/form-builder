@@ -8,7 +8,7 @@ import { initialState, useFormStore } from "@/store/formStore";
 function seedFields() {
   const store = useFormStore.getState();
   const idA = store.addField("input-text");
-  store.updateField(idA, { name: "atrNomePessoa1", label: "Nome" });
+  store.updateField(idA, { name: "nomeCliente1", label: "Nome" });
   const idB = store.addField("input-number");
   store.updateField(idB, { name: "searchInitiator", label: "Iniciador" });
   const idModal = store.addField("input-modal");
@@ -39,13 +39,13 @@ describe("RedirectFieldsEditor", () => {
     render(
       <RedirectFieldsEditor
         label="redirectFields"
-        value={{ atrNomePessoa1: "atrNomePessoa" }}
+        value={{ nomeCliente1: "nomeCliente" }}
         onChange={vi.fn()}
       />,
     );
-    expect(screen.getByText("atrNomePessoa1")).toBeInTheDocument();
-    expect(screen.getByLabelText("Propriedade do item para atrNomePessoa1")).toHaveValue(
-      "atrNomePessoa",
+    expect(screen.getByText("nomeCliente1")).toBeInTheDocument();
+    expect(screen.getByLabelText("Propriedade do item para nomeCliente1")).toHaveValue(
+      "nomeCliente",
     );
   });
 
@@ -54,7 +54,7 @@ describe("RedirectFieldsEditor", () => {
     render(
       <RedirectFieldsEditor
         label="redirectFields"
-        value={{ atrNomePessoa1: "atrNomePessoa" }}
+        value={{ nomeCliente1: "nomeCliente" }}
         onChange={vi.fn()}
       />,
     );
@@ -66,7 +66,7 @@ describe("RedirectFieldsEditor", () => {
     render(
       <RedirectFieldsEditor
         label="redirectFields"
-        value={{ campoRenomeado: "atrNomePessoa" }}
+        value={{ campoRenomeado: "nomeCliente" }}
         onChange={vi.fn()}
       />,
     );
@@ -81,14 +81,14 @@ describe("RedirectFieldsEditor", () => {
     render(
       <RedirectFieldsEditor
         label="redirectFields"
-        value={{ atrNomePessoa1: "" }}
+        value={{ nomeCliente1: "" }}
         onChange={onChange}
       />,
     );
-    fireEvent.change(screen.getByLabelText("Propriedade do item para atrNomePessoa1"), {
-      target: { value: "atrNomePessoa" },
+    fireEvent.change(screen.getByLabelText("Propriedade do item para nomeCliente1"), {
+      target: { value: "nomeCliente" },
     });
-    expect(onChange).toHaveBeenLastCalledWith({ atrNomePessoa1: "atrNomePessoa" });
+    expect(onChange).toHaveBeenLastCalledWith({ nomeCliente1: "nomeCliente" });
   });
 
   it("emite onChange sem a chave ao remover", () => {
@@ -97,14 +97,12 @@ describe("RedirectFieldsEditor", () => {
     render(
       <RedirectFieldsEditor
         label="redirectFields"
-        value={{ atrNomePessoa1: "atrNomePessoa", searchInitiator: "atrIdPessoa" }}
+        value={{ nomeCliente1: "nomeCliente", searchInitiator: "idCliente" }}
         onChange={onChange}
       />,
     );
-    fireEvent.click(
-      screen.getByRole("button", { name: "Remover redirecionamento atrNomePessoa1" }),
-    );
-    expect(onChange).toHaveBeenLastCalledWith({ searchInitiator: "atrIdPessoa" });
+    fireEvent.click(screen.getByRole("button", { name: "Remover redirecionamento nomeCliente1" }));
+    expect(onChange).toHaveBeenLastCalledWith({ searchInitiator: "idCliente" });
   });
 
   it("adiciona redirecionamento selecionando o campo no picker", async () => {
@@ -126,8 +124,8 @@ describe("RedirectFieldsEditor", () => {
     expect(dialog).toBeInTheDocument();
     // O proprio input-modal em edicao nao aparece na lista
     expect(screen.queryByText("selecaoPessoa")).not.toBeInTheDocument();
-    fireEvent.click(screen.getByText("atrNomePessoa1"));
-    await waitFor(() => expect(onChange).toHaveBeenLastCalledWith({ atrNomePessoa1: "" }));
+    fireEvent.click(screen.getByText("nomeCliente1"));
+    await waitFor(() => expect(onChange).toHaveBeenLastCalledWith({ nomeCliente1: "" }));
   });
 
   it("troca a chave de um par existente preservando o valor", async () => {
@@ -137,20 +135,18 @@ describe("RedirectFieldsEditor", () => {
       <>
         <RedirectFieldsEditor
           label="redirectFields"
-          value={{ atrNomePessoa1: "atrNomePessoa" }}
+          value={{ nomeCliente1: "nomeCliente" }}
           onChange={onChange}
           fieldId={idModal}
         />
         <FieldPickerHost />
       </>,
     );
-    fireEvent.click(
-      screen.getByRole("button", { name: "Alterar campo de destino atrNomePessoa1" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Alterar campo de destino nomeCliente1" }));
     await screen.findByRole("dialog");
     fireEvent.click(screen.getByText("searchInitiator"));
     await waitFor(() =>
-      expect(onChange).toHaveBeenLastCalledWith({ searchInitiator: "atrNomePessoa" }),
+      expect(onChange).toHaveBeenLastCalledWith({ searchInitiator: "nomeCliente" }),
     );
   });
 
@@ -160,7 +156,7 @@ describe("RedirectFieldsEditor", () => {
       <>
         <RedirectFieldsEditor
           label="redirectFields"
-          value={{ atrNomePessoa1: "atrNomePessoa" }}
+          value={{ nomeCliente1: "nomeCliente" }}
           onChange={vi.fn()}
           fieldId={idModal}
         />
@@ -170,7 +166,7 @@ describe("RedirectFieldsEditor", () => {
     fireEvent.click(screen.getByRole("button", { name: "Adicionar redirecionamento" }));
     const dialog = await screen.findByRole("dialog");
     const usedButton = screen
-      .getAllByText("atrNomePessoa1")
+      .getAllByText("nomeCliente1")
       .map((el) => el.closest("button"))
       .find((btn) => dialog.contains(btn));
     expect(usedButton).toBeDisabled();

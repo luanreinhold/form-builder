@@ -13,7 +13,7 @@ export function WrapperSection({
 }) {
   return (
     <section className="space-y-2">
-      <SectionTitle>Diretivas Base (BaseControl)</SectionTitle>
+      <SectionTitle>Diretivas Base</SectionTitle>
       <label className="block">
         <span className="mb-1 block text-xs font-medium text-muted-foreground">Largura (1-12)</span>
         <select

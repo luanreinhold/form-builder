@@ -39,7 +39,7 @@ export function FieldsEditor({ label, value, onChange }: Props) {
           aria-label="Identificador"
           value={fields.key}
           onChange={(e) => onChange({ ...fields, key: e.target.value })}
-          placeholder="Atributo exibido (ex.: atrNomeSubMotivoAbono)"
+          placeholder="Atributo exibido (ex.: nomeCategoria)"
           className={inputClass}
         />
       </label>
@@ -49,7 +49,7 @@ export function FieldsEditor({ label, value, onChange }: Props) {
           aria-label="Valor"
           value={fields.value}
           onChange={(e) => onChange({ ...fields, value: e.target.value })}
-          placeholder="Atributo armazenado (ex.: atrIdSubMotivoAbono)"
+          placeholder="Atributo armazenado (ex.: idCategoria)"
           className={inputClass}
         />
       </label>

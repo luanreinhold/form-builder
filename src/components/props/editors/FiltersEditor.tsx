@@ -75,7 +75,7 @@ function sameRecord(a: FiltersValue, b: FiltersValue): boolean {
 /**
  * FiltersEditor — edita o `filters` do dynamic-select: dicionario livre
  * `{ atributo: valor }` enviado na consulta ao backend
- * (ex.: `{ nuwRowsPerPage: -1, atrIdPessoa: 15322 }`).
+ * (ex.: `{ rowsPerPage: -1, idCliente: 123 }`).
  *
  * Um input para a chave e outro para o valor; o tipo do valor e inferido do
  * texto (numerico → number, resto → string). As linhas vivem em estado local
@@ -139,14 +139,14 @@ export function FiltersEditor({ label, value, onChange }: Props) {
                 aria-label={`Identificador do filtro ${n}`}
                 value={row.key}
                 onChange={(e) => updateRow(row.id, { key: e.target.value })}
-                placeholder="Identificador (ex.: atrIdPessoa)"
+                placeholder="Identificador (ex.: idCliente)"
                 className={`${inputClass} min-w-0 flex-1`}
               />
               <input
                 aria-label={`Valor do filtro ${n}`}
                 value={row.raw}
                 onChange={(e) => updateRow(row.id, { raw: e.target.value })}
-                placeholder="Valor (ex.: 15322)"
+                placeholder="Valor (ex.: 123)"
                 className={`${inputClass} min-w-0 flex-1`}
               />
               <Button

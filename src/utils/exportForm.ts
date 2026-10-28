@@ -57,7 +57,7 @@ function toV3SourceItem(field: Field): FormSourceItem {
   return item;
 }
 
-/** Mapeia o payload interno do builder para a lista IFormSourceItem[] consumida pela v3. */
+/** Mapeia o payload interno do builder para a lista FormSourceItem[] consumida pela v3. */
 export function toV3SourceList(payload: FormPayload): FormSourceItem[] {
   return payload.fields.map(toV3SourceItem);
 }

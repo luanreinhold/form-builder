@@ -120,7 +120,10 @@ form-builder/
 ├── .claude/                        # Configuração ECC + histórico de planos (.claude/plans/*.md)
 ├── .github/workflows/ci.yml        # CI: install + testes em push/PR para main
 ├── docs/
-│   └── v3-props-gaps.md            # Lacunas de props entre o builder e a v3 (ver Tipos de Input)
+│   ├── v3-props-gaps.md            # Lacunas de props entre o builder e a v3 (ver Tipos de Input)
+│   ├── componentizacao-por-modulos.md  # Guia da modularização do PropEditor (seções + dados declarativos)
+│   ├── components/alert-dialog.md  # Referência do AlertDialog / confirm()
+│   └── plans/                      # Planos de Biome no CI, husky/lint-staged e AlertDialog
 ├── src/
 │   ├── main.tsx                    # Bootstrap React (StrictMode)
 │   ├── App.tsx                     # Renderiza <AppShell />
@@ -151,13 +154,18 @@ form-builder/
 │   │   │   └── Toast.tsx              # Host do toast() imperativo (toastStore)
 │   │   └── props/
 │   │       ├── PropEditor.tsx         # Orquestra as seções do editor por campo
+│   │       ├── propConfig.ts          # Dados declarativos: props base, STRING_SECTIONS, props do divider
+│   │       ├── listSpecificProps.ts   # Lista as props específicas do campo (fora da base) + kind
 │   │       ├── specificEditors.tsx    # Escolhe editor por nome de prop, depois por tipo de valor
+│   │       ├── sections/              # EditorHeader, StringSections, WrapperSection,
+│   │       │                          # BehaviorSection, SpecificsSection, DividerSection
 │   │       └── editors/
 │   │           ├── StringEditor.tsx
 │   │           ├── BooleanEditor.tsx
 │   │           ├── JsonEditor.tsx
 │   │           ├── SourceEditor.tsx        # listas { key, value } ou { label, value }
 │   │           ├── FieldsEditor.tsx        # dynamic-select.fields ({ key, value })
+│   │           ├── FiltersEditor.tsx       # dynamic-select.filters (pares atributo/valor)
 │   │           └── RedirectFieldsEditor.tsx # usa FieldPickerDialog p/ escolher campos
 │   │
 │   ├── hooks/
@@ -177,6 +185,7 @@ form-builder/
 │   ├── utils/
 │   │   ├── exportForm.ts           # Converte p/ IFormSourceItem[] + valida + clipboard + download
 │   │   ├── importForm.ts           # Aceita IFormSourceItem[] (v3) OU o payload interno
+│   │   ├── formatErrors.ts         # Mensagens de erro em PT-BR para não-devs (Zod + JSON.parse)
 │   │   ├── gridClass.ts            # colSpan numérico → classe Tailwind
 │   │   └── id.ts                   # generateId() via crypto.randomUUID, sem libs externas
 │   │
@@ -184,7 +193,7 @@ form-builder/
 │   │   ├── index.ts                # Re-exporta tipos inferidos de Zod
 │   │   └── formSourceItem.ts        # Espelho local de IFormSourceItem da v3
 │   │
-│   └── __tests__/                  # Espelha estrutura de src/ (24 arquivos de teste)
+│   └── __tests__/                  # Espelha estrutura de src/ (27 arquivos de teste)
 │
 ├── index.html
 ├── package.json
@@ -256,7 +265,7 @@ addField(type)    selectField(id) ──► [PropsPanel] ──► updateField(i
 
 3. **`components/`** — Camada visual. Componentes consomem **slices** via seletores Zustand (`useFormStore((s) => s.fields)`) para minimizar re-renders.
 
-4. **`utils/`** — Funções puras (export, import, grid class, geração de id). Sem dependência de React.
+4. **`utils/`** — Funções puras (export, import, formatação de erros, grid class, geração de id). Sem dependência de React.
 
 ---
 
@@ -333,7 +342,7 @@ A aplicação gira em torno de **três componentes principais** que cooperam den
 | Drop da paleta sobre outro campo | `AppShell.onDragEnd` | `addField(type, idx)` na posição |
 | Arrastar campo existente | `AppShell.onDragOver` (ao vivo) | `reorderByIndex(old, new)` a cada troca de posição sob o ponteiro |
 | Click/Enter/Espaço no campo | `SortableFormItem` | `selectField(id)` — abre PropsPanel |
-| Click no ✕ (hover/foco) | `onRemove` | Abre diálogo de confirmação → `removeField(id)` |
+| Click no ✕ (hover/foco) | `onRemove` | Abre diálogo de confirmação → `removeField(id)` + toast "Campo removido." |
 | Click no handle ⋮⋮ | `useSortable.listeners` | inicia drag interno |
 
 > **Discriminação paleta vs. canvas:** ambos compartilham o mesmo `DndContext`. A diferenciação acontece via `active.data.current.source` (`'palette'` cria, `'canvas'` reordena).
@@ -347,17 +356,24 @@ A aplicação gira em torno de **três componentes principais** que cooperam den
 | Aspecto | Detalhe |
 |---|---|
 | Visibilidade | Só aparece quando `selectedFieldId !== null` |
-| Orquestrador | [PropEditor.tsx](src/components/props/PropEditor.tsx) |
-| Escolha de editor | [specificEditors.tsx](src/components/props/specificEditors.tsx) — primeiro por **nome da prop** (`source`, `fields`, `redirectFields`, `entity`), depois por **tipo do valor** (`boolean`/`number`/`json`/`string`) como fallback |
-| Editores | [StringEditor](src/components/props/editors/StringEditor.tsx), [BooleanEditor](src/components/props/editors/BooleanEditor.tsx), [JsonEditor](src/components/props/editors/JsonEditor.tsx), [SourceEditor](src/components/props/editors/SourceEditor.tsx), [FieldsEditor](src/components/props/editors/FieldsEditor.tsx), [RedirectFieldsEditor](src/components/props/editors/RedirectFieldsEditor.tsx) |
+| Orquestrador | [PropEditor.tsx](src/components/props/PropEditor.tsx) — só compõe as seções de [`sections/`](src/components/props/sections/); a configuração (quais props, rótulos, ordem) vive em [propConfig.ts](src/components/props/propConfig.ts) |
+| Props específicas | [listSpecificProps.ts](src/components/props/listSpecificProps.ts) — tudo em `field.props` que não é prop base, com o `kind` inferido do valor |
+| Escolha de editor | [specificEditors.tsx](src/components/props/specificEditors.tsx) — primeiro por **nome da prop** (`source`, `fields`, `filters`, `redirectFields`, `entity`), depois por **tipo do valor** (`boolean`/`number`/`json`/`string`) como fallback |
+| Editores | [StringEditor](src/components/props/editors/StringEditor.tsx), [BooleanEditor](src/components/props/editors/BooleanEditor.tsx), [JsonEditor](src/components/props/editors/JsonEditor.tsx), [SourceEditor](src/components/props/editors/SourceEditor.tsx), [FieldsEditor](src/components/props/editors/FieldsEditor.tsx), [FiltersEditor](src/components/props/editors/FiltersEditor.tsx), [RedirectFieldsEditor](src/components/props/editors/RedirectFieldsEditor.tsx) |
 | Atualização | Cada onChange dispara `updateField(id, { [key]: value })` — re-render imediato no Canvas |
 
 **Seções do editor (campos normais, na ordem):**
 
-1. **Identificação / Texto-Hint** — `name` *(obrigatório, com erro inline)*, `label`, `placeholder`, `hint`, `min`, `max`, `customRequiredWarning`, `labelClass`
-2. **Diretivas Base (BaseControl)** — `colSpan` (select 1-12, rótulo "Largura"), `class`, `hide`
-3. **Comportamento** — booleanos da base: `required`, `readonly`, `showCaracterCounter`, `highlight`, `doNotTranslate`, `requestFocus`
-4. **Específicas do Input** — props únicas do tipo, roteadas por `specificEditors.tsx` (ex: `source` para selects/radio, `mask` para `input-mask`, `entity` obrigatória para `input-modal`/`dynamic-select`, `redirectFields` com seletor de campo via diálogo)
+0. **Cabeçalho** ([EditorHeader](src/components/props/sections/EditorHeader.tsx)) — tipo em edição + botão **Excluir** (diálogo de confirmação → `removeField` + toast "Campo removido.")
+1. **Identificadores** — `name` *(obrigatório, com erro inline)*, `label`, `placeholder`
+2. **Texto/Hint** — `hint`, `min`, `max`, `customRequiredWarning`, `labelClass`
+3. **Diretivas Base (BaseControl)** — `colSpan` (select 1-12, rótulo "Largura (1-12)"), `class`, `hide`
+4. **Comportamento** — booleanos da base: `required`, `readonly`, `showCaracterCounter`, `highlight`, `doNotTranslate`, `requestFocus`
+5. **Específicas do Input** — props únicas do tipo, roteadas por `specificEditors.tsx` (ex: `source` para selects/radio, `mask` para `input-mask`, `entity` obrigatória para `input-modal`/`dynamic-select`, `fields` (mapeamento `{ key, value }`) e `filters` (pares atributo/valor) do `dynamic-select`, `redirectFields` com seletor de campo via diálogo). A seção é omitida quando o tipo não tem props específicas.
+
+> As seções de texto usam rótulos amigáveis (ex.: "Identificador (name)", "Título (label)", "Dica (hint)") mas gravam a prop original — o nome da chave no JSON v3 não muda.
+>
+> **`filters`:** o [FiltersEditor](src/components/props/editors/FiltersEditor.tsx) edita um dicionário `{ atributo: valor }` linha a linha; valores numéricos viram `number` (`"-1"` → `-1`), o resto fica `string`, e chaves duplicadas são sinalizadas (só a primeira é exportada). Filtros importados com valores booleanos, aninhados ou `null` caem no `JsonEditor` para não perder o tipo.
 
 `divider-component` não é um input real na v3 (estende `BaseComponent`, não `InputBaseComponent`): seu editor pula direto para **Diretivas Base** e uma seção própria de **Divisória** (`name`, `label`, `labelClass`, `fontSize`, `transformDivider`, `doNotTranslate`).
 
@@ -397,9 +413,9 @@ Os três se comunicam **exclusivamente via Zustand store** — não há props dr
 ## UI Kit e Diálogos
 
 - [`ui/Button.tsx`](src/components/ui/Button.tsx) — variantes (`primary`/`secondary`/`danger`/`danger-solid`/`ghost`) e tamanhos (`sm`/`icon`/default), usado em toda a aplicação.
-- [`ui/AlertDialog.tsx`](src/components/ui/AlertDialog.tsx) + [`store/dialogStore.ts`](src/store/dialogStore.ts) — substitui `window.confirm`. `confirm({ title, description, variant })` retorna uma `Promise<boolean>`; o diálogo é montado uma única vez (portal), com focus-trap, `role="dialog"`/`aria-modal`, `Esc` cancela e o foco é restaurado ao fechar. Usado ao excluir um campo, importar sobre um rascunho não vazio e limpar o formulário.
+- [`ui/AlertDialog.tsx`](src/components/ui/AlertDialog.tsx) + [`store/dialogStore.ts`](src/store/dialogStore.ts) — substitui `window.confirm`. `confirm({ title, description, confirmLabel, variant })` retorna uma `Promise<boolean>`; o diálogo é montado uma única vez (portal), com focus-trap, `role="alertdialog"`/`aria-modal`, `Esc` cancela e o foco é restaurado ao fechar. Usado ao excluir um campo (✕ no canvas ou botão Excluir do editor), importar sobre um rascunho não vazio e limpar o formulário. Detalhes em [`docs/components/alert-dialog.md`](docs/components/alert-dialog.md).
 - [`ui/FieldPickerDialog.tsx`](src/components/ui/FieldPickerDialog.tsx) + [`store/fieldPickerStore.ts`](src/store/fieldPickerStore.ts) — modal de busca (`pickField()`, mesmo padrão de Promise e acessibilidade) para escolher outro campo do formulário por `name`/`label`/tipo; usado pelo `RedirectFieldsEditor` ao montar `redirectFields` sem digitar o `name` manualmente.
-- [`ui/Toast.tsx`](src/components/ui/Toast.tsx) + [`store/toastStore.ts`](src/store/toastStore.ts) — notificações flutuantes (canto inferior direito). `toast({ title, description, variant, duration })` empilha um card e não retorna Promise (fire-and-forget). Usado na Toolbar ao exportar, importar e limpar o formulário.
+- [`ui/Toast.tsx`](src/components/ui/Toast.tsx) + [`store/toastStore.ts`](src/store/toastStore.ts) — notificações flutuantes (canto inferior direito). `toast({ title, description, variant, duration })` empilha um card e não retorna Promise (fire-and-forget). Usado na Toolbar ao exportar, importar e limpar o formulário, e ao remover um campo.
 - [`icons/Icon.tsx`](src/components/icons/Icon.tsx) — ícones SVG vendorizados a partir do catálogo Lucide (licença ISC), sem dependência de `lucide-react`.
 
 ### Toast — parâmetros
@@ -418,7 +434,7 @@ toast({ title: "Formulário exportado", description: "JSON copiado.", variant: "
 toast({ title: "Falha ao exportar", description: "O campo 'cpf' está sem nome.", variant: "danger" });
 ```
 
-Comportamento: máximo de 4 toasts simultâneos (`MAX_TOASTS`, o mais antigo sai), timer pausa no hover/foco e retoma do tempo restante, host não-modal (`pointer-events-none` no container, sem focus-trap) montado uma única vez em [`App.tsx`](src/App.tsx). As cores vêm dos tokens `--info`, `--success`, `--warning` e `--danger`, então claro/escuro é automático.
+Comportamento: máximo de 4 toasts simultâneos (`MAX_TOASTS`, o mais antigo sai), timer pausa no hover/foco e retoma do tempo restante, entrada/saída animadas com deslize lateral (`animate-toast-in`/`animate-toast-out`, desativadas com `prefers-reduced-motion`), host não-modal (`pointer-events-none` no container, sem focus-trap) montado uma única vez em [`App.tsx`](src/App.tsx). As cores vêm dos tokens `--info`, `--success`, `--warning` e `--danger`, então claro/escuro é automático.
 
 ---
 
@@ -534,7 +550,19 @@ Toolbar → **Importar** (upload de `.json` ou paste em textarea) aceita dois fo
 1. **Array** — o mesmo formato `IFormSourceItem[]` que o export gera (ou vindo de fora, da v3). O `id` de cada campo é gerado de novo; o `colSpan` é extraído do token `col-md-N` da `class` (default `12` se ausente); `action`/`group` da v3 são ignorados.
 2. **Objeto** — o payload interno do builder (`{ schemaVersion, formId, createdAt, updatedAt, fields }`), usado como backup/restore 1:1 do rascunho.
 
-Em ambos os casos: erros formatados por caminho (`campo.subcampo: mensagem`) e confirmação (via diálogo, não `window.confirm`) antes de sobrescrever um rascunho não vazio.
+Em ambos os casos há confirmação (via diálogo, não `window.confirm`) antes de sobrescrever um rascunho não vazio.
+
+### Mensagens de erro
+
+Import e export usam [`utils/formatErrors.ts`](src/utils/formatErrors.ts) para que as mensagens sejam legíveis por consultores (não-devs): nunca expõem o caminho JSON (`fields.0.props.name`), nomes internos nem o texto em inglês do Zod/`JSON.parse`. O campo é referenciado pelo rótulo + posição e a prop pelo nome usado no painel:
+
+```
+Campo "Nome completo" (1º) — Identificador: não foi preenchido
+Campo do tipo "Select Dinâmico" (3º) — Entidade: não foi preenchida (obrigatória em campos do tipo "Select Dinâmico" para buscar os dados)
+Não foi possível ler o JSON: falta uma vírgula entre duas propriedades (linha 4, coluna 7)
+```
+
+Mensagens sem tradução conhecida são mantidas como vieram (o erro nunca some).
 
 ---
 
@@ -546,33 +574,37 @@ pnpm test:watch          # Modo TDD
 pnpm test:coverage       # Gera relatório em coverage/
 ```
 
-**Cobertura:** suite organizada em camadas, 24 arquivos em [`src/__tests__/`](src/__tests__/):
+**Cobertura:** suite organizada em camadas, 30 arquivos (339 testes) em [`src/__tests__/`](src/__tests__/):
 
 | Camada | Tipo | Exemplos |
 |---|---|---|
 | Schemas Zod | Unit | `schemas/inputs.test.ts`, `schemas/registry.test.ts` |
 | Store | Unit | `store/formStore.test.ts`, `store/persist.test.ts`, `store/toastStore.test.ts` |
-| Utils | Unit | `utils/exportImport.test.ts`, `utils/gridClass.test.ts`, `utils/id.test.ts` |
+| Utils | Unit | `utils/exportImport.test.ts`, `utils/formatErrors.test.ts`, `utils/gridClass.test.ts`, `utils/id.test.ts` |
 | Categorias | Unit | `components/categories.test.ts` |
-| DnD | Unit | `components/canvasCollision.test.ts` |
-| UI Kit | Integration | `components/Button.test.tsx`, `components/AlertDialog.test.tsx`, `components/FieldPickerDialog.test.tsx`, `components/Toast.test.tsx` |
-| Editores | Integration | `components/StringEditor.test.tsx`, `components/JsonEditor.test.tsx`, `components/SourceEditor.test.tsx`, `components/FieldsEditor.test.tsx`, `components/RedirectFieldsEditor.test.tsx` |
+| DnD | Unit / Integration | `components/canvasCollision.test.ts`, `components/AppShell.test.tsx` (PointerSensor real com layout simulado: paleta → canvas, reorder ao vivo, DragOverlay, Esc), `components/SortableFormItem.test.tsx` (✕ confirmar/cancelar) |
+| UI Kit | Integration | `components/Button.test.tsx`, `components/AlertDialog.test.tsx`, `components/FieldPickerDialog.test.tsx`, `components/Toast.test.tsx`, `components/Icons.test.tsx` |
+| Editores | Integration | `components/EditorHeader.test.tsx` (Excluir confirmar/cancelar), `components/StringEditor.test.tsx`, `components/JsonEditor.test.tsx`, `components/SourceEditor.test.tsx`, `components/FieldsEditor.test.tsx`, `components/FiltersEditor.test.tsx`, `components/RedirectFieldsEditor.test.tsx` |
 | Componentes de layout | Integration | `components/LeftPanel.test.tsx`, `components/CanvasPanel.test.tsx`, `components/PropsPanel.test.tsx`, `components/Toolbar.test.tsx`, `components/InputPreview.test.tsx` |
 
 **Thresholds** (config embutida em `vite.config.ts`, seção `test.coverage`): statements 80% / branches 80% / functions 80% / lines 80%. **CI** roda `pnpm test` (sem coverage) em cada push/PR para `main`.
 
-**Cobertura real atual** (`pnpm test:coverage`, medido em 2026-09-16): **90.95%** statements, **87.40%** branches, **83.33%** functions, **90.95%** lines — folga confortável acima do threshold de 80% em todas as métricas. Alguns pontos concentram a diferença:
+**Cobertura real atual** (`pnpm test:coverage`, medido em 2026-10-21): **95.67%** statements, **90.02%** branches, **87.67%** functions, **95.67%** lines — folga confortável acima do threshold de 80% em todas as métricas. Alguns pontos concentram a diferença:
 
 | Área | Statements | Observação |
 |---|---|---|
 | `src/schemas/` | 100% | Zod schemas totalmente cobertos |
 | `src/components/inputs/` | 100% | registry + categories + preview |
-| `src/utils/` | 98.34% | export/import/gridClass/id |
-| `src/components/ui/` | 95.17% | Button/AlertDialog/FieldPickerDialog/Toast |
+| `src/utils/` | 98.34% | export/import/formatErrors/gridClass/id |
+| `src/components/props/editors/` | 98.23% | todos os editores com teste dedicado |
+| `src/components/dnd/` | 95.9% | só o handler de teclado (Enter/Espaço) do `SortableFormItem` fica de fora |
+| `src/components/ui/` | 95.37% | Button/AlertDialog/FieldPickerDialog/Toast |
+| `src/components/layout/` | 95.01% | `AppShell` coberto pelo teste de integração de DnD |
 | `src/store/` | 86.58% | `formStore.ts` tem trechos de `migrate`/`merge` não exercitados |
-| `src/components/layout/` | 68.42% | `AppShell.tsx` está em **0%** — a orquestração do `DndContext` (drag start/over/end) não tem teste direto hoje |
+| `src/components/props/sections/` | 86.66% | `DividerSection.tsx` em 8% |
+| `src/components/props/` | 83.56% | ramo do `divider-component` no `PropEditor` e editores por `kind` (`number`/`string`) pouco exercitados |
 
-> `App.tsx` e `AppShell.tsx` aparecem com 0% de cobertura direta: a suíte testa `CanvasPanel`/`LeftPanel`/`PropsPanel`/`Toolbar` isoladamente via store, mas não monta o `DndContext` completo em um teste de integração ponta a ponta.
+> jsdom não faz layout, então o `AppShell.test.tsx` simula `getBoundingClientRect` (paleta à esquerda, canvas à direita, cards empilhados na ordem do DOM) e um `PointerEvent` mínimo para o `PointerSensor` real do dnd-kit funcionar.
 
 ---
 
@@ -596,3 +628,5 @@ pnpm test:coverage       # Gera relatório em coverage/
 
 - [Plano de implementação original (v2)](.claude/plans/form-builder.plan-v2.md) — fases, decisões, riscos e critérios de aceite da primeira versão
 - [`docs/v3-props-gaps.md`](docs/v3-props-gaps.md) — lacunas de props conhecidas entre o builder e a `populis-v3-core`, por tipo de input
+- [`docs/componentizacao-por-modulos.md`](docs/componentizacao-por-modulos.md) — racional da quebra do `PropEditor` em seções + configuração declarativa
+- [`docs/components/alert-dialog.md`](docs/components/alert-dialog.md) — API e uso do `confirm()` / AlertDialog

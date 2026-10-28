@@ -2,8 +2,8 @@
 
 /**
  * BaseInputPropsSchema — props herdadas por todos os inputs.
- * Espelha campos @property de InputBaseComponent da populis-v3-core
- * + envoltorio BaseControl (class, hide).
+ * Espelha as props base dos inputs da v3
+ * (class/hide ficam no envoltorio do campo, ver wrap()).
  */
 export const BaseInputPropsSchema = z.object({
   name: z.string().min(1, "name é obrigatório"),

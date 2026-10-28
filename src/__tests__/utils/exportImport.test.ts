@@ -35,7 +35,7 @@ const sample = {
 };
 
 describe("exportForm", () => {
-  it("buildExport retorna lista no shape v3 (IFormSourceItem[])", () => {
+  it("buildExport retorna lista no shape v3 (FormSourceItem[])", () => {
     const r = buildExport(sample);
     expect(r.ok).toBe(true);
     expect(r.data).toHaveLength(1);
@@ -113,11 +113,11 @@ describe("exportForm", () => {
           hide: true,
           colSpan: 12,
           props: {
-            name: "subMabo",
-            label: "Submotivo de Abono",
-            entity: "submabo",
+            name: "categoria",
+            label: "Categoria",
+            entity: "categoria",
             filters: {},
-            fields: { key: "atrNomeSubMotivoAbono", value: "atrIdSubMotivoAbono" },
+            fields: { key: "nomeCategoria", value: "idCategoria" },
           },
         },
       ],
@@ -125,17 +125,17 @@ describe("exportForm", () => {
     const r = buildExport(form);
     expect(r.ok).toBe(true);
     const props = r.data?.[0]?.props as Record<string, unknown>;
-    expect(props.entity).toBe("submabo");
+    expect(props.entity).toBe("categoria");
     expect(props.filters).toEqual({});
     expect(props.fields).toEqual({
-      key: "atrNomeSubMotivoAbono",
-      value: "atrIdSubMotivoAbono",
+      key: "nomeCategoria",
+      value: "idCategoria",
     });
     expect(props).not.toHaveProperty("source");
   });
 
   it("round-trip de filters do dynamic-select preserva chaves e tipos", () => {
-    const filters = { nuwRowsPerPage: -1, atrIdPessoa: 15322, atrCodigo: "0015", flgAtivo: false };
+    const filters = { rowsPerPage: -1, idCliente: 123, codigo: "0015", ativo: false };
     const form = {
       ...sample,
       fields: [
@@ -150,7 +150,7 @@ describe("exportForm", () => {
             label: "Pessoa",
             entity: "pessoa",
             filters,
-            fields: { key: "atrNomePessoa", value: "atrIdPessoa" },
+            fields: { key: "nomeCliente", value: "idCliente" },
           },
         },
       ],
@@ -198,7 +198,7 @@ describe("exportForm", () => {
           hide: false,
           colSpan: 12,
           props: {
-            name: "subMabo",
+            name: "categoria",
             entity: "",
             filters: {},
             fields: { key: "k", value: "v" },
@@ -209,7 +209,7 @@ describe("exportForm", () => {
     const r = buildExport(form);
     expect(r.ok).toBe(false);
     expect(r.errors?.[0]).toBe(
-      'Campo "subMabo" (1º) — Entidade: não foi preenchida ' +
+      'Campo "categoria" (1º) — Entidade: não foi preenchida ' +
         '(obrigatória em campos do tipo "Select Dinâmico" para buscar os dados)',
     );
   });
@@ -369,11 +369,11 @@ describe("importForm", () => {
         class: "d-block mb-2 col-md-6",
         hide: true,
         props: {
-          name: "subMabo",
-          entity: "submabo",
-          fields: { key: "atrNome", value: "atrId" },
+          name: "categoria",
+          entity: "categoria",
+          fields: { key: "nome", value: "codigo" },
           filters: {},
-          redirectFields: { destino: "atrNomePessoa" },
+          redirectFields: { destino: "nomeCliente" },
           conditions: [{ field: "tipo", value: 1, operator: "===" }],
         },
       },
@@ -382,7 +382,7 @@ describe("importForm", () => {
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     const props = r.data.fields[0].props as Record<string, unknown>;
-    expect(props.redirectFields).toEqual({ destino: "atrNomePessoa" });
+    expect(props.redirectFields).toEqual({ destino: "nomeCliente" });
     expect(props.conditions).toEqual([{ field: "tipo", value: 1, operator: "===" }]);
     expect(r.data.fields[0].hide).toBe(true);
     expect(r.data.fields[0].colSpan).toBe(6);
@@ -391,7 +391,7 @@ describe("importForm", () => {
     const back = buildExport(r.data);
     expect(back.ok).toBe(true);
     const exportedProps = back.data?.[0]?.props as Record<string, unknown>;
-    expect(exportedProps.redirectFields).toEqual({ destino: "atrNomePessoa" });
+    expect(exportedProps.redirectFields).toEqual({ destino: "nomeCliente" });
     expect(exportedProps.conditions).toEqual([{ field: "tipo", value: 1, operator: "===" }]);
     expect(back.data?.[0]?.hide).toBe(true);
   });
@@ -451,7 +451,7 @@ describe("importForm", () => {
         type: "input-modal",
         props: {
           name: "selecao",
-          redirectFields: { campo: "atrX" },
+          redirectFields: { campo: "campoX" },
           allowFields: ["a", "b"],
           components: { search: { entity: "pessoa" } },
         },
@@ -461,7 +461,7 @@ describe("importForm", () => {
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     const props = r.data.fields[0].props as Record<string, unknown>;
-    expect(props.redirectFields).toEqual({ campo: "atrX" });
+    expect(props.redirectFields).toEqual({ campo: "campoX" });
     expect(props.allowFields).toEqual(["a", "b"]);
     expect(props.components).toEqual({ search: { entity: "pessoa" } });
   });
@@ -519,13 +519,13 @@ describe("mensagens de erro (GER-05)", () => {
           class: "",
           hide: false,
           colSpan: 12,
-          props: { name: "sub", label: "Submotivo", entity: "", filters: {} },
+          props: { name: "sub", label: "Categoria", entity: "", filters: {} },
         },
       ],
     };
     const r = buildExport(form);
     expect(r.ok).toBe(false);
-    expect(r.errors?.[0]).toMatch(/^Campo "Submotivo" \(2º\) — Entidade: não foi preenchida/);
+    expect(r.errors?.[0]).toMatch(/^Campo "Categoria" \(2º\) — Entidade: não foi preenchida/);
     expectConsultorFriendly(r.errors ?? []);
   });
 

@@ -12,7 +12,7 @@ import {
 export function PropEditor({ field, onChangeProp, onChangeMeta, onDelete }: PropEditorProps) {
   const props = field.props as Record<string, unknown>;
 
-  // divider nao e um input na v3 (estende BaseComponent): as secoes de
+  // divider nao e um input na v3: as secoes de
   // Identificacao/Comportamento nao se aplicam — so as props do divider.
   if (field.type === "divider-component") {
     return (
