@@ -19,7 +19,7 @@ imports. Essa é a **rede de segurança definitiva** da padronização — indep
 |---|---|---|
 | Scripts | [package.json:7-15](../../package.json#L7-L15) | nomes curtos, verbos diretos |
 | CI steps | [.github/workflows/ci.yml:21-24](../../.github/workflows/ci.yml#L21-L24) | nomes de step em PT-BR, `pnpm install --frozen-lockfile` |
-| Config Biome | [biome.json](../../biome.json) | escopo `**/*.{ts,tsx,json}`, ignora `populis-v3-core` |
+| Config Biome | [biome.json](../../biome.json) | escopo `**/*.{ts,tsx,json}`, ignora `legacy-core` |
 
 ## Por que `biome ci` (e não `biome check`)
 
@@ -80,7 +80,7 @@ pnpm ci          # ou pnpm check:ci — deve falhar se houver diff/lint
 |---|---|---|
 | Base atual tem arquivos fora do padrão → CI vermelho de imediato | Média | rodar `pnpm check:fix` e commitar a formatação antes de ativar o gate |
 | Versão do Biome no CI divergir da local | Baixa | versão fixa `2.4.16` em devDependencies + `--frozen-lockfile` garante paridade |
-| Pasta `populis-v3-core` entrar na checagem | Baixa | já está ignorada em [biome.json:14-15](../../biome.json#L14-L15) |
+| Pasta `legacy-core` entrar na checagem | Baixa | já está ignorada em [biome.json:14-15](../../biome.json#L14-L15) |
 | Nome de script `ci` confundir com conceito de pipeline | Baixa | renomear para `check:ci` (ver Tarefa 2) |
 
 ## Aceitação

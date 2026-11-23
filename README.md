@@ -1,6 +1,6 @@
 # Form Builder
 
-Editor visual de formulários em **React + TypeScript**. Arraste inputs da paleta para um canvas central, edite propriedades no painel lateral e exporte o formulário já no formato consumido pela `populis-v3-core` (`IFormSourceItem[]`).
+Editor visual de formulários em **React + TypeScript**. Arraste inputs da paleta para um canvas central, edite propriedades no painel lateral e exporte o formulário já no formato consumido pela `legacy-core` (`IFormSourceItem[]`).
 
 > **Versão atual:** v1 — 100% client-side, sem backend nem autenticação. Persistência do rascunho em `localStorage`.
 
@@ -117,10 +117,8 @@ pnpm dev
 
 ```
 form-builder/
-├── .claude/                        # Configuração ECC + histórico de planos (.claude/plans/*.md)
 ├── .github/workflows/ci.yml        # CI: install + testes em push/PR para main
 ├── docs/
-│   ├── v3-props-gaps.md            # Lacunas de props entre o builder e a v3 (ver Tipos de Input)
 │   ├── componentizacao-por-modulos.md  # Guia da modularização do PropEditor (seções + dados declarativos)
 │   ├── components/alert-dialog.md  # Referência do AlertDialog / confirm()
 │   └── plans/                      # Planos de Biome no CI, husky/lint-staged e AlertDialog
@@ -461,7 +459,6 @@ Comportamento: máximo de 4 toasts simultâneos (`MAX_TOASTS`, o mais antigo sai
 
 > Cada tipo também tem props específicas — ex: `input-money` tem `minValue`/`maxValue`, `input-mask` tem `mask`/`clearSpecialCharacter`, selects/`radio-component` têm `source: Array<{key, value}>` (ou `{label, value}` para radio), `checkbox-component` tem apenas `checked` (um único booleano, sem `source`), `input-modal`/`dynamic-select` exigem `entity` preenchida para exportar.
 >
-> Para o levantamento detalhado de props da v3 que ainda não têm equivalente no builder (por tipo), veja [`docs/v3-props-gaps.md`](docs/v3-props-gaps.md).
 
 ---
 
@@ -626,7 +623,5 @@ pnpm test:coverage       # Gera relatório em coverage/
 
 ## Referências
 
-- [Plano de implementação original (v2)](.claude/plans/form-builder.plan-v2.md) — fases, decisões, riscos e critérios de aceite da primeira versão
-- [`docs/v3-props-gaps.md`](docs/v3-props-gaps.md) — lacunas de props conhecidas entre o builder e a `populis-v3-core`, por tipo de input
 - [`docs/componentizacao-por-modulos.md`](docs/componentizacao-por-modulos.md) — racional da quebra do `PropEditor` em seções + configuração declarativa
 - [`docs/components/alert-dialog.md`](docs/components/alert-dialog.md) — API e uso do `confirm()` / AlertDialog
