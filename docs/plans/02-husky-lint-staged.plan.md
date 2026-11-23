@@ -19,7 +19,7 @@ e Biome `2.4.16` ([package.json:28](../../package.json#L28)).
 |---|---|---|
 | Gerenciador | [package.json:6](../../package.json#L6) | sempre `pnpm`, nunca npm/npx/yarn |
 | Scripts | [package.json:7-15](../../package.json#L7-L15) | bloco `scripts` enxuto |
-| Escopo Biome | [biome.json:10-16](../../biome.json#L10-L16) | `**/*.{ts,tsx,json}`, ignora `populis-v3-core` |
+| Escopo Biome | [biome.json:10-16](../../biome.json#L10-L16) | `**/*.{ts,tsx,json}`, ignora `legacy-core` |
 
 ## Decisões de design
 
