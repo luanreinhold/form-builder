@@ -23,7 +23,6 @@ Editor visual de formulários em **React + TypeScript**. Arraste inputs da palet
 - [Persistência](#persistência)
 - [Schema do JSON Exportado](#schema-do-json-exportado)
 - [Testes](#testes)
-- [Roadmap](#roadmap)
 
 ---
 
@@ -602,22 +601,6 @@ pnpm test:coverage       # Gera relatório em coverage/
 | `src/components/props/` | 83.56% | ramo do `divider-component` no `PropEditor` e editores por `kind` (`number`/`string`) pouco exercitados |
 
 > jsdom não faz layout, então o `AppShell.test.tsx` simula `getBoundingClientRect` (paleta à esquerda, canvas à direita, cards empilhados na ordem do DOM) e um `PointerEvent` mínimo para o `PointerSensor` real do dnd-kit funcionar.
-
----
-
-## Roadmap
-
-### v2+ (Fora de Escopo Atual)
-
-- [ ] Múltiplos formulários (lista + CRUD local)
-- [ ] Integração API (persistência remota, versionamento)
-- [ ] Autenticação + multi-tenant
-- [ ] Plugar Biome em um script (`pnpm lint`/CI) — dependência e config já presentes, ainda não usados no fluxo
-- [ ] Acessibilidade de teclado no D&D (`KeyboardSensor` do @dnd-kit) — diálogos (AlertDialog/FieldPicker) e seleção de card já são acessíveis por teclado; arrastar ainda depende do ponteiro
-- [ ] Histórico undo/redo
-- [ ] Templates reutilizáveis
-- [ ] Validação avançada (regex, dependências entre campos)
-- [ ] i18n do próprio builder
 
 ---
 
